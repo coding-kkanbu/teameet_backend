@@ -1,4 +1,4 @@
-ARG PYTHON_VERSION=3.9-slim-bullseye
+ARG PYTHON_VERSION=3.8-bullseye
 
 
 
@@ -38,7 +38,7 @@ ENV BUILD_ENV ${BUILD_ENVIRONMENT}
 WORKDIR ${APP_HOME}
 
 RUN addgroup --system django \
-    && adduser --system --ingroup django django
+  && adduser --system --ingroup django django
 
 
 # Install required system dependencies

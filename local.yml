@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 volumes:
   local_postgres_data: {}
@@ -48,7 +48,7 @@ services:
       - ./config:/app/config:z
       - ./kkanbu:/app/kkanbu:z
     ports:
-      - "7000:7000"
+      - "7777:7000"
     command: /start-docs
 
   redis:

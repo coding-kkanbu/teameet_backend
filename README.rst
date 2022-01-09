@@ -12,6 +12,19 @@ kkanbu project
 
 :License: MIT
 
+First Setting the Environment with docker (Recommended)
+--------------------------------------------------------
+
+* install docker & docker-compose
+
+* run docker
+
+* build & run::
+
+    $ docker-compose -f local.yml build
+    $ docker-compose -f local.yml up 
+
+
 Settings
 --------
 

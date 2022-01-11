@@ -7,27 +7,26 @@ env:
 
 on:
   pull_request:
-    branches: [ "master", "main" ]
-    paths-ignore: [ "docs/**" ]
+    branches: ["dev", "main"]
+    paths-ignore: ["docs/**"]
 
   push:
-    branches: [ "master", "main" ]
-    paths-ignore: [ "docs/**" ]
-
+    branches: ["dev", "main"]
+    paths-ignore: ["docs/**"]
 
 jobs:
   linter:
     runs-on: ubuntu-latest
     steps:
-
       - name: Checkout Code Repository
         uses: actions/checkout@v2
 
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: "3.9"
+          python-version: "3.8"
           cache: pip
+        run: pip install -r requirements/base.txt
 
       - name: Run pre-commit
         uses: pre-commit/action@v2.0.3
@@ -37,18 +36,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Checkout Code Repository
         uses: actions/checkout@v2
 
       - name: Build the Stack
-        run:  docker-compose -f local.yml build
+        run: docker-compose -f local.yml build
 
       - name: Run DB Migrations
-        run:  docker-compose -f local.yml run --rm django python manage.py migrate
+        run: docker-compose -f local.yml run --rm django python manage.py migrate
 
       - name: Run Django Tests
-        run:  docker-compose -f local.yml run django pytest
+        run: docker-compose -f local.yml run django pytest
 
       - name: Tear down the Stack
-        run:  docker-compose -f local.yml down
+        run: docker-compose -f local.yml down

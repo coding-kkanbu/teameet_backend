@@ -75,12 +75,10 @@ THIRD_PARTY_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "corsheaders",
-
-    'rest_auth',
-    'rest_auth.registration',
-    
-    'allauth.socialaccount.providers.google',
-    'allauth.socialaccount.providers.kakao',
+    "rest_auth",
+    "rest_auth.registration",
+    "allauth.socialaccount.providers.google",
+    "allauth.socialaccount.providers.kakao",
 ]
 
 LOCAL_APPS = [

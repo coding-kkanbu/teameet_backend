@@ -26,7 +26,9 @@ jobs:
         with:
           python-version: "3.8"
           cache: pip
-        run: pip install -r requirements/base.txt
+          cache-dependency-path: |
+            "requirements/base.txt"
+            "requirements/local.txt"
 
       - name: Run pre-commit
         uses: pre-commit/action@v2.0.3

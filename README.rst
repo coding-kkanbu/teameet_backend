@@ -35,7 +35,7 @@ Moved to settings_.
 Basic Commands
 --------------
 
-Execute Management Commands in DOCKER
+HOW TO Command in DOCKER
 ^^^^^^^^^^^^^^^^^^^^^
 As with any shell command that we wish to run in our container, this is done using this command::
 
@@ -44,8 +44,10 @@ As with any shell command that we wish to run in our container, this is done usi
 
 Setting Up Your Database
 ^^^^^^^^^^^^^^^^^^^^^
+Execute management commands::
 
     $ docker-compose -f local.yml run --rm python manage.py migrate
+
 
 Setting Up Your Users
 ^^^^^^^^^^^^^^^^^^^^^
@@ -60,10 +62,14 @@ For convenience, you can keep your normal user logged in on Chrome and your supe
 
 Launch Our Project
 ^^^^^^^^^^^^^^^^^^^^^
+Alomost Done::
 
     $ docker-compose -f local.yml run --rm python manage.py runserver
 
 Wow! We are good to go:)
+
+
+----------------------------------------------------------------(update needed below)
 
 Type checks
 ^^^^^^^^^^^

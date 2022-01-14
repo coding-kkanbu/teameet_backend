@@ -35,6 +35,20 @@ Moved to settings_.
 Basic Commands
 --------------
 
+HOW TO Command in DOCKER
+^^^^^^^^^^^^^^^^^^^^^
+As with any shell command that we wish to run in our container, this is done using this command::
+
+    $ docker-compose -f local.yml run --rm
+
+
+Setting Up Your Database
+^^^^^^^^^^^^^^^^^^^^^
+Execute management commands::
+
+    $ docker-compose -f local.yml run --rm python manage.py migrate
+
+
 Setting Up Your Users
 ^^^^^^^^^^^^^^^^^^^^^
 
@@ -42,9 +56,12 @@ Setting Up Your Users
 
 * To create an **superuser account**, use this command::
 
-    $ python manage.py createsuperuser
+    $ docker-compose -f local.yml run --rm python manage.py createsuperuser
 
 For convenience, you can keep your normal user logged in on Chrome and your superuser logged in on Firefox (or similar), so that you can see how the site behaves for both kinds of users.
+
+
+----------------------------------------------------------------(update needed below)
 
 Type checks
 ^^^^^^^^^^^

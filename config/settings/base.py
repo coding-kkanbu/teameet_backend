@@ -79,6 +79,8 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     "kkanbu.users",
+    "dj_rest_auth",
+    "dj_rest_auth.registration",
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps

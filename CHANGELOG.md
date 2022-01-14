@@ -22,3 +22,7 @@
 
 - add cache-dependency-path to 'set up python' in linter [cookiecutter-django updat](https://github.com/cookiecutter/cookiecutter-django/pull/3520/files)
 - change applied branch to 'dev' from 'master'
+
+### Local_Apps : dj-rest_auth
+
+- 사용자 관리를 위한 REST API 패키지 추가

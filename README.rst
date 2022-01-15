@@ -12,6 +12,13 @@ kkanbu project
 
 :License: MIT
 
+API Docs (OpenAPI 3.0)
+----------------------
+
+:: 
+
+    http://127.0.0.1:8000/api/schema/swagger-ui/
+
 First Setting the Environment with docker (Recommended)
 --------------------------------------------------------
 

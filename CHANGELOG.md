@@ -20,9 +20,12 @@
 
 ### CI
 
-- add cache-dependency-path to 'set up python' in linter [cookiecutter-django updat](https://github.com/cookiecutter/cookiecutter-django/pull/3520/files)
+- add cache-dependency-path to 'set up python' in linter [cookiecutter-django update](https://github.com/cookiecutter/cookiecutter-django/pull/3520/files)
 - change applied branch to 'dev' from 'master'
 
-### THIRD_PARTY_APPS : dj-rest_auth
+### THIRD_PARTY_APPS
 
-- 사용자 관리를 위한 REST API 패키지 추가
+- dj-rest_auth
+  - 사용자 관리를 위한 REST API 패키지 추가
+- [drf-spectacular](https://drf-spectacular.readthedocs.io/en/latest/index.html)
+  - OpenAPI 3.0 문서 생산을 위한 패키지 추가

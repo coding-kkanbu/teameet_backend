@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class OperationConfig(AppConfig):
+class BoardConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "operation"
+    name = "kkanbu.board"

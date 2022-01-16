@@ -1,6 +1,8 @@
-from django.contrib.auth.models import User
+from django.conf import settings
 from django.db import models
 from django_extensions.db.models import TimeStampedModel
+
+User = settings.AUTH_USER_MODEL
 
 
 class Category(models.Model):
@@ -25,14 +27,6 @@ class Post(TimeStampedModel):
     def __str__(self):
         return f"[{self.id}]{self.title} | {self.writer}"
 
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=["title", "writer"],
-                name="unique title, writer",
-            )
-        ]
-
 
 class SogaetingOption(models.Model):
     post = models.OneToOneField(Post, on_delete=models.CASCADE)
@@ -47,14 +41,6 @@ class PostLike(TimeStampedModel):
 
     def __str__(self):
         return f"{self.post} | {self.user}"
-
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=["post", "user"],
-                name="unique post, user",
-            )
-        ]
 
 
 class Tag(models.Model):
@@ -76,14 +62,6 @@ class Comment(TimeStampedModel):
     def __str__(self):
         return f"[{self.id}]{self.comment[:10]} | {self.writer}"
 
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=["comment", "writer"],
-                name="unique comment, writer",
-            )
-        ]
-
 
 class CommentLike(TimeStampedModel):
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
@@ -91,11 +69,3 @@ class CommentLike(TimeStampedModel):
 
     def __str__(self):
         return f"{self.comment} | {self.user}"
-
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=["comment", "user"],
-                name="unique comment, user",
-            )
-        ]

@@ -84,7 +84,7 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     "kkanbu.users",
-    "accounts"
+    "kkanbu.accounts"
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps

@@ -79,6 +79,7 @@ THIRD_PARTY_APPS = [
     "corsheaders",
     "dj_rest_auth",
     "dj_rest_auth.registration",
+    "drf_spectacular",
 ]
 
 LOCAL_APPS = [
@@ -305,9 +306,15 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.TokenAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 # django-cors-headers - https://github.com/adamchainz/django-cors-headers#setup
 CORS_URLS_REGEX = r"^/api/.*$"
-# Your stuff...
-# ------------------------------------------------------------------------------
+
+# drf spectaruclar - https://drf-spectacular.readthedocs.io/en/latest/readme.html#installation
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Teameet API",
+    "DESCRIPTION": "Meet Teachers Here",
+    "VERSION": "0.1.0",
+}

@@ -19,9 +19,11 @@ env = environ.Env()
 BASE_URL = "http://localhost:8000/"
 
 
-GOOGLE_CLIENT_ID = env("GOOGLE_CLIENT_ID")
-GOOGLE_CLIENT_SECRET = env("GOOGLE_CLIENT_SECRET")
-KAKAO_CLIENT_ID = env("KAKAO_CLIENT_ID")
+GOOGLE_CLIENT_ID = env("GOOGLE_CLIENT_ID", default="default_google_client_id")
+GOOGLE_CLIENT_SECRET = env(
+    "GOOGLE_CLIENT_SECRET", default="default_google_client_secret"
+)
+KAKAO_CLIENT_ID = env("KAKAO_CLIENT_ID", default="default_kakao_client_id")
 
 GOOGLE_CALLBACK_URI = "http://localhost:8000/accounts/google/callback/"
 KAKAO_CALLBACK_URI = "http://localhost:8000/accounts/kakao/callback/"

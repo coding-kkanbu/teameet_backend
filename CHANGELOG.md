@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+### Board
+
+- models: Post, Category
+
+### Operation
+
+- models: PostBlame
+
 ### Environment
 
 - set python version 3.8-bullseye

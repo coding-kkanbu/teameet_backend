@@ -17,7 +17,6 @@ urlpatterns = [
     path(settings.ADMIN_URL, admin.site.urls),
     # User management
     path("users/", include("kkanbu.users.urls", namespace="users")),
-    # path("accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 if settings.DEBUG:
@@ -40,6 +39,7 @@ urlpatterns += [
     path("accounts/", include("dj_rest_auth.urls")),
     path("accounts/registration/", include("dj_rest_auth.registration.urls")),
     path("accounts/", include("kkanbu.accounts.urls")),
+    path("accounts/", include("allauth.urls")),
 ]
 
 if settings.DEBUG:

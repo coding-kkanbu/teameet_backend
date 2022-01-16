@@ -26,3 +26,4 @@
 ### THIRD_PARTY_APPS : dj-rest_auth
 
 - 사용자 관리를 위한 REST API 패키지 추가
+- 사용자가 소셜 로그인할 수 있도록 구글, 카카오 로그인 rest api로 구현

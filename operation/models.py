@@ -13,3 +13,16 @@ class PostBlame(TimeStampedModel):
                 name="unique post, user",
             )
         ]
+
+
+class CommentBlame(TimeStampedModel):
+    comment = models.ForeignKey("board.Comment", on_delete=models.CASCADE)
+    user = models.ForeignKey("auth.User", on_delete=models.CASCADE)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["comment", "user"],
+                name="unique comment, user",
+            )
+        ]

@@ -11,7 +11,7 @@ class Category(models.Model):
         return self.name
 
 
-class Board(TimeStampedModel):
+class Post(TimeStampedModel):
     title = models.CharField(max_length=128)
     category = models.ManyToManyField(Category)
     writer = models.ForeignKey(User, on_delete=models.CASCADE)

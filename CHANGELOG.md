@@ -4,11 +4,11 @@
 
 ### Board
 
-- models: Post, Category
+- models: Post, Category, Tag, PostLike, Comment, CommentLike, SogaetingOption
 
 ### Operation
 
-- models: PostBlame
+- models: PostBlame, CommentBlame
 
 ### Environment
 

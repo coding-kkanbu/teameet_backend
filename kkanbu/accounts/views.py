@@ -142,26 +142,9 @@ def signup_or_sign_in(code, email, access_token, provider):
 
         return JsonResponse(data)
 
-        # accept = requests.post(
-        #     f"{BASE_URL}accounts/google/login/finish/", data=data)
-        # accept_status = accept.status_code
-        # if accept_status != 200:
-        #     return JsonResponse({"err_msg": "failed to signin"}, status=accept_status)
-        # accept_json = accept.json()
-        # accept_json.pop("user", None)
-        # return JsonResponse(accept_json)
     except User.DoesNotExist:
         print("signing up")
         # 기존에 가입된 유저가 없으면 새로 가입
         data = {"access_token": access_token, "code": code}
 
         return JsonResponse(data)
-        # accept = requests.post(
-        #     "http://localhost:8000/google/login/finish/", data=data)
-        # accept_status = accept.status_code
-        # print(accept_status)
-        # if accept_status != 200:
-        #     return JsonResponse({"err_msg": "failed to signup"}, status=accept_status)
-        # accept_json = accept.json()
-        # accept_json.pop("user", None)
-        # return JsonResponse(accept_json)

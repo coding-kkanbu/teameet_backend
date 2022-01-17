@@ -68,10 +68,12 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     "crispy_forms",
     "crispy_bootstrap5",
+    "django_celery_beat",
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
-    "django_celery_beat",
+    "allauth.socialaccount.providers.google",
+    "allauth.socialaccount.providers.kakao",
     "rest_framework",
     "rest_framework.authtoken",
     "corsheaders",
@@ -80,11 +82,7 @@ THIRD_PARTY_APPS = [
     "drf_spectacular",
 ]
 
-LOCAL_APPS = [
-    "kkanbu.users",
-    "kkanbu.board",
-    "kkanbu.operation",
-]
+LOCAL_APPS = ["kkanbu.users", "kkanbu.board", "kkanbu.operation", "kkanbu.accounts"]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
@@ -289,7 +287,7 @@ ACCOUNT_AUTHENTICATION_METHOD = "username"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_EMAIL_REQUIRED = True
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
-ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_EMAIL_VERIFICATION = "optional"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_ADAPTER = "kkanbu.users.adapters.AccountAdapter"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html

@@ -46,7 +46,7 @@ HOW TO Command in DOCKER
 ^^^^^^^^^^^^^^^^^^^^^
 As with any shell command that we wish to run in our container, this is done using this command::
 
-    $ docker-compose -f local.yml run --rm
+    $ docker-compose -f local.yml run --rm django
 
 
 Setting Up Your Database

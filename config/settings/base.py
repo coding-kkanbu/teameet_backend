@@ -318,3 +318,8 @@ SPECTACULAR_SETTINGS = {
     "DESCRIPTION": "Meet Teachers Here",
     "VERSION": "0.1.0",
 }
+
+# dj_rest_auth - https://dj-rest-auth.readthedocs.io/en/latest/configuration.html
+REST_AUTH_REGISTER_SERIALIZERS = {
+    "REGISTER_SERIALIZER": "kkanbu.accounts.serializers.CustomRegisterSerializer",
+}

@@ -53,7 +53,8 @@ Setting Up Your Database
 ^^^^^^^^^^^^^^^^^^^^^
 Execute management commands::
 
-    $ docker-compose -f local.yml run --rm python manage.py migrate
+    $ docker-compose -f local.yml run --rm django python manage.py migrate
+
 
 
 Setting Up Your Users
@@ -63,7 +64,8 @@ Setting Up Your Users
 
 * To create an **superuser account**, use this command::
 
-    $ docker-compose -f local.yml run --rm python manage.py createsuperuser
+    $ docker-compose -f local.yml run --rm django python manage.py createsuperuser
+
 
 For convenience, you can keep your normal user logged in on Chrome and your superuser logged in on Firefox (or similar), so that you can see how the site behaves for both kinds of users.
 

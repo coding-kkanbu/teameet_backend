@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+### Board
+
+- models: Post, Category, Tag, PostLike, Comment, CommentLike, SogaetingOption
+
+### Operation
+
+- models: PostBlame, CommentBlame
+
 ### Environment
 
 - set python version 3.8-bullseye

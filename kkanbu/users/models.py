@@ -3,11 +3,12 @@ from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
+
 class User(AbstractUser):
 
     name = None
-    first_name = None  # type: ignore
-    last_name = None  # type: ignore
+    first_name = None
+    last_name = None
     
     nickname = models.CharField(_("nickname"), max_length=150, unique=True)
     random_name = models.CharField(

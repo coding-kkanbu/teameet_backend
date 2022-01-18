@@ -1,5 +1,7 @@
 from django.contrib import admin
+
 from kkanbu.users.models import User
+
 # from django.contrib.auth import admin as auth_admin
 # from django.utils.translation import gettext_lazy as _
 # from kkanbu.users.forms import UserChangeForm, UserCreationForm

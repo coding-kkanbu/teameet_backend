@@ -36,8 +36,10 @@ urlpatterns += [
     path("api/", include("config.api_router")),
     # DRF auth token
     path("auth-token/", obtain_auth_token),
+    path("accounts/", include("dj_rest_auth.urls")),
     # Local apps
     path("accounts/", include("kkanbu.accounts.urls")),
+    path("accounts/", include("allauth.urls")),
 ]
 
 if settings.DEBUG:

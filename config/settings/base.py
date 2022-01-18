@@ -296,6 +296,9 @@ ACCOUNT_EMAIL_VERIFICATION = "optional"
 ACCOUNT_ADAPTER = "kkanbu.users.adapters.AccountAdapter"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 SOCIALACCOUNT_ADAPTER = "kkanbu.users.adapters.SocialAccountAdapter"
+# https://django-allauth.readthedocs.io/en/latest/configuration.html
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = "email"
 
 # django-rest-framework
 # -------------------------------------------------------------------------------
@@ -322,4 +325,7 @@ SPECTACULAR_SETTINGS = {
 # dj_rest_auth - https://dj-rest-auth.readthedocs.io/en/latest/configuration.html
 REST_AUTH_REGISTER_SERIALIZERS = {
     "REGISTER_SERIALIZER": "kkanbu.accounts.serializers.CustomRegisterSerializer",
+}
+REST_AUTH_SERIALIZERS = {
+    "LOGIN_SERIALIZER": "kkanbu.accounts.serializers.CustomLoginSerializer",
 }

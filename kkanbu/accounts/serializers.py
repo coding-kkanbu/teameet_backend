@@ -34,3 +34,21 @@ class CustomRegisterSerializer(RegisterSerializer):
 
 class CustomLoginSerializer(LoginSerializer):
     username = None
+
+
+class CustomUserDetailsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = (
+            "pk",
+            "email",
+            "nickname",
+            "random_name",
+            "profile_image",
+            "is_verify",
+        )
+        read_only_fields = (
+            "pk",
+            "email",
+            "is_verify",
+        )

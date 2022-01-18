@@ -329,4 +329,5 @@ REST_AUTH_REGISTER_SERIALIZERS = {
 }
 REST_AUTH_SERIALIZERS = {
     "LOGIN_SERIALIZER": "kkanbu.accounts.serializers.CustomLoginSerializer",
+    "USER_DETAILS_SERIALIZER": "kkanbu.accounts.serializers.CustomUserDetailsSerializer",
 }

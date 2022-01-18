@@ -12,11 +12,14 @@ class UserChangeForm(admin_forms.UserChangeForm):
 
 
 class UserCreationForm(admin_forms.UserCreationForm):
-    nickname = forms.CharField(label=_("nickname"))
+    nickname = forms.CharField(label=_("nickname"), widget=forms.TextInput)
 
     class Meta(admin_forms.UserCreationForm.Meta):
         model = User
 
+        fields = ["username", "password1", "password2", "nickname"]
+
         error_messages = {
-            "username": {"unique": _("This username has already been taken.")}
+            "username": {"unique": _("This username has already been taken.")},
+            "nickname": {"unique": _("This nickname has already been taken.")},
         }

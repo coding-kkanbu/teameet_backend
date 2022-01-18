@@ -10,6 +10,7 @@ class User(AbstractUser):
     first_name = None
     last_name = None
     
+    
     nickname = models.CharField(_("nickname"), max_length=150, unique=True)
     random_name = models.CharField(
         _("random name"), max_length=150, blank=True, null=True

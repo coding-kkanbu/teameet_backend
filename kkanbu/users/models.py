@@ -10,7 +10,9 @@ class User(AbstractUser):
     last_name = None  # type: ignore
     
     nickname = models.CharField(_('nickname'), max_length=150, unique=True)
-    random_name = models.CharField(_('random name'), max_length=150, blank=True, null=True)
+    random_name = models.CharField(
+        _('random name'), max_length=150, blank=True, null=True
+    )
     profile_image = models.ImageField(_('profile'), blank=True, null=True)
     ip = models.GenericIPAddressField(_('user IP'), blank=True, null=True)
     neis_email = models.EmailField(_('NEIS email address'), blank=True, null=True)

@@ -28,6 +28,7 @@ class TestUserAdmin:
                 "username": "test",
                 "password1": "My_R@ndom-P@ssw0rd",
                 "password2": "My_R@ndom-P@ssw0rd",
+                "nickname": "Hello",
             },
         )
         assert response.status_code == 302

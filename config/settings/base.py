@@ -292,6 +292,9 @@ ACCOUNT_EMAIL_VERIFICATION = "optional"
 ACCOUNT_ADAPTER = "kkanbu.users.adapters.AccountAdapter"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 SOCIALACCOUNT_ADAPTER = "kkanbu.users.adapters.SocialAccountAdapter"
+# https://django-allauth.readthedocs.io/en/latest/configuration.html
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = "email"
 
 # django-rest-framework
 # -------------------------------------------------------------------------------
@@ -300,10 +303,15 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.TokenAuthentication",
+        "dj_rest_auth.jwt_auth.JWTCookieAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
+
+REST_USE_JWT = True
+JWT_AUTH_COOKIE = "kkanbu-auth"
+JWT_AUTH_REFRESH_COOKIE = "kkanbu-refresh-token"
 
 # django-cors-headers - https://github.com/adamchainz/django-cors-headers#setup
 CORS_URLS_REGEX = r"^/api/.*$"
@@ -313,4 +321,13 @@ SPECTACULAR_SETTINGS = {
     "TITLE": "Teameet API",
     "DESCRIPTION": "Meet Teachers Here",
     "VERSION": "0.1.0",
+}
+
+# dj_rest_auth - https://dj-rest-auth.readthedocs.io/en/latest/configuration.html
+REST_AUTH_REGISTER_SERIALIZERS = {
+    "REGISTER_SERIALIZER": "kkanbu.accounts.serializers.CustomRegisterSerializer",
+}
+REST_AUTH_SERIALIZERS = {
+    "LOGIN_SERIALIZER": "kkanbu.accounts.serializers.CustomLoginSerializer",
+    "USER_DETAILS_SERIALIZER": "kkanbu.accounts.serializers.CustomUserDetailsSerializer",
 }

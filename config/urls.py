@@ -37,7 +37,7 @@ urlpatterns += [
     # DRF auth token
     path("auth-token/", obtain_auth_token),
     path("accounts/", include("dj_rest_auth.urls")),
-    path("accounts/registration/", include("dj_rest_auth.registration.urls")),
+    # Local apps
     path("accounts/", include("kkanbu.accounts.urls")),
     path("accounts/", include("allauth.urls")),
 ]

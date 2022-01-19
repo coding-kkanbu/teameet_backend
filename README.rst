@@ -32,6 +32,26 @@ First Setting the Environment with docker (Recommended)
     $ docker-compose -f local.yml up
 
 
+Initializing DataBase
+--------------
+
+* docker-compose로 실행시킨 모든 컨테이너 종료
+* 모든 컨테이너 일괄 삭제::
+
+    $ docker container prune
+    
+* postgres volume 삭제::
+
+    $ docker volume rm teameet_backend_local_postgres_data
+    $ docker volume rm teameet_backend_local_postgres_data_backups
+
+* 컨테이너 재생성::
+
+    $ docker-compose -f local.yml build
+    
+
+
+
 Settings
 --------
 
@@ -67,8 +87,8 @@ Setting Up Your Users
     $ docker-compose -f local.yml run --rm django python manage.py createsuperuser
 
 
-For convenience, you can keep your normal user logged in on Chrome and your superuser logged in on Firefox (or similar), so that you can see how the site behaves for both kinds of users.
-
+For convenience, you can keep your normal user logged in on Chrome and your superuser logged in on Firefox (or similar), so that you can see how the site behaves for both kinds of users.   
+    
 
 ----------------------------------------------------------------(update needed below)
 

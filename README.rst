@@ -84,11 +84,9 @@ Setting Up Your Users
 
     $ docker-compose -f local.yml run --rm django python manage.py createsuperuser
 
+* For convenience, you can keep your normal user logged in on Chrome and your superuser logged in on Firefox (or similar), so that you can see how the site behaves for both kinds of users.
 
-For convenience, you can keep your normal user logged in on Chrome and your superuser logged in on Firefox (or similar), so that you can see how the site behaves for both kinds of users.   
-    
-
-----------------------------------------------------------------(update needed below)
+-----------------------------------------------------(update needed below)-----------------------------------------------------
 
 Type checks
 ^^^^^^^^^^^

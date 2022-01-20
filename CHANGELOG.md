@@ -5,6 +5,7 @@
 ### Board
 
 - models: Post, Category, Tag, PostLike, Comment, CommentLike, SogaetingOption
+- views: PostViewSet, CommentViewSet
 
 ### Operation
 

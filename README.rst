@@ -39,7 +39,6 @@ Initializing DataBase
 * 모든 컨테이너 일괄 삭제::
 
     $ docker container prune
-    
 * postgres volume 삭제::
 
     $ docker volume rm teameet_backend_local_postgres_data
@@ -48,7 +47,6 @@ Initializing DataBase
 * 컨테이너 재생성::
 
     $ docker-compose -f local.yml build
-    
 
 
 

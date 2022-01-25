@@ -1,33 +1,52 @@
-from rest_framework import serializers
+from rest_framework.serializers import ModelSerializer, SerializerMethodField
 
-from .models import Comment, Post
+from .models import Category, Comment, Post
 
 
-class PostListSerializer(serializers.ModelSerializer):
+class PostSerializer(ModelSerializer):
+    user = SerializerMethodField()
+    comment_cnt = SerializerMethodField()
+    postlike_cnt = SerializerMethodField()
+
     class Meta:
         model = Post
         fields = [
-            "id",
-            "category",
             "title",
-            "writer",
+            "comment_cnt",
+            "postlike_cnt",
             "hit",
+            "user",
+            "created",
+        ]
+
+    def get_user(self, obj):
+        return str(obj.writer.nickname)
+
+    def get_comment_cnt(self, obj):
+        return obj.comment_set.count()
+
+    def get_postlike_cnt(self, obj):
+        return obj.postlike_set.count()
+
+
+class MainListSerializer(ModelSerializer):
+    post_set = PostSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Category
+        fields = [
+            "name",
+            "post_set",
         ]
 
 
-class PostCreateSerializer(serializers.ModelSerializer):
+class PostSerializer(ModelSerializer):
     class Meta:
         model = Post
-        fields = [
-            "category",
-            "title",
-            "content",
-            "tag",
-            "writer",
-        ]
+        fields = "__all__"
 
 
-class CommentSerializer(serializers.ModelSerializer):
+class CommentSerializer(ModelSerializer):
     class Meta:
         model = Comment
         fields = "__all__"

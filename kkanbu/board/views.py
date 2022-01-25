@@ -2,10 +2,10 @@ import logging
 
 from drf_spectacular.utils import extend_schema
 from rest_framework import viewsets
-from rest_framework.generics import CreateAPIView, ListAPIView
+from rest_framework.generics import ListAPIView
 
-from .models import Comment, Post
-from .serializers import PostCreateSerializer, PostListSerializer
+from .models import Category, Comment
+from .serializers import MainListSerializer, PostSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -18,18 +18,9 @@ logger = logging.getLogger(__name__)
 #     serializer_class = PostListSerializer
 
 
-class PostListView(ListAPIView):
-    queryset = Post.objects.all()
-    serializer_class = PostListSerializer
-
-
-class PostCreateView(CreateAPIView):
-    queryset = Post.objects.all()
-    serializer_class = PostCreateSerializer
-
-    def perform_create(self, serializer):
-        user = self.request.user
-        serializer.save(writer=user)
+class MainListView(ListAPIView):
+    queryset = Category.objects.all()
+    serializer_class = MainListSerializer
 
 
 @extend_schema(
@@ -37,4 +28,4 @@ class PostCreateView(CreateAPIView):
 )
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
-    serializer_class = PostListSerializer
+    serializer_class = PostSerializer

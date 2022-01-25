@@ -39,3 +39,9 @@
   - 사용자가 소셜 로그인할 수 있도록 구글, 카카오 로그인 rest api로 구현
 - [drf-spectacular](https://drf-spectacular.readthedocs.io/en/latest/index.html)
   - OpenAPI 3.0 문서 생산을 위한 패키지 추가
+
+### Modify Board App
+- models: Post/category field -> ForiegnKey 변경
+- serializer: MainListSerializer(메인화면용) 추가
+- views: PostViewsets 주석 처리
+         MainListView 추가

@@ -5,15 +5,15 @@ from .models import Category, Comment, Post
 
 class PostSerializer(ModelSerializer):
     user = SerializerMethodField()
-    comment_cnt = SerializerMethodField()
-    postlike_cnt = SerializerMethodField()
+    comment_n = SerializerMethodField()
+    postlike_n = SerializerMethodField()
 
     class Meta:
         model = Post
         fields = [
             "title",
-            "comment_cnt",
-            "postlike_cnt",
+            "comment_n",
+            "postlike_n",
             "hit",
             "user",
             "created",
@@ -22,10 +22,10 @@ class PostSerializer(ModelSerializer):
     def get_user(self, obj):
         return str(obj.writer.nickname)
 
-    def get_comment_cnt(self, obj):
+    def get_comment_n(self, obj):
         return obj.comment_set.count()
 
-    def get_postlike_cnt(self, obj):
+    def get_postlike_n(self, obj):
         return obj.postlike_set.count()
 
 
@@ -40,10 +40,10 @@ class MainListSerializer(ModelSerializer):
         ]
 
 
-class PostSerializer(ModelSerializer):
-    class Meta:
-        model = Post
-        fields = "__all__"
+# class PostSerializer(ModelSerializer):
+#     class Meta:
+#         model = Post
+#         fields = "__all__"
 
 
 class CommentSerializer(ModelSerializer):

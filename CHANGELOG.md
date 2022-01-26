@@ -40,8 +40,8 @@
 - [drf-spectacular](https://drf-spectacular.readthedocs.io/en/latest/index.html)
   - OpenAPI 3.0 문서 생산을 위한 패키지 추가
 
-### Modify Board App
+### Board
 - models: Post/category field -> ForiegnKey 변경
-- serializer: MainListSerializer(메인화면용) 추가
+- serializer: BoardListSerializer(메인화면용) 추가
 - views: PostViewsets 주석 처리
-         MainListView 추가
+         BoardListView 추가

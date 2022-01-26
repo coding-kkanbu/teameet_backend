@@ -29,7 +29,7 @@ class PostSerializer(ModelSerializer):
         return obj.postlike_set.count()
 
 
-class MainListSerializer(ModelSerializer):
+class BoardListSerializer(ModelSerializer):
     post_set = PostSerializer(many=True, read_only=True)
 
     class Meta:

@@ -5,7 +5,7 @@ from rest_framework import viewsets
 from rest_framework.generics import ListAPIView
 
 from .models import Category, Comment
-from .serializers import MainListSerializer, PostSerializer
+from .serializers import BoardListSerializer, PostSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -18,9 +18,9 @@ logger = logging.getLogger(__name__)
 #     serializer_class = PostListSerializer
 
 
-class MainListView(ListAPIView):
+class BoardListView(ListAPIView):
     queryset = Category.objects.all()
-    serializer_class = MainListSerializer
+    serializer_class = BoardListSerializer
 
 
 @extend_schema(

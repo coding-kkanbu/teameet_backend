@@ -9,7 +9,7 @@ router.register(r"comment", CommentViewSet)
 
 app_name = "post"
 urlpatterns = [
-    url(r"^$", BoardListView.as_view(), name="main_board"),
+    url(r"^$", BoardListView.as_view(), name="board-list"),
 ]
 
 urlpatterns += router.urls

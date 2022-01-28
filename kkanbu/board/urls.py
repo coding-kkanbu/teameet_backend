@@ -7,7 +7,7 @@ router = DefaultRouter()
 # router.register(r"post", PostViewSet)
 router.register(r"comment", CommentViewSet)
 
-app_name = "post"
+app_name = "board"
 urlpatterns = [
     url(r"^$", BoardListView.as_view(), name="board-list"),
 ]

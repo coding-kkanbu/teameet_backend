@@ -15,7 +15,7 @@ class Category(models.Model):
 
 class Post(TimeStampedModel):
     title = models.CharField(max_length=128)
-    category = models.ManyToManyField(Category)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
     tag = models.ManyToManyField("Tag", blank=True)
     writer = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()

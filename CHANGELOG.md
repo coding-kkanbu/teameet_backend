@@ -42,6 +42,12 @@
 
 ### Board
 - models: Post/category field -> ForiegnKey 변경
-- serializer: BoardListSerializer(메인화면용) 추가
-- views: PostViewsets 주석 처리
-         BoardListView 추가
+- serializer:
+  - BoardListSerializer
+  - PostSerializer
+  - PostCreateSerializer
+- views
+  - PostViewsets 주석 처리
+  - BoardListView
+  - PostCreateView
+    - permission_class variable 설정

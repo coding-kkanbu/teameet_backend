@@ -48,6 +48,5 @@
   - PostCreateSerializer
 - views
   - PostViewsets 주석 처리
-  - BoardListView
-  - PostCreateView
+  - BoardView
     - permission_class variable 설정

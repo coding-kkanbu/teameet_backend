@@ -1,4 +1,7 @@
-from dj_rest_auth.registration.serializers import RegisterSerializer
+from dj_rest_auth.registration.serializers import (
+    RegisterSerializer,
+    SocialLoginSerializer,
+)
 from dj_rest_auth.serializers import LoginSerializer
 from django.contrib.auth import get_user_model
 from django.db import transaction
@@ -52,3 +55,9 @@ class CustomUserDetailsSerializer(serializers.ModelSerializer):
             "email",
             "is_verify",
         )
+
+
+class CustomSocialLoginSerializer(SocialLoginSerializer):
+    nickname = serializers.CharField(required=False, allow_blank=True)
+    code = None
+    id_token = None

@@ -69,12 +69,5 @@ CELERY_TASK_EAGER_PROPAGATES = True
 
 BASE_URL = "http://localhost:8000/"
 
-
-GOOGLE_CLIENT_ID = env("GOOGLE_CLIENT_ID", default="default_google_client_id")
-GOOGLE_CLIENT_SECRET = env(
-    "GOOGLE_CLIENT_SECRET", default="default_google_client_secret"
-)
-KAKAO_CLIENT_ID = env("KAKAO_CLIENT_ID", default="default_kakao_client_id")
-
-GOOGLE_CALLBACK_URI = BASE_URL + "accounts/google/callback/"
-KAKAO_CALLBACK_URI = BASE_URL + "accounts/kakao/callback/"
+GOOGLE_CALLBACK_URI = BASE_URL + "accounts/google/login/callback/"
+KAKAO_CALLBACK_URI = BASE_URL + "accounts/kakao/login/callback/"

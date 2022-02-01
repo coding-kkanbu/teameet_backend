@@ -1,3 +1,9 @@
+from allauth.socialaccount.providers.google.views import (
+    oauth2_login as google_oauth2_login,
+)
+from allauth.socialaccount.providers.kakao.views import (
+    oauth2_login as kakao_oauth2_login,
+)
 from dj_rest_auth.registration.views import RegisterView  # VerifyEmailView
 from dj_rest_auth.views import (
     LoginView,
@@ -12,10 +18,9 @@ from django.urls import path
 from .views import (
     GoogleLogin,
     KakaoLogin,
-    google_callback,
-    google_login,
-    kakao_callback,
-    kakao_login,
+    get_callback,
+    google_account_exists,
+    kakao_account_exists,
 )
 
 urlpatterns = [
@@ -32,10 +37,14 @@ urlpatterns = [
         PasswordResetConfirmView.as_view(),
         name="password_reset_confirm",
     ),
-    path("google/login", google_login, name="google_login"),
-    path("google/callback/", google_callback, name="google_callback"),
+    path("google/login/url", google_oauth2_login, name="google_login"),
+    # for backend test > should be implemented on frontend
+    path("google/login/callback/", get_callback, name="google_callback"),
+    path("google/account-exists", google_account_exists, name="google_account_exists"),
     path("google/login/finish/", GoogleLogin.as_view(), name="google_login_todjango"),
-    path("kakao/login", kakao_login, name="kakao_login"),
-    path("kakao/callback/", kakao_callback, name="kakao_callback"),
+    path("kakao/login/url", kakao_oauth2_login, name="kakao_login"),
+    # for backend test > should be implemented on frontend
+    path("kakao/login/callback/", get_callback, name="kakao_callback"),
+    path("kakao/account-exists", kakao_account_exists, name="kakao_account_exists"),
     path("kakao/login/finish/", KakaoLogin.as_view(), name="kakao_login_todjango"),
 ]

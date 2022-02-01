@@ -15,9 +15,6 @@ from .utils import check_user_exists, request_access_token, request_data
 
 env = environ.Env()
 
-GOOGLE_CLIENT_ID = SocialApp.objects.get(provider="google").client_id
-GOOGLE_CLIENT_SECRET = SocialApp.objects.get(provider="google").secret
-KAKAO_CLIENT_ID = SocialApp.objects.get(provider="kakao").client_id
 
 GOOGLE_CALLBACK_URI = settings.GOOGLE_CALLBACK_URI
 KAKAO_CALLBACK_URI = settings.KAKAO_CALLBACK_URI
@@ -34,6 +31,9 @@ def get_callback(request):
 @api_view(("GET",))
 @permission_classes([AllowAny])
 def google_account_exists(request):
+    GOOGLE_CLIENT_ID = SocialApp.objects.get(provider="google").client_id
+    GOOGLE_CLIENT_SECRET = SocialApp.objects.get(provider="google").secret
+
     code = request.GET.get("code")
     access_token = request_access_token(
         f"https://oauth2.googleapis.com/token?client_id={GOOGLE_CLIENT_ID}"
@@ -61,6 +61,8 @@ class GoogleLogin(SocialLoginView):
 @api_view(("GET",))
 @permission_classes([AllowAny])
 def kakao_account_exists(request):
+    KAKAO_CLIENT_ID = SocialApp.objects.get(provider="kakao").client_id
+
     code = request.GET.get("code")
     access_token = request_access_token(
         "https://kauth.kakao.com/oauth/token?grant_type=authorization_code"

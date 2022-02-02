@@ -34,8 +34,7 @@ class BoardView(ListCreateAPIView):
         return Response(serializer.data)
 
     def perform_create(self, serializer):
-        user = self.request.user
-        serializer.save(writer=user)
+        serializer.save(writer=self.request.user)
 
 
 @extend_schema(

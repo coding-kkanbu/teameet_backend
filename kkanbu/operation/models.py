@@ -11,7 +11,13 @@ class PostBlame(TimeStampedModel):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return f"{self.post} blamed by {self.user}"
+
 
 class CommentBlame(TimeStampedModel):
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.comment} blamed by {self.user}"

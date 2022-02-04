@@ -10,6 +10,7 @@
 ### Operation
 
 - models: PostBlame, CommentBlame
+- views: PostBlameViewSet, CommentBlameViewSet
 
 ### Environment
 

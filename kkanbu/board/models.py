@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.utils.text import slugify
 from django_extensions.db.models import TimeStampedModel
 
 User = settings.AUTH_USER_MODEL
@@ -7,10 +8,15 @@ User = settings.AUTH_USER_MODEL
 
 class Category(models.Model):
     name = models.CharField(max_length=30, unique=True)
-    description = models.CharField(max_length=100, blank=True, null=True)
+    slug = models.SlugField(null=True, allow_unicode=True)
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        if self.slug is None:
+            self.slug = slugify(self.name, allow_unicode=True)
+        super().save(*args, **kwargs)
 
 
 class Post(TimeStampedModel):

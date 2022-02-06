@@ -11,12 +11,17 @@ class PostSerializer(ModelSerializer):
     class Meta:
         model = Post
         fields = [
+            "id",
+            "category",
             "title",
+            "content",
+            "tag",
             "comment_n",
             "postlike_n",
             "hit",
             "user",
             "created",
+            "modified",
         ]
 
     def get_user(self, obj):
@@ -30,14 +35,19 @@ class PostSerializer(ModelSerializer):
 
 
 class BoardListSerializer(ModelSerializer):
-    post_set = PostSerializer(many=True, read_only=True)
+    post_set = SerializerMethodField()
 
     class Meta:
         model = Category
         fields = [
+            "id",
             "name",
             "post_set",
         ]
+
+    def get_post_set(self, obj):
+        posts = obj.post_set.order_by("-created")[:5]
+        return PostSerializer(posts, many=True).data
 
 
 class PostCreateSerializer(ModelSerializer):

@@ -45,7 +45,11 @@
   - Post/category field -> ForiegnKey 변경
   - Category/description field 삭제 & slug field 추가
 - serializer:
-  - PostSerializer, BoardListSerializer, PostCreateSerializer
+  - PostSerializer
+  - BoardListSerializer
+  - PostCreateSerializer
 - views
   - PostViewsets 주석 처리
-  - BoardView, TopicView, PostView
+  - BoardView
+  - TopicView
+  - PostView

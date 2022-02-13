@@ -1,4 +1,3 @@
-import environ
 from allauth.socialaccount.models import SocialApp
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.kakao.views import KakaoOAuth2Adapter
@@ -12,9 +11,6 @@ from rest_framework.permissions import AllowAny
 
 from .serializers import CustomSocialLoginSerializer
 from .utils import check_user_exists, request_access_token, request_data
-
-env = environ.Env()
-
 
 GOOGLE_CALLBACK_URI = settings.GOOGLE_CALLBACK_URI
 KAKAO_CALLBACK_URI = settings.KAKAO_CALLBACK_URI

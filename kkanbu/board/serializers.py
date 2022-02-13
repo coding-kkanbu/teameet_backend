@@ -40,6 +40,17 @@ class BoardListSerializer(ModelSerializer):
         ]
 
 
+class PostCreateSerializer(ModelSerializer):
+    class Meta:
+        model = Post
+        fields = [
+            "category",
+            "title",
+            "content",
+            "tag",
+        ]
+
+
 class CommentSerializer(ModelSerializer):
     class Meta:
         model = Comment

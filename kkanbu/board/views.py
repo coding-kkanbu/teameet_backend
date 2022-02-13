@@ -2,10 +2,15 @@ import logging
 
 from drf_spectacular.utils import extend_schema
 from rest_framework import viewsets
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListCreateAPIView
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.response import Response
 
-from .models import Category, Comment
-from .serializers import BoardListSerializer, PostSerializer
+from .models import Category, Comment, Post
+from .serializers import BoardListSerializer, PostCreateSerializer, PostSerializer
+
+# from rest_framework.decorators import api_view
+
 
 logger = logging.getLogger(__name__)
 
@@ -18,9 +23,18 @@ logger = logging.getLogger(__name__)
 #     serializer_class = PostListSerializer
 
 
-class BoardListView(ListAPIView):
-    queryset = Category.objects.all()
-    serializer_class = BoardListSerializer
+class BoardView(ListCreateAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostCreateSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def list(self, request):
+        queryset = Category.objects.all()
+        serializer = BoardListSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def perform_create(self, serializer):
+        serializer.save(writer=self.request.user)
 
 
 @extend_schema(

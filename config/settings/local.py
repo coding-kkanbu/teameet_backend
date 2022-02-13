@@ -67,7 +67,7 @@ CELERY_TASK_EAGER_PROPAGATES = True
 # Your stuff...
 # ------------------------------------------------------------------------------
 
-BASE_URL = "http://localhost:8000/"
+BASE_URL = "http://127.0.0.1:8000/"
 
 GOOGLE_CALLBACK_URI = BASE_URL + "accounts/google/login/callback/"
 KAKAO_CALLBACK_URI = BASE_URL + "accounts/kakao/login/callback/"

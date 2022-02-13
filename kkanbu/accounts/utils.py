@@ -16,7 +16,7 @@ def request_access_token(url):
     token_req_json = token_req.json()
     error = token_req_json.get("error")
     if error is not None:
-        raise SocialAuthError("code for social auth is invalid")
+        raise SocialAuthError(f"{error}. code for social auth is invalid")
     return token_req_json.get("access_token")
 
 
@@ -27,14 +27,18 @@ def request_data(url, headers=None):
     req = requests.get(url, headers=headers)
     req_status = req.status_code
     if req_status != 200:
-        return SocialAuthError("failed to get email")
+        return SocialAuthError("failed to get data")
     return req.json()
 
 
 def check_user_exists(email, name, access_token, provider):
     try:
         user = User.objects.get(email=email)
-        social_user = SocialAccount.objects.get(user=user)
+        try:
+            social_user = SocialAccount.objects.get(user=user)
+        except SocialAccount.DoesNotExist:
+            # SocialAccount로 가입한 사용자가 한명도 없음
+            return SocialAuthError("social account does not exist")
         if social_user is None:
             return SocialAuthError("email exists but not social user")
         if social_user.provider != provider:

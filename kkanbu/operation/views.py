@@ -1,9 +1,4 @@
-from rest_framework.mixins import (
-    CreateModelMixin,
-    DestroyModelMixin,
-    ListModelMixin,
-    RetrieveModelMixin,
-)
+from rest_framework.mixins import CreateModelMixin, ListModelMixin
 from rest_framework.viewsets import GenericViewSet
 
 from .models import CommentBlame, PostBlame
@@ -12,8 +7,6 @@ from .serializers import CommentBlameSerializer, PostBlameSerializer
 
 class PostBlameViewSet(
     CreateModelMixin,
-    RetrieveModelMixin,
-    DestroyModelMixin,
     ListModelMixin,
     GenericViewSet,
 ):
@@ -23,8 +16,6 @@ class PostBlameViewSet(
 
 class CommentBlameViewSet(
     CreateModelMixin,
-    RetrieveModelMixin,
-    DestroyModelMixin,
     ListModelMixin,
     GenericViewSet,
 ):

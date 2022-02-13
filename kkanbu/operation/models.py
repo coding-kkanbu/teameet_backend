@@ -30,5 +30,7 @@ class CommentBlame(TimeStampedModel):
 
     class Meta:
         constraints = [
-            UniqueConstraint(fields=["comment", "user"], name="unique_user_per_post"),
+            UniqueConstraint(
+                fields=["comment", "user"], name="unique_user_per_comment"
+            ),
         ]

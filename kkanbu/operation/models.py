@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import models
-from django_extensions.db.models import TimeStampedModel, UniqueConstraint
+from django.db.models.constraints import UniqueConstraint
+from django_extensions.db.models import TimeStampedModel
 
 from kkanbu.board.models import Comment, Post
 

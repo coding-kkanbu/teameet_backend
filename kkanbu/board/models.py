@@ -1,7 +1,5 @@
 from django.conf import settings
 from django.db import models
-from django.urls import reverse
-from django.utils.text import slugify
 from django_extensions.db.models import TimeStampedModel
 
 User = settings.AUTH_USER_MODEL
@@ -9,18 +7,9 @@ User = settings.AUTH_USER_MODEL
 
 class Category(models.Model):
     name = models.CharField(max_length=30, unique=True)
-    slug = models.SlugField(null=False, allow_unicode=True)
 
     def __str__(self):
         return self.name
-
-    def get_absolute_url(self):
-        return reverse("board:topic", kwargs={"slug": self.slug})
-
-    def save(self, *args, **kwargs):
-        if self.slug is None:
-            self.slug = slugify(self.name, allow_unicode=True)
-        return super().save(*args, **kwargs)
 
 
 class Post(TimeStampedModel):

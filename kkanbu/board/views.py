@@ -74,7 +74,7 @@ class CommentViewSet(ModelViewSet):
     @action(detail=True, methods=["POST"])
     def toggle_commentlike(self, request, pk=None):
         comment = self.get_object()
-        comment_likes = comment.postlike_set
+        comment_likes = comment.commentlike_set
         user = request.user
 
         comment_like = comment_likes.filter(user=user)
@@ -86,6 +86,6 @@ class CommentViewSet(ModelViewSet):
             return Response(serializer.data)
         else:
             # create comment like if not liked by the user
-            comment.postlike_set.create(user=user)
+            comment.commentlike_set.create(user=user)
             serializer = self.get_serializer(comment, many=False)
             return Response(serializer.data)

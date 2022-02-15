@@ -38,6 +38,11 @@ class CategorySerializer(ModelSerializer):
 
 
 class CommentSerializer(ModelSerializer):
+    commentlike_n = SerializerMethodField()
+
     class Meta:
         model = Comment
         fields = "__all__"
+
+    def get_commentlike_n(self, obj):
+        return obj.commentlike_set.count()

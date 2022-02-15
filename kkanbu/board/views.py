@@ -1,6 +1,7 @@
 import logging
 
 from drf_spectacular.utils import extend_schema
+from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
@@ -40,13 +41,11 @@ class PostViewSet(ModelViewSet):
         if post_like:
             # delete post like if already liked by the user
             post_like.delete()
-            serializer = self.get_serializer(post, many=False)
-            return Response(serializer.data)
+            return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             # create post like if not liked by the user
             post.postlike_set.create(user=user)
-            serializer = self.get_serializer(post, many=False)
-            return Response(serializer.data)
+            return Response(status=status.HTTP_201_CREATED)
 
 
 @extend_schema(
@@ -82,10 +81,8 @@ class CommentViewSet(ModelViewSet):
         if comment_like:
             # delete comment like if already liked by the user
             comment_like.delete()
-            serializer = self.get_serializer(comment, many=False)
-            return Response(serializer.data)
+            return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             # create comment like if not liked by the user
             comment.commentlike_set.create(user=user)
-            serializer = self.get_serializer(comment, many=False)
-            return Response(serializer.data)
+            return Response(status=status.HTTP_201_CREATED)

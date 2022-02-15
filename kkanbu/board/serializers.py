@@ -19,7 +19,15 @@ class PostSerializer(ModelSerializer):
             "comment_n",
             "user",
         ]
-        read_only_fields = ["id", "comment_n", "hit", "user", "created", "modified"]
+        read_only_fields = [
+            "id",
+            "postlike_n",
+            "comment_n",
+            "hit",
+            "user",
+            "created",
+            "modified",
+        ]
 
     def get_user(self, obj):
         return str(obj.writer.nickname)

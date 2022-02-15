@@ -16,6 +16,8 @@ class PostSerializer(ModelSerializer):
             "content",
             "tag",
             "postlike_n",
+            "comment_n",
+            "user",
         ]
         read_only_fields = ["id", "comment_n", "hit", "user", "created", "modified"]
 
@@ -32,10 +34,7 @@ class PostSerializer(ModelSerializer):
 class CategorySerializer(ModelSerializer):
     class Meta:
         model = Category
-        fields = [
-            "id",
-            "name",
-        ]
+        fields = "__all__"
 
 
 class CommentSerializer(ModelSerializer):

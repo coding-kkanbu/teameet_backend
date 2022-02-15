@@ -29,6 +29,25 @@ class PostViewSet(ModelViewSet):
         serializer = CommentSerializer(comments, many=True)
         return Response(serializer.data)
 
+    @action(detail=True, methods=["POST"])
+    def toggle_postlike(self, request, pk=None):
+        post = self.get_object()
+        post_likes = post.postlike_set
+        user = request.user
+
+        post_like = post_likes.filter(user=user)
+        # check if post has postlike from the user
+        if post_like:
+            # delete post like if already liked by the user
+            post_like.delete()
+            serializer = self.get_serializer(post, many=False)
+            return Response(serializer.data)
+        else:
+            # create post like if not liked by the user
+            post.postlike_set.create(user=user)
+            serializer = self.get_serializer(post, many=False)
+            return Response(serializer.data)
+
 
 @extend_schema(
     tags=["category"],
@@ -51,3 +70,22 @@ class CategoryViewSet(ModelViewSet):
 class CommentViewSet(ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
+
+    @action(detail=True, methods=["POST"])
+    def toggle_commentlike(self, request, pk=None):
+        comment = self.get_object()
+        comment_likes = comment.postlike_set
+        user = request.user
+
+        comment_like = comment_likes.filter(user=user)
+        # check if comment has commentlike from the user
+        if comment_like:
+            # delete comment like if already liked by the user
+            comment_like.delete()
+            serializer = self.get_serializer(comment, many=False)
+            return Response(serializer.data)
+        else:
+            # create comment like if not liked by the user
+            comment.postlike_set.create(user=user)
+            serializer = self.get_serializer(comment, many=False)
+            return Response(serializer.data)

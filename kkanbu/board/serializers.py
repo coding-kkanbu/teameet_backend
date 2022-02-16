@@ -11,12 +11,22 @@ class PostSerializer(ModelSerializer):
     class Meta:
         model = Post
         fields = [
+            "category",
             "title",
-            "comment_n",
+            "content",
+            "tag",
             "postlike_n",
+            "comment_n",
+            "user",
+        ]
+        read_only_fields = [
+            "id",
+            "postlike_n",
+            "comment_n",
             "hit",
             "user",
             "created",
+            "modified",
         ]
 
     def get_user(self, obj):
@@ -29,29 +39,18 @@ class PostSerializer(ModelSerializer):
         return obj.postlike_set.count()
 
 
-class BoardListSerializer(ModelSerializer):
-    post_set = PostSerializer(many=True, read_only=True)
-
+class CategorySerializer(ModelSerializer):
     class Meta:
         model = Category
-        fields = [
-            "name",
-            "post_set",
-        ]
-
-
-class PostCreateSerializer(ModelSerializer):
-    class Meta:
-        model = Post
-        fields = [
-            "category",
-            "title",
-            "content",
-            "tag",
-        ]
+        fields = "__all__"
 
 
 class CommentSerializer(ModelSerializer):
+    commentlike_n = SerializerMethodField()
+
     class Meta:
         model = Comment
         fields = "__all__"
+
+    def get_commentlike_n(self, obj):
+        return obj.commentlike_set.count()

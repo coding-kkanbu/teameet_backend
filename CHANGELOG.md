@@ -42,12 +42,13 @@
   - OpenAPI 3.0 문서 생산을 위한 패키지 추가
 
 ### Board
-- models: Post/category field -> ForiegnKey 변경
+- models
+  - Post/category field -> ForiegnKey 변경
 - serializer:
-  - BoardListSerializer
   - PostSerializer
-  - PostCreateSerializer
+  - CategorySerializer
+  - CommentSerializer
 - views
-  - PostViewsets 주석 처리
-  - BoardView
-    - permission_class variable 설정
+  - PostViewset
+  - CategoryViewset
+  - CommentViewset

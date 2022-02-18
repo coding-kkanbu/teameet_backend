@@ -52,3 +52,9 @@
   - PostViewset
   - CategoryViewset
   - CommentViewset
+
+### Notification
+- models
+  - Notification
+- views
+  - NotificationViewset

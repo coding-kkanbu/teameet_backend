@@ -58,3 +58,5 @@
   - Notification
 - views
   - NotificationViewset
+- signals
+  - notifiy

@@ -20,6 +20,7 @@ class NotificationViewSet(GenericViewSet, ListModelMixin):
         instance = self.get_object()
         instance.is_read = True
         instance.save()
+        # TODO: replace it with service host
         return HttpResponseRedirect(
             "http://127.0.0.1:8000" + instance.get_absolute_url()
         )

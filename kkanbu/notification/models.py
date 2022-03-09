@@ -5,7 +5,7 @@ from django.db import models
 from django.utils.timesince import timesince
 from django_extensions.db.models import TimeStampedModel
 
-from .signals import notify
+from .signals import notify as notify_signal
 
 User = settings.AUTH_USER_MODEL
 
@@ -43,6 +43,9 @@ class Notification(TimeStampedModel):
     def timesince(self, now=None):
         return timesince(self.created, now)
 
+    def __str__(self):
+        return f"[From. {self.sender} || To. {self.recipient}] {self.message}, {self.timesince()} ago"
+
     def get_absolute_url(self):
         if self.notification_type in ["commentlike", "commentblame"]:
             return "/api/v1/comment/%d/" % self.sender.comment.pk
@@ -54,10 +57,10 @@ def notify_handler(message, **kwargs):
     kwargs.pop("signal", None)
     sender = kwargs.pop("sender")
     recipient = kwargs.pop("recipient")
-    noti_type = kwargs.pop("noti_type")
+    notification_type = kwargs.pop("noti_type")
 
     notify = Notification(
-        notification_type=noti_type,
+        notification_type=notification_type,
         sender=sender,
         recipient=recipient,
         message=str(message),
@@ -67,4 +70,4 @@ def notify_handler(message, **kwargs):
     return notify
 
 
-notify.connect(notify_handler, dispatch_uid="notification.models.Notification")
+notify_signal.connect(notify_handler, dispatch_uid="notification.models.Notification")

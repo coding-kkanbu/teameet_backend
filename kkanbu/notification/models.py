@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from django.urls import reverse
 from django.utils.timesince import timesince
 from django_extensions.db.models import TimeStampedModel
 
@@ -48,23 +49,14 @@ class Notification(TimeStampedModel):
 
     def get_absolute_url(self):
         if self.notification_type in ["commentlike", "commentblame"]:
-            return "/api/v1/comment/%d/" % self.sender.comment.pk
+            return reverse("api:comment-detail", args=[self.sender.comment.pk])
         else:
-            return "/api/v1/post/%d/" % self.sender.post.pk
+            return reverse("api:post-detail", args=[self.sender.post.pk])
 
 
 def notify_handler(message, **kwargs):
     kwargs.pop("signal", None)
-    sender = kwargs.pop("sender")
-    recipient = kwargs.pop("recipient")
-    notification_type = kwargs.pop("noti_type")
-
-    notify = Notification(
-        notification_type=notification_type,
-        sender=sender,
-        recipient=recipient,
-        message=str(message),
-    )
+    notify = Notification(message=str(message), **kwargs)
     notify.save()
 
     return notify

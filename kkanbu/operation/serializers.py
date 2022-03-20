@@ -7,7 +7,7 @@ from .models import CommentBlame, CommentLike, PostBlame, PostLike
 class PostLikeSerializer(ModelSerializer):
     class Meta:
         model = PostLike
-        field = "__all__"
+        fields = "__all__"
 
         validators = [
             UniqueTogetherValidator(
@@ -19,7 +19,7 @@ class PostLikeSerializer(ModelSerializer):
 class PostBlameSerializer(ModelSerializer):
     class Meta:
         model = PostBlame
-        fields = ["post", "user"]
+        fields = "__all__"
 
         validators = [
             UniqueTogetherValidator(
@@ -45,7 +45,7 @@ class CommentLikeSerializer(ModelSerializer):
 class CommentBlameSerializer(ModelSerializer):
     class Meta:
         model = CommentBlame
-        fields = ["comment", "user"]
+        fields = "__all__"
 
         validators = [
             UniqueTogetherValidator(

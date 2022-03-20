@@ -6,18 +6,18 @@ from .serializers import CommentBlameSerializer, PostBlameSerializer
 
 
 class PostBlameViewSet(
+    GenericViewSet,
     CreateModelMixin,
     ListModelMixin,
-    GenericViewSet,
 ):
     serializer_class = PostBlameSerializer
     queryset = PostBlame.objects.all()
 
 
 class CommentBlameViewSet(
+    GenericViewSet,
     CreateModelMixin,
     ListModelMixin,
-    GenericViewSet,
 ):
     serializer_class = CommentBlameSerializer
     queryset = CommentBlame.objects.all()

@@ -8,6 +8,22 @@ from kkanbu.board.models import Comment, Post
 User = settings.AUTH_USER_MODEL
 
 
+class PostLike(TimeStampedModel):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.post} | {self.user}"
+
+
+class CommentLike(TimeStampedModel):
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.comment} | {self.user}"
+
+
 class PostBlame(TimeStampedModel):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)

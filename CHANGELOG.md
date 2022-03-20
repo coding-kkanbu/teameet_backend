@@ -9,8 +9,8 @@
 
 ### Operation
 
-- models: PostBlame, CommentBlame
-- views: PostBlameViewSet, CommentBlameViewSet
+- models: PostBlame, CommentBlame, PostLike, CommentLike
+- views: PostBlameViewSet, CommentBlameViewSet, PostLikeViewset, CommentLikeViewset
 
 ### Environment
 

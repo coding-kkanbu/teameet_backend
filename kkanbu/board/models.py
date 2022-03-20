@@ -34,14 +34,6 @@ class SogaetingOption(models.Model):
     age = models.PositiveIntegerField(default=24)
 
 
-class PostLike(TimeStampedModel):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f"{self.post} | {self.user}"
-
-
 class Tag(models.Model):
     name = models.CharField(max_length=30, unique=True)
 
@@ -60,11 +52,3 @@ class Comment(TimeStampedModel):
 
     def __str__(self):
         return f"[{self.id}]{self.comment[:10]} | {self.writer}"
-
-
-class CommentLike(TimeStampedModel):
-    comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f"{self.comment} | {self.user}"

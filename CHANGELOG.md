@@ -2,16 +2,6 @@
 
 ## Unreleased
 
-### Board
-
-- models: Post, Category, Tag, PostLike, Comment, CommentLike, SogaetingOption
-- views: PostViewSet, CommentViewSet
-
-### Operation
-
-- models: PostBlame, CommentBlame, PostLike, CommentLike
-- views: PostBlameViewSet, CommentBlameViewSet, PostLikeViewset, CommentLikeViewset
-
 ### Environment
 
 - set python version 3.8-bullseye
@@ -42,8 +32,7 @@
   - OpenAPI 3.0 문서 생산을 위한 패키지 추가
 
 ### Board
-- models
-  - Post/category field -> ForiegnKey 변경
+- models : Post, Category, Tag, Comment, SogaetingOption
 - serializer:
   - PostSerializer
   - CategorySerializer
@@ -53,9 +42,18 @@
   - CategoryViewset
   - CommentViewset
 
+### Operation
+
+- models: PostBlame, CommentBlame, PostLike, CommentLike
+- views:
+  - PostBlameViewSet
+  - CommentBlameViewSet
+  - PostLikeViewset
+  - CommentLikeViewset
+
 ### Notification
-- models
-  - Notification
+
+- models: Notification
 - views
   - NotificationViewset
 - signals

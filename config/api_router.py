@@ -19,8 +19,8 @@ else:
 
 router.register("users", UserViewSet)
 router.register("category", CategoryViewSet)
-router.register("post", PostViewSet)
-router.register("comment", CommentViewSet)
+router.register("post", PostViewSet, basename="Post")
+router.register("comment", CommentViewSet, basename="Comment")
 router.register("postlike", PostLikeViewSet, basename="PostLike")
 router.register("commentlike", CommentLikeViewSet, basename="CommentLike")
 router.register("postblame", PostBlameViewSet, basename="PostBlame")

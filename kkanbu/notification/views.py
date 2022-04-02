@@ -1,15 +1,19 @@
 from django.http import HttpResponseRedirect
+from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from .models import Notification
+from .pagination import NotiPageNumberPagination
 from .serializers import NotificationSerializer
 
 
 class NotificationViewSet(GenericViewSet, ListModelMixin):
     serializer_class = NotificationSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = NotiPageNumberPagination
 
     def get_queryset(self):
         return Notification.objects.filter(recipient=self.request.user).order_by(
@@ -24,3 +28,10 @@ class NotificationViewSet(GenericViewSet, ListModelMixin):
         return HttpResponseRedirect(
             "http://127.0.0.1:8000" + instance.get_absolute_url()
         )
+
+    # 네비게이션바 최근 5개 알림사항
+    @action(detail=False)
+    def recent_noti(self, request):
+        recent_noti = self.get_queryset()[:5]
+        serializer = self.get_serializer(recent_noti, many=True)
+        return Response(serializer.data)

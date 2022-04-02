@@ -8,6 +8,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
+from kkanbu.notification.signals import notify
+
 from .models import Category, Comment, Post
 from .pagination import PostPageNumberPagination
 from .permissions import IsOwnerOrReadOnly
@@ -65,10 +67,16 @@ class PostViewSet(ModelViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             # create post like if not liked by the user
-            post_likes.create(user=user)
+            instance = post_likes.create(user=user)
+            notify.send(
+                notification_type="postlike",
+                sender=instance,
+                recipient=post.writer,
+                message="회원님의 게시글을 좋아합니다.",
+            )
             return Response(status=status.HTTP_201_CREATED)
 
-    @action(detail=True, methods=["POST"], permission_classes=[IsAuthenticated])
+    @action(detail=True, methods=["POST", "PUT"], permission_classes=[IsAuthenticated])
     def toggle_postblame(self, request, pk=None):
         post = self.get_object()
         postblame_set = post.postblame_set
@@ -81,7 +89,18 @@ class PostViewSet(ModelViewSet):
         # 신고를 안했으면 한 번 가능
         # TODO '정말로 신고하시겠습니까?' 팝업 메세지 창 추가
         else:
-            postblame_set.create(user=user)
+            instance = postblame_set.create(user=user)
+            # 신고 5회 이상이면 게시글 블라인드 처리
+            if postblame_set.count() >= 5:
+                post.is_show = False
+                post.save()
+
+                notify.send(
+                    notification_type="postblame",
+                    sender=instance,
+                    recipient=post.writer,
+                    message="회원님의 게시물이 신고 횟수 초과로 블라인드 처리되었습니다.",
+                )
             return Response(status=status.HTTP_201_CREATED)
 
 
@@ -112,7 +131,13 @@ class CommentViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         client_ip = get_client_ip(self.request)
-        serializer.save(writer=self.request.user, ip=client_ip)
+        instance = serializer.save(writer=self.request.user, ip=client_ip)
+        notify.send(
+            notification_type="comment",
+            sender=instance,
+            recipient=instance.post.writer,
+            message="게시글에 댓글이 달렸습니다.",
+        )
 
     def perform_destroy(self, instance):
         instance.is_show = False
@@ -133,10 +158,16 @@ class CommentViewSet(ModelViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             # create comment like if not liked by the user
-            comment_likes.create(user=user)
+            instance = comment_likes.create(user=user)
+            notify.send(
+                notification_type="commentlike",
+                sender=instance,
+                recipient=comment.writer,
+                message="회원님의 댓글을 좋아합니다.",
+            )
             return Response(status=status.HTTP_201_CREATED)
 
-    @action(detail=True, methods=["POST"], permission_classes=[IsAuthenticated])
+    @action(detail=True, methods=["POST", "PUT"], permission_classes=[IsAuthenticated])
     def toggle_commentblame(self, request, pk=None):
         comment = self.get_object()
         commentblame_set = comment.commentblame_set
@@ -147,5 +178,16 @@ class CommentViewSet(ModelViewSet):
             raise UniqueBlameError
         else:
             # TODO '정말로 신고하시겠습니까?' 팝업 메세지 창 추가
-            commentblame_set.create(user=user)
+            instance = commentblame_set.create(user=user)
+            # 신고 3회 이상이면 댓글 블라인드 처리
+            if commentblame_set.count() >= 3:
+                comment.is_show = False
+                comment.save()
+
+                notify.send(
+                    notification_type="commentblame",
+                    sender=instance,
+                    recipient=comment.writer,
+                    message="회원님의 댓글이 신고 횟수 초과로 블라인드 처리되었습니다.",
+                )
             return Response(status=status.HTTP_201_CREATED)

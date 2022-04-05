@@ -345,3 +345,7 @@ REST_AUTH_SERIALIZERS = {
     "LOGIN_SERIALIZER": "kkanbu.accounts.serializers.CustomLoginSerializer",
     "USER_DETAILS_SERIALIZER": "kkanbu.accounts.serializers.CustomUserDetailsSerializer",
 }
+
+# (local_app) operation
+POSTBLAME_AUTO_BLIND_COUNT = 5
+COMMENTBLAME_AUTO_BLIND_COUNT = 3

@@ -1,5 +1,6 @@
 import logging
 
+from django.conf import settings
 from django.utils import timezone
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
@@ -76,7 +77,7 @@ class PostViewSet(ModelViewSet):
             )
             return Response(status=status.HTTP_201_CREATED)
 
-    @action(detail=True, methods=["POST", "PUT"], permission_classes=[IsAuthenticated])
+    @action(detail=True, methods=["POST"], permission_classes=[IsAuthenticated])
     def toggle_postblame(self, request, pk=None):
         post = self.get_object()
         postblame_set = post.postblame_set
@@ -90,8 +91,9 @@ class PostViewSet(ModelViewSet):
         # TODO '정말로 신고하시겠습니까?' 팝업 메세지 창 추가
         else:
             instance = postblame_set.create(user=user)
+            # TODO 게시글신고 상수 규칙 추가
             # 신고 5회 이상이면 게시글 블라인드 처리
-            if postblame_set.count() >= 5:
+            if postblame_set.count() >= settings.POSTBLAME_AUTO_BLIND_COUNT:
                 post.is_show = False
                 post.save()
 
@@ -167,7 +169,7 @@ class CommentViewSet(ModelViewSet):
             )
             return Response(status=status.HTTP_201_CREATED)
 
-    @action(detail=True, methods=["POST", "PUT"], permission_classes=[IsAuthenticated])
+    @action(detail=True, methods=["POST"], permission_classes=[IsAuthenticated])
     def toggle_commentblame(self, request, pk=None):
         comment = self.get_object()
         commentblame_set = comment.commentblame_set
@@ -179,8 +181,9 @@ class CommentViewSet(ModelViewSet):
         else:
             # TODO '정말로 신고하시겠습니까?' 팝업 메세지 창 추가
             instance = commentblame_set.create(user=user)
+            # TODO 댓글신고 상수 규칙 추가
             # 신고 3회 이상이면 댓글 블라인드 처리
-            if commentblame_set.count() >= 3:
+            if commentblame_set.count() >= settings.COMMENTBLAME_AUTO_BLIND_COUNT:
                 comment.is_show = False
                 comment.save()
 

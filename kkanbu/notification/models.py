@@ -45,13 +45,13 @@ class Notification(TimeStampedModel):
         return timesince(self.created, now)
 
     def __str__(self):
-        return f"[From. {self.sender} || To. {self.recipient}] {self.message}, {self.timesince()} ago"
+        return f"[From. {self.sender} || To. {self.recipient}] {self.message} {self.timesince()} ago"
 
     def get_absolute_url(self):
         if self.notification_type in ["commentlike", "commentblame"]:
-            return reverse("api:comment-detail", args=[self.sender.comment.pk])
+            return reverse("api:Comment-detail", args=[self.sender.comment.pk])
         else:
-            return reverse("api:post-detail", args=[self.sender.post.pk])
+            return reverse("api:Post-detail", args=[self.sender.post.pk])
 
 
 def notify_handler(message, **kwargs):

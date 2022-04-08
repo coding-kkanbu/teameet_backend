@@ -41,6 +41,11 @@
   - PostViewset
   - CategoryViewset
   - CommentViewset
+- permissions
+  - IsOwnerOrReadOnly
+- pagination
+  - PostLimitOffsetPagination
+  - PostPageNumberPagination
 
 ### Operation
 
@@ -58,3 +63,5 @@
   - NotificationViewset
 - signals
   - notifiy
+- pagination
+  - NotiPageNumberPagination

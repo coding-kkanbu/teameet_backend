@@ -34,9 +34,10 @@
 ### Board
 - models : Post, Category, Tag, Comment, SogaetingOption
 - serializer:
-  - PostSerializer
+  - PostListSerializer
   - CategorySerializer
   - CommentSerializer
+  - PostDetailSerializer
 - views
   - PostViewset
   - CategoryViewset
@@ -46,6 +47,7 @@
 - pagination
   - PostLimitOffsetPagination
   - PostPageNumberPagination
+  - CategoryPageNumberPagination
 
 ### Operation
 

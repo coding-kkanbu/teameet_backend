@@ -12,9 +12,14 @@ from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from kkanbu.notification.signals import notify
 
 from .models import Category, Comment, Post
-from .pagination import PostPageNumberPagination
+from .pagination import CategoryPageNumberPagination, PostPageNumberPagination
 from .permissions import IsOwnerOrReadOnly
-from .serializers import CategorySerializer, CommentSerializer, PostSerializer
+from .serializers import (
+    CategorySerializer,
+    CommentSerializer,
+    PostDetailSerializer,
+    PostListSerializer,
+)
 from .utils import UniqueBlameError, get_client_ip
 
 logger = logging.getLogger(__name__)
@@ -24,12 +29,20 @@ logger = logging.getLogger(__name__)
     tags=["post"],
 )
 class PostViewSet(ModelViewSet):
-    serializer_class = PostSerializer
+    serializer_class = PostListSerializer
+    detail_serializer_class = PostDetailSerializer
     permission_classes = [IsOwnerOrReadOnly]
     pagination_class = PostPageNumberPagination
 
     def get_queryset(self):
-        return Post.objects.filter(is_show=True)
+        # TODO 최신순/인기순 정렬 방법 추가
+        return Post.objects.filter(is_show=True).order_by("-created")
+
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            if hasattr(self, "detail_serializer_class"):
+                return self.detail_serializer_class
+        return super().get_serializer_class()
 
     def perform_create(self, serializer):
         client_ip = get_client_ip(self.request)
@@ -47,10 +60,14 @@ class PostViewSet(ModelViewSet):
         instance.deleted_at = timezone.now()
         instance.save()
 
-    @action(detail=True)
+    @action(detail=True, permission_classes=[IsAuthenticated])
     def get_comments(self, request, pk=None):
         post = self.get_object()
-        comments = post.comment_set
+        comments = post.comment_set.filter(parent_comment=None).order_by("created")
+        for comment in comments:
+            if comment.secret:
+                if request.user != comment.writer or request.user != post.writer:
+                    comment.comment = "[글 작성자와 댓글 작성자만 볼 수 있는 댓글입니다]"
         serializer = CommentSerializer(comments, many=True)
         return Response(serializer.data)
 
@@ -112,12 +129,23 @@ class PostViewSet(ModelViewSet):
 class CategoryViewSet(ReadOnlyModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    pagination_class = CategoryPageNumberPagination
 
-    @action(detail=True)
-    def recent_posts(self, request, pk=None):
-        category = self.get_object()
-        posts = category.post_set.order_by("-created")[:5]
-        serializer = PostSerializer(posts, many=True)
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        queryset = instance.post_set.filter(is_show=True).order_by("-created")
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = PostListSerializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = PostListSerializer(queryset, many=True)
         return Response(serializer.data)
 
 
@@ -129,7 +157,15 @@ class CommentViewSet(ModelViewSet):
     permission_classes = [IsOwnerOrReadOnly]
 
     def get_queryset(self):
-        return Comment.objects.filter(is_show=True)
+        comments = Comment.objects.all()
+        for instance in comments:
+            if instance.secret:
+                if (
+                    self.request.user != instance.writer
+                    or self.request.user != instance.post.writer
+                ):
+                    instance.comment = "[글 작성자와 댓글 작성자만 볼 수 있는 댓글입니다]"
+        return comments
 
     def perform_create(self, serializer):
         client_ip = get_client_ip(self.request)

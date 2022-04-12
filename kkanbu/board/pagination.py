@@ -8,3 +8,7 @@ class PostLimitOffsetPagination(LimitOffsetPagination):
 
 class PostPageNumberPagination(PageNumberPagination):
     page_size = 8
+
+
+class CategoryPageNumberPagination(PageNumberPagination):
+    page_size = 10

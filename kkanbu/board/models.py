@@ -45,16 +45,10 @@ class Comment(TimeStampedModel):
     comment = models.TextField()
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     writer = models.ForeignKey(User, on_delete=models.CASCADE)
-    parent_comment = models.ForeignKey(
-        "self", on_delete=models.SET_NULL, related_name="parent_comment_set", null=True
-    )
     is_show = models.BooleanField(default=True)
     secret = models.BooleanField(default=False)
     deleted_at = models.DateTimeField(null=True, blank=True)
     ip = models.GenericIPAddressField(null=True, blank=True)
-
-    class Meta:
-        ordering = ("created",)
 
     def __str__(self):
         return f"[{self.id}]{self.comment[:10]} | {self.writer}"

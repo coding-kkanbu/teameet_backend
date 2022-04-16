@@ -54,7 +54,7 @@ class Comment(TimeStampedModel):
     ip = models.GenericIPAddressField(null=True, blank=True)
 
     class Meta:
-        ordering = ("created",)
+        ordering = ("created", "parent_comment")
 
     def __str__(self):
         return f"[{self.id}]{self.comment[:10]} | {self.writer}"

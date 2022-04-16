@@ -63,12 +63,20 @@ class PostViewSet(ModelViewSet):
     @action(detail=True, permission_classes=[IsAuthenticated])
     def get_comments(self, request, pk=None):
         post = self.get_object()
-        comments = post.comment_set.filter(parent_comment=None).order_by("created")
-        for comment in comments:
+        comment_set = post.comment_set.order_by("created")
+        for comment in comment_set:
             if comment.secret:
-                if request.user != comment.writer or request.user != post.writer:
-                    comment.comment = "[글 작성자와 댓글 작성자만 볼 수 있는 댓글입니다]"
-        serializer = CommentSerializer(comments, many=True)
+                if comment.parent_comment:
+                    if (
+                        request.user != comment.writer
+                        and request.user != comment.parent_comment.writer
+                        and request.user != post.writer
+                    ):
+                        comment.comment = "[글 작성자와 댓글 작성자만 볼 수 있는 댓글입니다]"
+                else:
+                    if request.user != comment.writer and request.user != post.writer:
+                        comment.comment = "[글 작성자와 댓글 작성자만 볼 수 있는 댓글입니다]"
+        serializer = CommentSerializer(comment_set, many=True)
         return Response(serializer.data)
 
     @action(detail=True, methods=["POST"], permission_classes=[IsAuthenticated])
@@ -157,25 +165,25 @@ class CommentViewSet(ModelViewSet):
     permission_classes = [IsOwnerOrReadOnly]
 
     def get_queryset(self):
-        comments = Comment.objects.all()
-        for instance in comments:
-            if instance.secret:
-                if (
-                    self.request.user != instance.writer
-                    or self.request.user != instance.post.writer
-                ):
-                    instance.comment = "[글 작성자와 댓글 작성자만 볼 수 있는 댓글입니다]"
-        return comments
+        return Comment.objects.filter(parent_comment=None)
 
     def perform_create(self, serializer):
         client_ip = get_client_ip(self.request)
         instance = serializer.save(writer=self.request.user, ip=client_ip)
-        notify.send(
-            notification_type="comment",
-            sender=instance,
-            recipient=instance.post.writer,
-            message="게시글에 댓글이 달렸습니다.",
-        )
+        if instance.parent_comment:
+            notify.send(
+                notification_type="comment",
+                sender=instance,
+                recipient=instance.parent_comment.writer,
+                message="내 댓글에 답글이 달렸습니다.",
+            )
+        else:
+            notify.send(
+                notification_type="comment",
+                sender=instance,
+                recipient=instance.post.writer,
+                message="내 게시글에 댓글이 달렸습니다.",
+            )
 
     def perform_destroy(self, instance):
         instance.is_show = False

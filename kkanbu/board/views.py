@@ -11,7 +11,9 @@ from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from kkanbu.notification.signals import notify
 
-from .models import Category, Comment, Post
+from .helpers.pitapat import PitAPatDetailSerializer, PitAPatListSerializer
+from .helpers.utils import UniqueBlameError, get_client_ip
+from .models import Category, Comment, Post, SogaetingOption
 from .pagination import CategoryPageNumberPagination, PostPageNumberPagination
 from .permissions import IsOwnerOrReadOnly
 from .serializers import (
@@ -20,7 +22,6 @@ from .serializers import (
     PostDetailSerializer,
     PostListSerializer,
 )
-from .utils import UniqueBlameError, get_client_ip
 
 logger = logging.getLogger(__name__)
 
@@ -36,10 +37,15 @@ class PostViewSet(ModelViewSet):
 
     def get_queryset(self):
         # TODO 최신순/인기순 정렬 방법 추가
-        return Post.objects.filter(is_show=True).order_by("-created")
+        return (
+            Post.objects.select_related("sogaetingoption")
+            .exclude(sogaetingoption__isnull=False)
+            .filter(is_show=True)
+            .order_by("-created")
+        )
 
     def get_serializer_class(self):
-        if self.action == "retrieve":
+        if self.action == "retrieve" or self.action == "update":
             if hasattr(self, "detail_serializer_class"):
                 return self.detail_serializer_class
         return super().get_serializer_class()
@@ -54,6 +60,10 @@ class PostViewSet(ModelViewSet):
         instance.save()
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
+
+    def perform_update(self, serializer):
+        client_ip = get_client_ip(self.request)
+        serializer.save(ip=client_ip)
 
     def perform_destroy(self, instance):
         instance.is_show = False
@@ -139,21 +149,32 @@ class CategoryViewSet(ReadOnlyModelViewSet):
     serializer_class = CategorySerializer
     pagination_class = CategoryPageNumberPagination
 
-    def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
+    @action(detail=False)
+    def topic(self, request):
+        queryset = self.get_queryset().filter(app="Topic")
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @action(detail=False)
+    def pitapat(self, request):
+        queryset = self.get_queryset().filter(app="PitAPat")
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
+        if instance.app == "Topic":
+            retrieve_serializer = PostListSerializer
+        if instance.app == "PitAPat":
+            retrieve_serializer = PitAPatListSerializer
         queryset = instance.post_set.filter(is_show=True).order_by("-created")
 
         page = self.paginate_queryset(queryset)
         if page is not None:
-            serializer = PostListSerializer(page, many=True)
+            serializer = retrieve_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
 
-        serializer = PostListSerializer(queryset, many=True)
+        serializer = retrieve_serializer(queryset, many=True)
         return Response(serializer.data)
 
 
@@ -184,6 +205,10 @@ class CommentViewSet(ModelViewSet):
                 recipient=instance.post.writer,
                 message="내 게시글에 댓글이 달렸습니다.",
             )
+
+    def perform_update(self, serializer):
+        client_ip = get_client_ip(self.request)
+        serializer.save(ip=client_ip)
 
     def perform_destroy(self, instance):
         instance.is_show = False
@@ -238,3 +263,48 @@ class CommentViewSet(ModelViewSet):
                     message="회원님의 댓글이 신고 횟수 초과로 블라인드 처리되었습니다.",
                 )
             return Response(status=status.HTTP_201_CREATED)
+
+
+@extend_schema(
+    tags=["sogaetingoption"],
+)
+class PitAPatViewSet(PostViewSet):
+    serializer_class = PitAPatListSerializer
+    detail_serializer_class = PitAPatDetailSerializer
+
+    def get_queryset(self):
+        return (
+            Post.objects.select_related("sogaetingoption")
+            .exclude(sogaetingoption__isnull=True)
+            .filter(is_show=True)
+            .order_by("-created")
+        )
+
+    def post_create(self, request, **validated_data):
+        writer = request.user
+        client_ip = get_client_ip(request)
+        post = Post.objects.create(
+            category=validated_data.get("category"),
+            title=validated_data.get("title"),
+            content=validated_data.get("content"),
+            writer=writer,
+            ip=client_ip,
+        )
+        return post
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        post = self.post_create(request, **serializer.validated_data)
+        serializer.validated_data["post_id"] = post.id
+        SogaetingOption.objects.create(
+            post=post,
+            region=serializer.validated_data.get("sogaetingoption")["region"],
+            gender=serializer.validated_data.get("sogaetingoption")["gender"],
+            age=serializer.validated_data.get("sogaetingoption")["age"],
+        )
+        serializer.save()
+        headers = self.get_success_headers(serializer.data)
+        return Response(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )

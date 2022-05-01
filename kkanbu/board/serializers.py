@@ -1,11 +1,21 @@
-from rest_framework.serializers import ModelSerializer, SerializerMethodField
+from rest_framework.serializers import (
+    ModelSerializer,
+    PrimaryKeyRelatedField,
+    SerializerMethodField,
+)
 
 from kkanbu.operation.serializers import CommentLikeSerializer, PostLikeSerializer
 
 from .models import Category, Comment, Post
 
 
+class CategoryForeignKey(PrimaryKeyRelatedField):
+    def get_queryset(self):
+        return Category.objects.filter(app="Topic")
+
+
 class PostListSerializer(ModelSerializer):
+    category = CategoryForeignKey()
     username = SerializerMethodField()
     comment_n = SerializerMethodField()
     postlike_n = SerializerMethodField()
@@ -17,11 +27,11 @@ class PostListSerializer(ModelSerializer):
             "category",
             "title",
             "content",
+            "tag",
             "username",
             "postlike_n",
             "comment_n",
             "hit",
-            "created",
         ]
         read_only_fields = [
             "hit",
@@ -75,6 +85,9 @@ class CommentSerializer(ModelSerializer):
             "commentlike_n",
             "commentlike_set",
         ]
+        read_only_fields = [
+            "is_show",
+        ]
 
     def get_username(self, obj):
         return str(obj.writer.nickname)
@@ -84,6 +97,7 @@ class CommentSerializer(ModelSerializer):
 
 
 class PostDetailSerializer(ModelSerializer):
+    category = CategoryForeignKey()
     username = SerializerMethodField()
     postlike_n = SerializerMethodField()
     postlike_set = PostLikeSerializer(many=True, read_only=True)
@@ -100,9 +114,14 @@ class PostDetailSerializer(ModelSerializer):
             "tag",
             "username",
             "hit",
+            "ip",
             "postlike_n",
             "postlike_set",
             "comment_n",
+        ]
+        read_only_fields = [
+            "hit",
+            "ip",
         ]
 
     def get_username(self, obj):

@@ -38,10 +38,13 @@
   - CategorySerializer
   - CommentSerializer
   - PostDetailSerializer
+  - PitAPatListSerializer
+  - PitAPatDetailSeriailzer
 - views
   - PostViewset
   - CategoryViewset
   - CommentViewset
+  - PitAPatViewset
 - permissions
   - IsOwnerOrReadOnly
 - pagination

@@ -266,7 +266,7 @@ class CommentViewSet(ModelViewSet):
 
 
 @extend_schema(
-    tags=["sogaetingoption"],
+    tags=["pitapat"],
 )
 class PitAPatViewSet(PostViewSet):
     serializer_class = PitAPatListSerializer

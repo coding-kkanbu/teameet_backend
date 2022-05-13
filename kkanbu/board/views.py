@@ -138,15 +138,18 @@ class CategoryViewSet(ReadOnlyModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     pagination_class = CategoryPageNumberPagination
+    lookup_field = "slug"
 
-    def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
-        serializer = self.get_serializer(queryset, many=True)
+    @action(detail=True)
+    def recent_posts(self, request, slug=None):
+        category = self.get_object()
+        queryset = category.post_set.filter(is_show=True).order_by("-created")[:5]
+        serializer = PostListSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
-        queryset = instance.post_set.filter(is_show=True).order_by("-created")
+        queryset = instance.post_set.filter(is_show=True)
 
         page = self.paginate_queryset(queryset)
         if page is not None:

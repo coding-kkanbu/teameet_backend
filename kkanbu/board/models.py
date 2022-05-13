@@ -15,6 +15,7 @@ class Category(models.Model):
         max_length=30, choices=AppType.choices, default=AppType.TOPIC
     )
     name = models.CharField(max_length=30, unique=True)
+    slug = models.SlugField(max_length=50, allow_unicode=True, unique=True)
 
     def __str__(self):
         return f"{self.app} | {self.name}"

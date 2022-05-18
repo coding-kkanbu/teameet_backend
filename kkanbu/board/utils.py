@@ -1,3 +1,5 @@
+from urllib.parse import urlencode
+
 from rest_framework.exceptions import APIException
 
 
@@ -8,6 +10,10 @@ def get_client_ip(request):
     else:
         ip = request.META.get("REMOTE_ADDR")
     return ip
+
+
+def url_with_query(path, **kwargs):
+    return path + "?" + urlencode(kwargs)
 
 
 class UniqueBlameError(APIException):

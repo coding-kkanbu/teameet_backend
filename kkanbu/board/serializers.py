@@ -38,22 +38,9 @@ class PostListSerializer(ModelSerializer):
 
 
 class CategorySerializer(ModelSerializer):
-    recent_posts = SerializerMethodField()
-
     class Meta:
         model = Category
-        fields = [
-            "id",
-            "name",
-            "recent_posts",
-        ]
-
-    def get_recent_posts(self, obj):
-        recent_posts = Post.objects.filter(is_show=True, category=obj).order_by(
-            "-created"
-        )[:5]
-        serializer = PostListSerializer(recent_posts, many=True)
-        return serializer.data
+        fields = "__all__"
 
 
 class CommentSerializer(ModelSerializer):

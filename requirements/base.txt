@@ -27,4 +27,4 @@ dj-rest-auth==2.2.4 # https://github.com/iMerica/dj-rest-auth
 # DRF spectacular for swagger supporting OpenAPI3
 drf-spectacular==0.22.1  # https://github.com/tfranzel/drf-spectacular
 # Django-REST-framework-simpleJWT
-djangorestframework-simplejwt==5.1.0 # https://github.com/jazzband/djangorestframework-simplejwt
+djangorestframework-simplejwt==5.2.0 # https://github.com/jazzband/djangorestframework-simplejwt

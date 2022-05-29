@@ -14,12 +14,7 @@ from kkanbu.notification.signals import notify
 from .models import Category, Comment, Post
 from .pagination import CategoryPageNumberPagination, PostPageNumberPagination
 from .permissions import IsOwnerOrReadOnly
-from .serializers import (
-    CategorySerializer,
-    CommentSerializer,
-    PostDetailSerializer,
-    PostListSerializer,
-)
+from .serializers import CategorySerializer, CommentSerializer, PostSerializer
 from .utils import UniqueBlameError, get_client_ip
 
 logger = logging.getLogger(__name__)
@@ -29,20 +24,20 @@ logger = logging.getLogger(__name__)
     tags=["post"],
 )
 class PostViewSet(ModelViewSet):
-    serializer_class = PostListSerializer
-    detail_serializer_class = PostDetailSerializer
+    queryset = Post.objects.filter(is_show=True)
+    serializer_class = PostSerializer
     permission_classes = [IsOwnerOrReadOnly]
     pagination_class = PostPageNumberPagination
 
     def get_queryset(self):
-        # TODO 최신순/인기순 정렬 방법 추가
-        return Post.objects.filter(is_show=True).order_by("-created")
-
-    def get_serializer_class(self):
-        if self.action == "retrieve":
-            if hasattr(self, "detail_serializer_class"):
-                return self.detail_serializer_class
-        return super().get_serializer_class()
+        ordering = self.request.query_params.get("ordering", "recent")
+        # 최신순 정렬
+        if ordering == "recent":
+            queryset = self.queryset.order_by("-created")
+        # 추천순 정렬
+        elif ordering == "likes":
+            queryset = self.queryset.order_by("-hit")
+        return queryset
 
     def perform_create(self, serializer):
         client_ip = get_client_ip(self.request)
@@ -144,7 +139,7 @@ class CategoryViewSet(ReadOnlyModelViewSet):
     def recent_posts(self, request, slug=None):
         category = self.get_object()
         queryset = category.post_set.filter(is_show=True).order_by("-created")[:5]
-        serializer = PostListSerializer(queryset, many=True)
+        serializer = PostSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request, *args, **kwargs):
@@ -153,10 +148,10 @@ class CategoryViewSet(ReadOnlyModelViewSet):
 
         page = self.paginate_queryset(queryset)
         if page is not None:
-            serializer = PostListSerializer(page, many=True)
+            serializer = PostSerializer(page, many=True)
             return self.get_paginated_response(serializer.data)
 
-        serializer = PostListSerializer(queryset, many=True)
+        serializer = PostSerializer(queryset, many=True)
         return Response(serializer.data)
 
 

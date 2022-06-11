@@ -22,7 +22,7 @@ if settings.DEBUG:
 else:
     router = SimpleRouter()
 
-router.register("users", UserViewSet, basename="User")
+router.register("users", UserViewSet)
 router.register("category", CategoryViewSet, basename="Category")
 router.register("topic", TopicViewSet, basename="Topic")
 router.register("pitapat", PitAPatViewSet, basename="PitAPat")

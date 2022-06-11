@@ -14,18 +14,21 @@ from kkanbu.notification.signals import notify
 from .models import Category, Comment, Post
 from .pagination import CategoryPageNumberPagination, PostPageNumberPagination
 from .permissions import IsOwnerOrReadOnly
-from .serializers import CategorySerializer, CommentSerializer, PostSerializer
+from .serializers import (
+    CategorySerializer,
+    CommentSerializer,
+    PitAPatSerializer,
+    PostListSerializer,
+    PostSerializer,
+)
 from .utils import UniqueBlameError, get_client_ip
 
 logger = logging.getLogger(__name__)
 
 
-@extend_schema(
-    tags=["post"],
-)
-class PostViewSet(ModelViewSet):
-    queryset = Post.objects.filter(is_show=True)
-    serializer_class = PostSerializer
+class AbstractPostViewSet(ModelViewSet):
+    """Post Model을 기반으로 한 객체를 다루는 필요한 공통 속성만 뽑아낸 ViewSet"""
+
     permission_classes = [IsOwnerOrReadOnly]
     pagination_class = PostPageNumberPagination
 
@@ -49,6 +52,10 @@ class PostViewSet(ModelViewSet):
         instance.save()
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
+
+    def perform_update(self, serializer):
+        client_ip = get_client_ip(self.request)
+        serializer.save(ip=client_ip)
 
     def perform_destroy(self, instance):
         instance.is_show = False
@@ -127,6 +134,26 @@ class PostViewSet(ModelViewSet):
 
 
 @extend_schema(
+    tags=["topic"],
+)
+class TopicViewSet(AbstractPostViewSet):
+    """Post 모델로 '토픽' 게시물을 만드는데 사용되는 ViewSet"""
+
+    queryset = Post.objects.filter(is_show=True, category__app="Topic")
+    serializer_class = PostSerializer
+
+
+@extend_schema(
+    tags=["pitapat"],
+)
+class PitAPatViewSet(AbstractPostViewSet):
+    """Post 모델로 '두근두근' 게시물을 만드는데 사용되는 ViewSet"""
+
+    queryset = Post.objects.filter(is_show=True, category__app="PitAPat")
+    serializer_class = PitAPatSerializer
+
+
+@extend_schema(
     tags=["category"],
 )
 class CategoryViewSet(ReadOnlyModelViewSet):
@@ -139,7 +166,7 @@ class CategoryViewSet(ReadOnlyModelViewSet):
     def recent_posts(self, request, slug=None):
         category = self.get_object()
         queryset = category.post_set.filter(is_show=True).order_by("-created")[:5]
-        serializer = PostSerializer(queryset, many=True)
+        serializer = PostListSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request, *args, **kwargs):
@@ -148,10 +175,10 @@ class CategoryViewSet(ReadOnlyModelViewSet):
 
         page = self.paginate_queryset(queryset)
         if page is not None:
-            serializer = PostSerializer(page, many=True)
+            serializer = PostListSerializer(page, many=True)
             return self.get_paginated_response(serializer.data)
 
-        serializer = PostSerializer(queryset, many=True)
+        serializer = PostListSerializer(queryset, many=True)
         return Response(serializer.data)
 
 

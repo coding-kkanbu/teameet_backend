@@ -1,4 +1,5 @@
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
+from taggit.serializers import TaggitSerializer, TagListSerializerField
 
 from kkanbu.board.models import Category, Comment, Post, SogaetingOption
 from kkanbu.operation.serializers import CommentLikeSerializer, PostLikeSerializer
@@ -52,8 +53,9 @@ class PostListSerializer(ModelSerializer):
         return obj.comment_set.filter(is_show=True).count()
 
 
-class PostSerializer(ModelSerializer):
+class PostSerializer(TaggitSerializer, ModelSerializer):
     category_set = SerializerMethodField()
+    tags = TagListSerializerField()
     writer = UserSerializer(read_only=True)
     postlike_n = SerializerMethodField()
     postlike_set = PostLikeSerializer(many=True, read_only=True)
@@ -68,7 +70,7 @@ class PostSerializer(ModelSerializer):
             "title",
             "content",
             "created",
-            "tag",
+            "tags",
             "writer",
             "hit",
             "postlike_n",
@@ -89,8 +91,9 @@ class PostSerializer(ModelSerializer):
         return obj.comment_set.filter(is_show=True).count()
 
 
-class PitAPatSerializer(ModelSerializer):
+class PitAPatSerializer(TaggitSerializer, ModelSerializer):
     category_set = SerializerMethodField()
+    tags = TagListSerializerField()
     sogaetingoption = SogaetingOptionSerializer()
     writer = UserSerializer(read_only=True)
     postlike_n = SerializerMethodField()
@@ -107,7 +110,7 @@ class PitAPatSerializer(ModelSerializer):
             "title",
             "content",
             "created",
-            "tag",
+            "tags",
             "writer",
             "hit",
             "postlike_n",
@@ -129,25 +132,25 @@ class PitAPatSerializer(ModelSerializer):
 
     def create(self, validated_data):
         sogaeting_data = validated_data.pop("sogaetingoption")
-        tags = validated_data.pop("tag")
+        to_be_tagged, validated_data = self._pop_tags(validated_data)
         post = Post.objects.create(**validated_data)
-        post.tag.set(tags)
-        sogaeting_data["post"] = post
+        tagged_post = self._save_tags(post, to_be_tagged)
+        sogaeting_data["post"] = tagged_post
         SogaetingOption.objects.create(**sogaeting_data)
-        return post
+        return tagged_post
 
     def update(self, instance, validated_data):
         sogaeting_data = validated_data.pop("sogaetingoption")
-        tags = validated_data.pop("tag")
+        to_be_tagged, validated_data = self._pop_tags(validated_data)
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         instance.save()
-        instance.tag.set(tags)
-        sogaeting_obj = SogaetingOption.objects.get(post=instance)
+        tagged_instance = self._save_tags(instance, to_be_tagged)
+        sogaeting_obj = SogaetingOption.objects.get(post=tagged_instance)
         for attr, value in sogaeting_data.items():
             setattr(sogaeting_obj, attr, value)
         sogaeting_obj.save()
-        return instance
+        return tagged_instance
 
 
 class CategorySerializer(ModelSerializer):

@@ -78,7 +78,7 @@ class PostSerializer(ModelSerializer):
         read_only_fields = ["hit"]
 
     def get_category_set(self, obj):
-        cat = Category.objects.get(post__id=obj.id)
+        cat = Category.objects.get(post=obj)
         serializer = CategorySerializer(cat)
         return serializer.data
 
@@ -117,7 +117,7 @@ class PitAPatSerializer(ModelSerializer):
         read_only_fields = ["hit"]
 
     def get_category_set(self, obj):
-        cat = Category.objects.get(post__id=obj.id)
+        cat = Category.objects.get(post=obj)
         serializer = CategorySerializer(cat)
         return serializer.data
 

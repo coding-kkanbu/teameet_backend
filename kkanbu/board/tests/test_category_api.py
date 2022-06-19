@@ -6,8 +6,8 @@ from rest_framework.test import APIClient, APITestCase
 from kkanbu.board.models import Category, Post
 from kkanbu.board.utils import url_with_query
 
-CATEGORY_LIST_URL = reverse("api:category-list")
-CATEGORY_DETAIL_URL = reverse("api:category-detail", args=["test1"])
+CATEGORY_LIST_URL = reverse("api:Category-list")
+CATEGORY_DETAIL_URL = reverse("api:Category-detail", args=["test1"])
 
 
 class CategoryViewSetAPITest(APITestCase):
@@ -70,7 +70,7 @@ class CategoryViewSetAPITest(APITestCase):
 
     def test_recent_posts_GET_five_object(self):
         """Test custom recent posts method only got 5 objects"""
-        url = reverse("api:category-recent-posts", args=["test1"])
+        url = reverse("api:Category-recent-posts", args=["test1"])
         res = self.client.get(url)
         self.assertEqual(len(res.data), 5)
 
@@ -79,7 +79,7 @@ class CategoryViewSetAPITest(APITestCase):
         post = Post.objects.order_by("-created")[0]
         post.is_show = False
         post.save()
-        url = reverse("api:category-recent-posts", args=["test1"])
+        url = reverse("api:Category-recent-posts", args=["test1"])
         res_1 = self.client.get(url)
         self.assertTrue(post.title not in res_1.data)
         self.assertTrue(post.content not in res_1.data)

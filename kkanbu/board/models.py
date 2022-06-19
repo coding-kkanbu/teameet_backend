@@ -64,13 +64,9 @@ class SogaetingOption(models.Model):
     post = models.OneToOneField(
         Post, on_delete=models.CASCADE, primary_key=True, related_name="sogaetingoption"
     )
-    region = models.CharField(
-        max_length=30, choices=RegionType.choices, default=RegionType.SEOUL
-    )
-    gender = models.PositiveIntegerField(
-        choices=GenderType.choices, default=GenderType.MALE
-    )
-    age = models.PositiveIntegerField(default=24)
+    region = models.CharField(max_length=30, choices=RegionType.choices)
+    gender = models.PositiveIntegerField(choices=GenderType.choices)
+    age = models.PositiveIntegerField()
     connected = models.BooleanField(default=False)
 
     def __str__(self):

@@ -2,7 +2,12 @@ from django.conf import settings
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter, SimpleRouter
 
-from kkanbu.board.views import CategoryViewSet, CommentViewSet, PostViewSet
+from kkanbu.board.views import (
+    CategoryViewSet,
+    CommentViewSet,
+    PitAPatViewSet,
+    TopicViewSet,
+)
 from kkanbu.notification.views import NotificationViewSet
 from kkanbu.operation.views import (
     CommentBlameViewSet,
@@ -18,8 +23,9 @@ else:
     router = SimpleRouter()
 
 router.register("users", UserViewSet)
-router.register("category", CategoryViewSet)
-router.register("post", PostViewSet, basename="Post")
+router.register("category", CategoryViewSet, basename="Category")
+router.register("topic", TopicViewSet, basename="Topic")
+router.register("pitapat", PitAPatViewSet, basename="PitAPat")
 router.register("comment", CommentViewSet, basename="Comment")
 router.register("postlike", PostLikeViewSet, basename="PostLike")
 router.register("commentlike", CommentLikeViewSet, basename="CommentLike")

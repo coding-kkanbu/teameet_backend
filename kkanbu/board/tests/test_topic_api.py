@@ -8,11 +8,11 @@ from kkanbu.board.models import Category, Post, Tag
 from kkanbu.board.serializers import PostSerializer
 from kkanbu.board.utils import get_client_ip
 
-POSTS_URL = reverse("api:Post-list")
+POSTS_URL = reverse("api:Topic-list")
 
 
 def detail_url(post_id):
-    return reverse("api:Post-detail", args=[post_id])
+    return reverse("api:Topic-detail", args=[post_id])
 
 
 def sample_tag(name):

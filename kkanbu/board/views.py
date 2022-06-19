@@ -152,6 +152,23 @@ class PitAPatViewSet(AbstractPostViewSet):
     queryset = Post.objects.filter(is_show=True, category__app="PitAPat")
     serializer_class = PitAPatSerializer
 
+    # TODO connected 선택할 때 다시 되돌릴 수 없다 팝업창 추가
+    @action(detail=True, methods=["PATCH"])
+    def connected(self, request, pk=None):
+        post = self.get_object()
+        setattr(post.sogaetingoption, "connected", True)
+        post.sogaetingoption.save()
+        return Response(status=status.HTTP_200_OK)
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if instance.sogaetingoption.connected:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        instance.hit += 1
+        instance.save()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
 
 @extend_schema(
     tags=["category"],

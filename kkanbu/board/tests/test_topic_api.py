@@ -4,19 +4,15 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient, APIRequestFactory
 
-from kkanbu.board.models import Category, Post, Tag
+from kkanbu.board.models import Category, Post
 from kkanbu.board.serializers import PostSerializer
 from kkanbu.board.utils import get_client_ip
 
-POSTS_URL = reverse("api:Topic-list")
+Topic_URL = reverse("api:Topic-list")
 
 
 def detail_url(post_id):
     return reverse("api:Topic-detail", args=[post_id])
-
-
-def sample_tag(name):
-    return Tag.objects.create(name=name)
 
 
 def sample_post(writer, category, **params):
@@ -58,7 +54,7 @@ class PostAPIHTTPMethodsTests(TestCase):
             writer=self.user, category=self.category, title="Sample Post 3"
         )
 
-        res1 = self.client.get(POSTS_URL, {"ordering": "recent"})
+        res1 = self.client.get(Topic_URL, {"ordering": "recent"})
         serializer1 = PostSerializer(post1)
         serializer3 = PostSerializer(post3)
         self.assertEqual(res1.data["results"][0], serializer3.data)
@@ -69,7 +65,7 @@ class PostAPIHTTPMethodsTests(TestCase):
         post1.hit = 10
         post1.save()
 
-        res2 = self.client.get(POSTS_URL, {"ordering": "likes"})
+        res2 = self.client.get(Topic_URL, {"ordering": "likes"})
         serializer2 = PostSerializer(post2)
         serializer1 = PostSerializer(post1)
         self.assertEqual(res2.data["results"][0], serializer2.data)
@@ -80,9 +76,10 @@ class PostAPIHTTPMethodsTests(TestCase):
             "title": "My first Posting",
             "category": self.category.id,
             "content": "This is the first time for my posting.",
+            "tags": ["tag1", "tag2"],
         }
-        request = self.factory.post(POSTS_URL, payload)
-        res = self.client.post(POSTS_URL, payload)
+        request = self.factory.post(Topic_URL, payload)
+        res = self.client.post(Topic_URL, payload, format="json")
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
 
         post = Post.objects.get(id=res.data["id"])
@@ -146,7 +143,7 @@ class PostAPIPermissionTests(TestCase):
         self.client_owner.force_authenticate(self.owner)
 
     def test_get_posts_success(self):
-        res = self.client_user.get(POSTS_URL)
+        res = self.client_user.get(Topic_URL)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
 
     def test_get_detail_post_success(self):
@@ -180,16 +177,14 @@ class PostAPIPermissionTests(TestCase):
 
     def test_patch_detail_post_success_by_owner(self):
         post = sample_post(writer=self.owner, category=self.category)
-        tag = sample_tag(name="Small talk")
-        post.tag.add(tag)
-        new_tag = sample_tag(name="Love affair")
-        payload = {"title": "Updated Post Title", "tag": [new_tag.id]}
+        post.tags.add("small talk")
+        payload = {"title": "Updated Post Title", "tags": ["Love affair"]}
         url = detail_url(post.id)
-        res_pat = self.client_owner.patch(url, payload)
+        res_pat = self.client_owner.patch(url, payload, format="json")
         self.assertEqual(res_pat.status_code, status.HTTP_200_OK)
 
         post.refresh_from_db()
-        tag_set = post.tag.all()
+        tag_set = post.tags.all()
         self.assertEqual(post.title, payload["title"])
-        self.assertNotIn(tag, tag_set)
-        self.assertIn(new_tag, tag_set)
+        self.assertEqual(tag_set.filter(name="small talk").count(), 0)
+        self.assertEqual(tag_set.filter(name="Love affair").count(), 1)

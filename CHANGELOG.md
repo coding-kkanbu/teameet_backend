@@ -30,18 +30,26 @@
   - 사용자가 소셜 로그인할 수 있도록 구글, 카카오 로그인 rest api로 구현
 - [drf-spectacular](https://drf-spectacular.readthedocs.io/en/latest/index.html)
   - OpenAPI 3.0 문서 생산을 위한 패키지 추가
+- django-taggit
+  - Tag 기능을 위한 app 추가
+  - TaggableManager / TaggitSerializer로 tag 생성 및 삭제 가능
 
 ### Board
-- models : Post, Category, Tag, Comment, SogaetingOption
+- models : Post, Category, Comment, SogaetingOption
 - serializer:
+  - SogaetingOptionSerializer
+  - UserSerializer
   - PostListSerializer
+  - PostSerializer
+  - PitAPatSerializer
   - CategorySerializer
   - CommentSerializer
-  - PostDetailSerializer
 - views
-  - PostViewset
-  - CategoryViewset
-  - CommentViewset
+  - AbstractPostViewSet
+  - TopicViewSet
+  - PitAPatViewSet
+  - CategoryViewSet
+  - CommentViewSet
 - permissions
   - IsOwnerOrReadOnly
 - pagination

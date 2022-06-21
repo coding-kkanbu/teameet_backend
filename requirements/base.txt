@@ -28,3 +28,5 @@ dj-rest-auth==2.2.4 # https://github.com/iMerica/dj-rest-auth
 drf-spectacular==0.22.1  # https://github.com/tfranzel/drf-spectacular
 # Django-REST-framework-simpleJWT
 djangorestframework-simplejwt==5.2.0 # https://github.com/jazzband/djangorestframework-simplejwt
+# Django Taggit
+django-taggit==3.0.0 # https://github.com/jazzband/django-taggit

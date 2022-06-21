@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django_extensions.db.models import TimeStampedModel
+from taggit.managers import TaggableManager
 
 User = settings.AUTH_USER_MODEL
 
@@ -24,7 +25,7 @@ class Category(models.Model):
 class Post(TimeStampedModel):
     title = models.CharField(max_length=128)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    tag = models.ManyToManyField("Tag", blank=True)
+    tags = TaggableManager()
     writer = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()
     is_show = models.BooleanField(default=True)
@@ -71,13 +72,6 @@ class SogaetingOption(models.Model):
 
     def __str__(self):
         return f"{self.post}  ||  {self.region} - {self.gender} - {self.age}"
-
-
-class Tag(models.Model):
-    name = models.CharField(max_length=30, unique=True)
-
-    def __str__(self):
-        return self.name
 
 
 class Comment(TimeStampedModel):

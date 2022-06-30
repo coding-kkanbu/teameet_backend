@@ -327,8 +327,8 @@ REST_FRAMEWORK = {
 }
 # djangorestframework-simplejwt - https://django-rest-framework-simplejwt.readthedocs.io/en/latest/
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(weeks=4),
     "UPDATE_LAST_LOGIN": True,
 }
 # dj-rest-auth - https://dj-rest-auth.readthedocs.io/en/latest/configuration.html

@@ -68,7 +68,7 @@ CELERY_TASK_EAGER_PROPAGATES = True
 # ------------------------------------------------------------------------------
 
 # TODO Production 단계에서 CALLBACK URI 수정
-LOCAL_BASE_URL = "http://127.0.0.1:8000/"
+BASE_URL = "http://127.0.0.1:8000/"
 
-GOOGLE_CALLBACK_URI = LOCAL_BASE_URL + "accounts/google/login/callback/"
-KAKAO_CALLBACK_URI = LOCAL_BASE_URL + "accounts/kakao/login/callback/"
+GOOGLE_CALLBACK_URI = BASE_URL + "accounts/google/login/callback/"
+KAKAO_CALLBACK_URI = BASE_URL + "accounts/kakao/login/callback/"

@@ -1,6 +1,7 @@
 """
 Base settings to build other settings files upon.
 """
+from datetime import timedelta
 from pathlib import Path
 
 import environ
@@ -75,7 +76,6 @@ THIRD_PARTY_APPS = [
     "allauth.socialaccount.providers.google",
     "allauth.socialaccount.providers.kakao",
     "rest_framework",
-    "rest_framework.authtoken",
     "corsheaders",
     "dj_rest_auth",
     "dj_rest_auth.registration",
@@ -294,7 +294,7 @@ ACCOUNT_AUTHENTICATION_METHOD = "username"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_EMAIL_REQUIRED = True
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
-ACCOUNT_EMAIL_VERIFICATION = "optional"
+ACCOUNT_EMAIL_VERIFICATION = "none"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_ADAPTER = "kkanbu.users.adapters.AccountAdapter"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
@@ -302,6 +302,7 @@ SOCIALACCOUNT_ADAPTER = "kkanbu.users.adapters.SocialAccountAdapter"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = "email"
+SOCIALACCOUNT_STORE_TOKENS = True
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
         "SCOPE": [
@@ -309,24 +310,39 @@ SOCIALACCOUNT_PROVIDERS = {
             "email",
             "openid",
         ],
-    },
+        "AUTH_PARAMS": {
+            "access_type": "offline",
+        },
+    }
 }
 # django-rest-framework
 # -------------------------------------------------------------------------------
 # django-rest-framework - https://www.django-rest-framework.org/api-guide/settings/
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework.authentication.SessionAuthentication",
-        "rest_framework.authentication.TokenAuthentication",
         "dj_rest_auth.jwt_auth.JWTCookieAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
-
+# djangorestframework-simplejwt - https://django-rest-framework-simplejwt.readthedocs.io/en/latest/
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(weeks=4),
+    "UPDATE_LAST_LOGIN": True,
+}
+# dj-rest-auth - https://dj-rest-auth.readthedocs.io/en/latest/configuration.html
+REST_AUTH_TOKEN_MODEL = None
 REST_USE_JWT = True
-JWT_AUTH_COOKIE = "kkanbu-auth"
+JWT_AUTH_COOKIE = "kkanbu-access-token"
 JWT_AUTH_REFRESH_COOKIE = "kkanbu-refresh-token"
+REST_AUTH_REGISTER_SERIALIZERS = {
+    "REGISTER_SERIALIZER": "kkanbu.accounts.serializers.CustomRegisterSerializer",
+}
+REST_AUTH_SERIALIZERS = {
+    "LOGIN_SERIALIZER": "kkanbu.accounts.serializers.CustomLoginSerializer",
+    "USER_DETAILS_SERIALIZER": "kkanbu.accounts.serializers.CustomUserDetailsSerializer",
+}
 
 # django-cors-headers - https://github.com/adamchainz/django-cors-headers#setup
 CORS_URLS_REGEX = r"^/api/.*$"
@@ -336,15 +352,6 @@ SPECTACULAR_SETTINGS = {
     "TITLE": "Teameet API",
     "DESCRIPTION": "Meet Teachers Here",
     "VERSION": "0.1.0",
-}
-
-# dj_rest_auth - https://dj-rest-auth.readthedocs.io/en/latest/configuration.html
-REST_AUTH_REGISTER_SERIALIZERS = {
-    "REGISTER_SERIALIZER": "kkanbu.accounts.serializers.CustomRegisterSerializer",
-}
-REST_AUTH_SERIALIZERS = {
-    "LOGIN_SERIALIZER": "kkanbu.accounts.serializers.CustomLoginSerializer",
-    "USER_DETAILS_SERIALIZER": "kkanbu.accounts.serializers.CustomUserDetailsSerializer",
 }
 
 # (local_app) operation

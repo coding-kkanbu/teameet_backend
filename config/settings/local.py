@@ -67,6 +67,7 @@ CELERY_TASK_EAGER_PROPAGATES = True
 # Your stuff...
 # ------------------------------------------------------------------------------
 
+# TODO Production 단계에서 CALLBACK URI 수정
 BASE_URL = "http://127.0.0.1:8000/"
 
 GOOGLE_CALLBACK_URI = BASE_URL + "accounts/google/login/callback/"

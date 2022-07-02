@@ -29,16 +29,20 @@ def get_redirect_url(adapter, provider_name, callback_url, scope):
     params = {
         "client_id": app.client_id,
         "redirect_uri": callback_url,
-        "scope": "+".join(scope),
         "response_type": "code",
     }
+    if scope: params.update({"scope": "+".join(scope)})
     return "%s?%s" % (adapter.authorize_url, urlencode(params).replace("%2B", "+"))
 
 
 @api_view(["GET"])
 @permission_classes([AllowAny])
 def get_google_redirect_url(request):
-    scope = settings.SOCIALACCOUNT_PROVIDERS["google"]["SCOPE"]
+    try:
+        scope = settings.SOCIALACCOUNT_PROVIDERS["google"]["SCOPE"]
+    except KeyError:
+        scope = None
+   
     url = get_redirect_url(
         GoogleOAuth2Adapter, "google", settings.GOOGLE_CALLBACK_URI, scope
     )
@@ -48,7 +52,10 @@ def get_google_redirect_url(request):
 @api_view(["GET"])
 @permission_classes([AllowAny])
 def get_kakao_redirect_url(request):
-    scope = settings.SOCIALACCOUNT_PROVIDERS["kakao"]["SCOPE"]
+    try:
+        scope = settings.SOCIALACCOUNT_PROVIDERS["kakao"]["SCOPE"]
+    except KeyError:
+        scope = None
     url = get_redirect_url(
         KakaoOAuth2Adapter, "kakao", settings.KAKAO_CALLBACK_URI, scope
     )

@@ -31,8 +31,9 @@ def get_redirect_url(adapter, provider_name, callback_url, scope):
         "redirect_uri": callback_url,
         "response_type": "code",
     }
-    if scope: params.update({"scope": "+".join(scope)})
-    return "%s?%s" % (adapter.authorize_url, urlencode(params).replace("%2B", "+"))
+    if scope:
+        params.update({"scope": "+".join(scope)})
+    return "{}?{}".format(adapter.authorize_url, urlencode(params).replace("%2B", "+"))
 
 
 @api_view(["GET"])
@@ -42,7 +43,7 @@ def get_google_redirect_url(request):
         scope = settings.SOCIALACCOUNT_PROVIDERS["google"]["SCOPE"]
     except KeyError:
         scope = None
-   
+
     url = get_redirect_url(
         GoogleOAuth2Adapter, "google", settings.GOOGLE_CALLBACK_URI, scope
     )

@@ -345,7 +345,8 @@ REST_AUTH_SERIALIZERS = {
 }
 
 # django-cors-headers - https://github.com/adamchainz/django-cors-headers#setup
-CORS_URLS_REGEX = r"^/api/.*$"
+# CORS_URLS_REGEX = r"^/api/.*$"
+CORS_ALLOW_ALL_ORIGINS = True
 
 # drf spectaruclar - https://drf-spectacular.readthedocs.io/en/latest/readme.html#installation
 SPECTACULAR_SETTINGS = {

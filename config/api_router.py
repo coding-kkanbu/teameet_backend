@@ -37,4 +37,5 @@ app_name = "api"
 
 urlpatterns = [
     path("v1/", include(router.urls)),
+    path("v1/accounts/", include("kkanbu.accounts.urls")),
 ]

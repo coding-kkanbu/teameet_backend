@@ -14,8 +14,8 @@ from .views import (
     GoogleLogin,
     KakaoLogin,
     get_callback,
-    google_oauth2_login,
-    kakao_oauth2_login,
+    get_google_redirect_url,
+    get_kakao_redirect_url,
 )
 
 urlpatterns = [
@@ -33,11 +33,11 @@ urlpatterns = [
         name="password_reset_confirm",
     ),
     # TODO Implemt SocialAccounts Connection 소셜계정 연결 기능 추가
-    path("google/login/", google_oauth2_login, name="google_login"),
+    path("google/login/", get_google_redirect_url, name="google_login"),
     # for backend test > should be implemented on frontend
     path("google/login/callback/", get_callback, name="google_callback"),
     path("google/login/finish/", GoogleLogin.as_view(), name="google_login_todjango"),
-    path("kakao/login/", kakao_oauth2_login, name="kakao_login"),
+    path("kakao/login/", get_kakao_redirect_url, name="kakao_login"),
     # for backend test > should be implemented on frontend
     path("kakao/login/callback/", get_callback, name="kakao_callback"),
     path("kakao/login/finish/", KakaoLogin.as_view(), name="kakao_login_todjango"),

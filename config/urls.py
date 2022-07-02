@@ -33,6 +33,7 @@ urlpatterns += [
     ),
     # API base url
     path("api/", include("config.api_router")),
+    path("api/v1/accounts/", include("kkanbu.accounts.urls")),
 ]
 
 if settings.DEBUG:

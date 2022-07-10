@@ -25,9 +25,16 @@ class TestUserViewSet:
         view.request = request
 
         response = view.me(request)
-
-        assert response.data == {
+        res_data = response.data
+        res_data.pop("date_joined")
+        assert res_data == {
+            "id": user.pk,
             "username": user.username,
-            "name": user.name,
+            "email": user.email,
+            "random_name": user.random_name,
+            "profile_image": user.profile_image,
+            "neis_email": user.neis_email,
+            "is_verify": user.is_verify,
+            "post_n": 0,
             "url": f"http://testserver/api/v1/users/{user.username}/",
         }

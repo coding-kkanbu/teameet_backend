@@ -9,14 +9,14 @@ class NotificationViewSetTestData(APITestCase):
     def setUpTestData(cls):
         cls.user1 = get_user_model().objects.create(
             email="user1@teameet.com",
-            nickname="user1",
             username="user1",
+            random_name="random name 1",
             password="user1pass00",
         )
         cls.user2 = get_user_model().objects.create(
             email="user2@teameet.com",
-            nickname="user2",
             username="user2",
+            random_name="random name 2",
             password="user2pass00",
         )
         cat = Category.objects.create(name="테스트1")

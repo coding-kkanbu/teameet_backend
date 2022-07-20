@@ -1,8 +1,11 @@
 from typing import Any, Sequence
 
+import factory
 from django.contrib.auth import get_user_model
 from factory import Faker, post_generation
 from factory.django import DjangoModelFactory
+
+from kkanbu.board.models import Category, Post
 
 
 class UserFactory(DjangoModelFactory):
@@ -29,3 +32,19 @@ class UserFactory(DjangoModelFactory):
     class Meta:
         model = get_user_model()
         django_get_or_create = ["username"]
+
+
+class CategoryFactory(DjangoModelFactory):
+    class Meta:
+        model = Category
+
+    name = Faker("name")
+    slug = Faker("slug")
+
+
+class PostFactory(DjangoModelFactory):
+    class Meta:
+        model = Post
+
+    category = factory.SubFactory(CategoryFactory)
+    writer = factory.SubFactory(UserFactory)

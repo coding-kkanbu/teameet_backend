@@ -1,0 +1,2445 @@
+openapi: 3.0.3
+info:
+  title: Teameet API
+  version: 0.1.0
+  description: Meet Teachers Here
+paths:
+  /api/schema/:
+    get:
+      operationId: schema_retrieve
+      description: |-
+        OpenApi3 schema for this API. Format can be selected via content negotiation.
+
+        - YAML: application/vnd.oai.openapi
+        - JSON: application/vnd.oai.openapi+json
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - yaml
+      - in: query
+        name: lang
+        schema:
+          type: string
+          enum:
+          - af
+          - ar
+          - ar-dz
+          - ast
+          - az
+          - be
+          - bg
+          - bn
+          - br
+          - bs
+          - ca
+          - cs
+          - cy
+          - da
+          - de
+          - dsb
+          - el
+          - en
+          - en-au
+          - en-gb
+          - eo
+          - es
+          - es-ar
+          - es-co
+          - es-mx
+          - es-ni
+          - es-ve
+          - et
+          - eu
+          - fa
+          - fi
+          - fr
+          - fy
+          - ga
+          - gd
+          - gl
+          - he
+          - hi
+          - hr
+          - hsb
+          - hu
+          - hy
+          - ia
+          - id
+          - ig
+          - io
+          - is
+          - it
+          - ja
+          - ka
+          - kab
+          - kk
+          - km
+          - kn
+          - ko
+          - ky
+          - lb
+          - lt
+          - lv
+          - mk
+          - ml
+          - mn
+          - mr
+          - my
+          - nb
+          - ne
+          - nl
+          - nn
+          - os
+          - pa
+          - pl
+          - pt
+          - pt-br
+          - ro
+          - ru
+          - sk
+          - sl
+          - sq
+          - sr
+          - sr-latn
+          - sv
+          - sw
+          - ta
+          - te
+          - tg
+          - th
+          - tk
+          - tr
+          - tt
+          - udm
+          - uk
+          - ur
+          - uz
+          - vi
+          - zh-hans
+          - zh-hant
+      tags:
+      - schema
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/vnd.oai.openapi:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/yaml:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/vnd.oai.openapi+json:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/accounts/google/login/:
+    get:
+      operationId: v1_accounts_google_login_retrieve
+      tags:
+      - accounts
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/v1/accounts/google/login/callback/:
+    get:
+      operationId: v1_accounts_google_login_callback_retrieve
+      tags:
+      - accounts
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/v1/accounts/google/login/finish/:
+    post:
+      operationId: v1_accounts_google_login_finish_create
+      description: |-
+        class used for social authentications
+        example usage for facebook with access_token
+        -------------
+        from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
+
+        class FacebookLogin(SocialLoginView):
+            adapter_class = FacebookOAuth2Adapter
+        -------------
+
+        example usage for facebook with code
+
+        -------------
+        from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
+        from allauth.socialaccount.providers.oauth2.client import OAuth2Client
+
+        class FacebookLogin(SocialLoginView):
+            adapter_class = FacebookOAuth2Adapter
+            client_class = OAuth2Client
+            callback_url = 'localhost:8000'
+        -------------
+      tags:
+      - accounts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SocialLogin'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SocialLogin'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SocialLogin'
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SocialLogin'
+          description: ''
+  /api/v1/accounts/kakao/login/:
+    get:
+      operationId: v1_accounts_kakao_login_retrieve
+      tags:
+      - accounts
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/v1/accounts/kakao/login/callback/:
+    get:
+      operationId: v1_accounts_kakao_login_callback_retrieve
+      tags:
+      - accounts
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/v1/accounts/kakao/login/finish/:
+    post:
+      operationId: v1_accounts_kakao_login_finish_create
+      description: |-
+        class used for social authentications
+        example usage for facebook with access_token
+        -------------
+        from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
+
+        class FacebookLogin(SocialLoginView):
+            adapter_class = FacebookOAuth2Adapter
+        -------------
+
+        example usage for facebook with code
+
+        -------------
+        from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
+        from allauth.socialaccount.providers.oauth2.client import OAuth2Client
+
+        class FacebookLogin(SocialLoginView):
+            adapter_class = FacebookOAuth2Adapter
+            client_class = OAuth2Client
+            callback_url = 'localhost:8000'
+        -------------
+      tags:
+      - accounts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SocialLogin'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SocialLogin'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SocialLogin'
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SocialLogin'
+          description: ''
+  /api/v1/accounts/login/:
+    post:
+      operationId: v1_accounts_login_create
+      description: |-
+        Check the credentials and return the REST Token
+        if the credentials are valid and authenticated.
+        Calls Django Auth login method to register User ID
+        in Django session framework
+
+        Accept the following POST parameters: username, password
+        Return the REST Framework Token Object's key.
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomLogin'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CustomLogin'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CustomLogin'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JWT'
+          description: ''
+  /api/v1/accounts/logout/:
+    post:
+      operationId: v1_accounts_logout_create
+      description: |-
+        Calls Django logout method and delete the Token object
+        assigned to the current User object.
+
+        Accepts/Returns nothing.
+      tags:
+      - v1
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestAuthDetail'
+          description: ''
+  /api/v1/accounts/password-change/:
+    post:
+      operationId: v1_accounts_password_change_create
+      description: |-
+        Calls Django Auth SetPasswordForm save method.
+
+        Accepts the following POST parameters: new_password1, new_password2
+        Returns the success/fail message.
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordChange'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PasswordChange'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PasswordChange'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestAuthDetail'
+          description: ''
+  /api/v1/accounts/password-reset/:
+    post:
+      operationId: v1_accounts_password_reset_create
+      description: |-
+        Calls Django Auth PasswordResetForm save method.
+
+        Accepts the following POST parameters: email
+        Returns the success/fail message.
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordReset'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PasswordReset'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PasswordReset'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestAuthDetail'
+          description: ''
+  /api/v1/accounts/password-reset/confirm/{uidb64}/{token}/:
+    post:
+      operationId: v1_accounts_password_reset_confirm_create
+      description: |-
+        Password reset e-mail link is confirmed, therefore
+        this resets the user's password.
+
+        Accepts the following POST parameters: token, uid,
+            new_password1, new_password2
+        Returns the success/fail message.
+      parameters:
+      - in: path
+        name: token
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: uidb64
+        schema:
+          type: string
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirm'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirm'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirm'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestAuthDetail'
+          description: ''
+  /api/v1/accounts/register/:
+    post:
+      operationId: v1_accounts_register_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Register'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Register'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Register'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JWT'
+          description: ''
+  /api/v1/accounts/token/refresh/:
+    post:
+      operationId: v1_accounts_token_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /api/v1/accounts/token/verify/:
+    post:
+      operationId: v1_accounts_token_verify_create
+      description: |-
+        Takes a token and indicates if it is valid.  This view provides no
+        information about a token's fitness for a particular use.
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenVerify'
+          description: ''
+  /api/v1/category/:
+    get:
+      operationId: v1_category_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - category
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCategoryList'
+          description: ''
+  /api/v1/category/{slug}/:
+    get:
+      operationId: v1_category_retrieve
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - category
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+  /api/v1/category/{slug}/recent_posts/:
+    get:
+      operationId: v1_category_recent_posts_retrieve
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - category
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+  /api/v1/comment/:
+    get:
+      operationId: v1_comment_list
+      tags:
+      - comment
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+          description: ''
+    post:
+      operationId: v1_comment_create
+      tags:
+      - comment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Comment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Comment'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+          description: ''
+  /api/v1/comment/{id}/:
+    get:
+      operationId: v1_comment_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this comment.
+        required: true
+      tags:
+      - comment
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+          description: ''
+    put:
+      operationId: v1_comment_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this comment.
+        required: true
+      tags:
+      - comment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Comment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Comment'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+          description: ''
+    patch:
+      operationId: v1_comment_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this comment.
+        required: true
+      tags:
+      - comment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedComment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedComment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedComment'
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+          description: ''
+    delete:
+      operationId: v1_comment_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this comment.
+        required: true
+      tags:
+      - comment
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/comment/{id}/toggle_commentblame/:
+    post:
+      operationId: v1_comment_toggle_commentblame_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this comment.
+        required: true
+      tags:
+      - comment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Comment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Comment'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+          description: ''
+  /api/v1/comment/{id}/toggle_commentlike/:
+    post:
+      operationId: v1_comment_toggle_commentlike_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this comment.
+        required: true
+      tags:
+      - comment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Comment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Comment'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+          description: ''
+  /api/v1/commentblame/:
+    get:
+      operationId: v1_commentblame_list
+      tags:
+      - v1
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CommentBlame'
+          description: ''
+    post:
+      operationId: v1_commentblame_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommentBlame'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CommentBlame'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CommentBlame'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommentBlame'
+          description: ''
+  /api/v1/commentlike/:
+    get:
+      operationId: v1_commentlike_list
+      tags:
+      - v1
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CommentLike'
+          description: ''
+    post:
+      operationId: v1_commentlike_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommentLike'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CommentLike'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CommentLike'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommentLike'
+          description: ''
+  /api/v1/notification/:
+    get:
+      operationId: v1_notification_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - v1
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedNotificationList'
+          description: ''
+  /api/v1/notification/{id}/:
+    get:
+      operationId: v1_notification_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+          description: ''
+  /api/v1/notification/recent_noti/:
+    get:
+      operationId: v1_notification_recent_noti_retrieve
+      tags:
+      - v1
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+          description: ''
+  /api/v1/pitapat/:
+    get:
+      operationId: v1_pitapat_list
+      description: Post 모델로 '두근두근' 게시물을 만드는데 사용되는 ViewSet
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - pitapat
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPitAPatList'
+          description: ''
+    post:
+      operationId: v1_pitapat_create
+      description: Post 모델로 '두근두근' 게시물을 만드는데 사용되는 ViewSet
+      tags:
+      - pitapat
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PitAPat'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PitAPat'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PitAPat'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PitAPat'
+          description: ''
+  /api/v1/pitapat/{id}/:
+    get:
+      operationId: v1_pitapat_retrieve
+      description: Post 모델로 '두근두근' 게시물을 만드는데 사용되는 ViewSet
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this post.
+        required: true
+      tags:
+      - pitapat
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PitAPat'
+          description: ''
+    put:
+      operationId: v1_pitapat_update
+      description: Post 모델로 '두근두근' 게시물을 만드는데 사용되는 ViewSet
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this post.
+        required: true
+      tags:
+      - pitapat
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PitAPat'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PitAPat'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PitAPat'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PitAPat'
+          description: ''
+    patch:
+      operationId: v1_pitapat_partial_update
+      description: Post 모델로 '두근두근' 게시물을 만드는데 사용되는 ViewSet
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this post.
+        required: true
+      tags:
+      - pitapat
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPitAPat'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPitAPat'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPitAPat'
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PitAPat'
+          description: ''
+    delete:
+      operationId: v1_pitapat_destroy
+      description: Post 모델로 '두근두근' 게시물을 만드는데 사용되는 ViewSet
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this post.
+        required: true
+      tags:
+      - pitapat
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/pitapat/{id}/connected/:
+    patch:
+      operationId: v1_pitapat_connected_partial_update
+      description: Post 모델로 '두근두근' 게시물을 만드는데 사용되는 ViewSet
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this post.
+        required: true
+      tags:
+      - pitapat
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPitAPat'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPitAPat'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPitAPat'
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PitAPat'
+          description: ''
+  /api/v1/pitapat/{id}/get_comments/:
+    get:
+      operationId: v1_pitapat_get_comments_retrieve
+      description: Post 모델로 '두근두근' 게시물을 만드는데 사용되는 ViewSet
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this post.
+        required: true
+      tags:
+      - pitapat
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PitAPat'
+          description: ''
+  /api/v1/pitapat/{id}/toggle_postblame/:
+    post:
+      operationId: v1_pitapat_toggle_postblame_create
+      description: Post 모델로 '두근두근' 게시물을 만드는데 사용되는 ViewSet
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this post.
+        required: true
+      tags:
+      - pitapat
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PitAPat'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PitAPat'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PitAPat'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PitAPat'
+          description: ''
+  /api/v1/pitapat/{id}/toggle_postlike/:
+    post:
+      operationId: v1_pitapat_toggle_postlike_create
+      description: Post 모델로 '두근두근' 게시물을 만드는데 사용되는 ViewSet
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this post.
+        required: true
+      tags:
+      - pitapat
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PitAPat'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PitAPat'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PitAPat'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PitAPat'
+          description: ''
+  /api/v1/postblame/:
+    get:
+      operationId: v1_postblame_list
+      tags:
+      - v1
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PostBlame'
+          description: ''
+    post:
+      operationId: v1_postblame_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostBlame'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PostBlame'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PostBlame'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostBlame'
+          description: ''
+  /api/v1/postlike/:
+    get:
+      operationId: v1_postlike_list
+      tags:
+      - v1
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PostLike'
+          description: ''
+    post:
+      operationId: v1_postlike_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostLike'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PostLike'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PostLike'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostLike'
+          description: ''
+  /api/v1/topic/:
+    get:
+      operationId: v1_topic_list
+      description: Post 모델로 '토픽' 게시물을 만드는데 사용되는 ViewSet
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - topic
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPostList'
+          description: ''
+    post:
+      operationId: v1_topic_create
+      description: Post 모델로 '토픽' 게시물을 만드는데 사용되는 ViewSet
+      tags:
+      - topic
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Post'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Post'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Post'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+          description: ''
+  /api/v1/topic/{id}/:
+    get:
+      operationId: v1_topic_retrieve
+      description: Post 모델로 '토픽' 게시물을 만드는데 사용되는 ViewSet
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this post.
+        required: true
+      tags:
+      - topic
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+          description: ''
+    put:
+      operationId: v1_topic_update
+      description: Post 모델로 '토픽' 게시물을 만드는데 사용되는 ViewSet
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this post.
+        required: true
+      tags:
+      - topic
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Post'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Post'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Post'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+          description: ''
+    patch:
+      operationId: v1_topic_partial_update
+      description: Post 모델로 '토픽' 게시물을 만드는데 사용되는 ViewSet
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this post.
+        required: true
+      tags:
+      - topic
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPost'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPost'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPost'
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+          description: ''
+    delete:
+      operationId: v1_topic_destroy
+      description: Post 모델로 '토픽' 게시물을 만드는데 사용되는 ViewSet
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this post.
+        required: true
+      tags:
+      - topic
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/topic/{id}/get_comments/:
+    get:
+      operationId: v1_topic_get_comments_retrieve
+      description: Post 모델로 '토픽' 게시물을 만드는데 사용되는 ViewSet
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this post.
+        required: true
+      tags:
+      - topic
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+          description: ''
+  /api/v1/topic/{id}/toggle_postblame/:
+    post:
+      operationId: v1_topic_toggle_postblame_create
+      description: Post 모델로 '토픽' 게시물을 만드는데 사용되는 ViewSet
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this post.
+        required: true
+      tags:
+      - topic
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Post'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Post'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Post'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+          description: ''
+  /api/v1/topic/{id}/toggle_postlike/:
+    post:
+      operationId: v1_topic_toggle_postlike_create
+      description: Post 모델로 '토픽' 게시물을 만드는데 사용되는 ViewSet
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this post.
+        required: true
+      tags:
+      - topic
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Post'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Post'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Post'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+          description: ''
+  /api/v1/users/:
+    get:
+      operationId: v1_users_list
+      tags:
+      - v1
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+          description: ''
+  /api/v1/users/{username}/:
+    get:
+      operationId: v1_users_retrieve
+      parameters:
+      - in: path
+        name: username
+        schema:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    put:
+      operationId: v1_users_update
+      parameters:
+      - in: path
+        name: username
+        schema:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    patch:
+      operationId: v1_users_partial_update
+      parameters:
+      - in: path
+        name: username
+        schema:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /api/v1/users/me/:
+    get:
+      operationId: v1_users_me_retrieve
+      tags:
+      - v1
+      security:
+      - jwtHeaderAuth: []
+        jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+components:
+  schemas:
+    AppEnum:
+      enum:
+      - Topic
+      - PitAPat
+      type: string
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        app:
+          $ref: '#/components/schemas/AppEnum'
+        name:
+          type: string
+          maxLength: 30
+        slug:
+          type: string
+          pattern: ^[-\w]+$
+          maxLength: 50
+      required:
+      - id
+      - name
+      - slug
+    Comment:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        post:
+          type: integer
+        parent_comment:
+          type: integer
+          nullable: true
+        comment:
+          type: string
+        secret:
+          type: boolean
+        is_show:
+          type: boolean
+        username:
+          type: string
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        commentlike_n:
+          type: string
+          readOnly: true
+        commentlike_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/CommentLike'
+          readOnly: true
+      required:
+      - comment
+      - commentlike_n
+      - commentlike_set
+      - created
+      - id
+      - post
+      - username
+    CommentBlame:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          readOnly: true
+        comment:
+          type: integer
+        user:
+          type: integer
+      required:
+      - comment
+      - created
+      - id
+      - modified
+      - user
+    CommentLike:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        comment:
+          type: integer
+        user:
+          type: integer
+      required:
+      - comment
+      - id
+      - user
+    CustomLogin:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+      required:
+      - password
+    CustomUserDetails:
+      type: object
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        email:
+          type: string
+          format: email
+          readOnly: true
+          title: Email address
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        random_name:
+          type: string
+          nullable: true
+          maxLength: 150
+        profile_image:
+          type: string
+          format: uri
+          nullable: true
+          title: Profile
+        is_verify:
+          type: boolean
+          readOnly: true
+          title: NEIS email verified
+      required:
+      - email
+      - is_verify
+      - pk
+      - username
+    GenderEnum:
+      enum:
+      - 1
+      - 2
+      type: integer
+    JWT:
+      type: object
+      description: Serializer for JWT authentication.
+      properties:
+        access_token:
+          type: string
+        refresh_token:
+          type: string
+        user:
+          $ref: '#/components/schemas/CustomUserDetails'
+      required:
+      - access_token
+      - refresh_token
+      - user
+    Notification:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        notification_type:
+          $ref: '#/components/schemas/NotificationTypeEnum'
+        sender_info:
+          type: string
+          readOnly: true
+        message:
+          type: string
+          maxLength: 255
+        is_read:
+          type: boolean
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        url:
+          type: string
+          format: uri
+          readOnly: true
+      required:
+      - created
+      - id
+      - message
+      - notification_type
+      - sender_info
+      - url
+    NotificationTypeEnum:
+      enum:
+      - comment
+      - postlike
+      - commentlike
+      - postblame
+      - commentblame
+      type: string
+    PaginatedCategoryList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Category'
+    PaginatedNotificationList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Notification'
+    PaginatedPitAPatList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PitAPat'
+    PaginatedPostList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Post'
+    PasswordChange:
+      type: object
+      properties:
+        new_password1:
+          type: string
+          maxLength: 128
+        new_password2:
+          type: string
+          maxLength: 128
+      required:
+      - new_password1
+      - new_password2
+    PasswordReset:
+      type: object
+      description: Serializer for requesting a password reset e-mail.
+      properties:
+        email:
+          type: string
+          format: email
+      required:
+      - email
+    PasswordResetConfirm:
+      type: object
+      description: Serializer for confirming a password reset attempt.
+      properties:
+        new_password1:
+          type: string
+          maxLength: 128
+        new_password2:
+          type: string
+          maxLength: 128
+        uid:
+          type: string
+        token:
+          type: string
+      required:
+      - new_password1
+      - new_password2
+      - token
+      - uid
+    PatchedComment:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        post:
+          type: integer
+        parent_comment:
+          type: integer
+          nullable: true
+        comment:
+          type: string
+        secret:
+          type: boolean
+        is_show:
+          type: boolean
+        username:
+          type: string
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        commentlike_n:
+          type: string
+          readOnly: true
+        commentlike_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/CommentLike'
+          readOnly: true
+    PatchedPitAPat:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        category_set:
+          type: string
+          readOnly: true
+        sogaetingoption:
+          $ref: '#/components/schemas/SogaetingOption'
+        category:
+          type: integer
+        title:
+          type: string
+          maxLength: 128
+        content:
+          type: string
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        tags:
+          type: string
+        writer:
+          allOf:
+          - $ref: '#/components/schemas/User'
+          readOnly: true
+        hit:
+          type: integer
+          readOnly: true
+        postlike_n:
+          type: string
+          readOnly: true
+        postlike_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostLike'
+          readOnly: true
+        comment_n:
+          type: string
+          readOnly: true
+    PatchedPost:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        category_set:
+          type: string
+          readOnly: true
+        category:
+          type: integer
+        title:
+          type: string
+          maxLength: 128
+        content:
+          type: string
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        tags:
+          type: string
+        writer:
+          allOf:
+          - $ref: '#/components/schemas/User'
+          readOnly: true
+        hit:
+          type: integer
+          readOnly: true
+        postlike_n:
+          type: string
+          readOnly: true
+        postlike_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostLike'
+          readOnly: true
+        comment_n:
+          type: string
+          readOnly: true
+    PatchedUser:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        url:
+          type: string
+          format: uri
+          readOnly: true
+    PitAPat:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        category_set:
+          type: string
+          readOnly: true
+        sogaetingoption:
+          $ref: '#/components/schemas/SogaetingOption'
+        category:
+          type: integer
+        title:
+          type: string
+          maxLength: 128
+        content:
+          type: string
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        tags:
+          type: string
+        writer:
+          allOf:
+          - $ref: '#/components/schemas/User'
+          readOnly: true
+        hit:
+          type: integer
+          readOnly: true
+        postlike_n:
+          type: string
+          readOnly: true
+        postlike_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostLike'
+          readOnly: true
+        comment_n:
+          type: string
+          readOnly: true
+      required:
+      - category
+      - category_set
+      - comment_n
+      - content
+      - created
+      - hit
+      - id
+      - postlike_n
+      - postlike_set
+      - sogaetingoption
+      - tags
+      - title
+      - writer
+    Post:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        category_set:
+          type: string
+          readOnly: true
+        category:
+          type: integer
+        title:
+          type: string
+          maxLength: 128
+        content:
+          type: string
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        tags:
+          type: string
+        writer:
+          allOf:
+          - $ref: '#/components/schemas/User'
+          readOnly: true
+        hit:
+          type: integer
+          readOnly: true
+        postlike_n:
+          type: string
+          readOnly: true
+        postlike_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostLike'
+          readOnly: true
+        comment_n:
+          type: string
+          readOnly: true
+      required:
+      - category
+      - category_set
+      - comment_n
+      - content
+      - created
+      - hit
+      - id
+      - postlike_n
+      - postlike_set
+      - tags
+      - title
+      - writer
+    PostBlame:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          readOnly: true
+        post:
+          type: integer
+        user:
+          type: integer
+      required:
+      - created
+      - id
+      - modified
+      - post
+      - user
+    PostLike:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        post:
+          type: integer
+        user:
+          type: integer
+      required:
+      - id
+      - post
+      - user
+    RegionEnum:
+      enum:
+      - Seoul
+      - Busan
+      - Daegu
+      - Incheon
+      - Gwangju
+      - Daejeon
+      - Ulsan
+      - Sejong
+      - Gyeonggi
+      - Gangwon
+      - Chungbuk
+      - Chungnam
+      - jeonbuk
+      - Jeonnam
+      - Gyeongbuk
+      - Gyeongnam
+      - Jeju
+      type: string
+    Register:
+      type: object
+      properties:
+        username:
+          type: string
+          maxLength: 150
+          minLength: 1
+        email:
+          type: string
+          format: email
+        password1:
+          type: string
+          writeOnly: true
+        password2:
+          type: string
+          writeOnly: true
+      required:
+      - email
+      - password1
+      - password2
+      - username
+    RestAuthDetail:
+      type: object
+      properties:
+        detail:
+          type: string
+          readOnly: true
+      required:
+      - detail
+    SocialLogin:
+      type: object
+      properties:
+        access_token:
+          type: string
+        code:
+          type: string
+        id_token:
+          type: string
+    SogaetingOption:
+      type: object
+      properties:
+        region:
+          $ref: '#/components/schemas/RegionEnum'
+        gender:
+          allOf:
+          - $ref: '#/components/schemas/GenderEnum'
+          minimum: 0
+          maximum: 2147483647
+        age:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        connected:
+          type: boolean
+          readOnly: true
+      required:
+      - age
+      - connected
+      - gender
+      - region
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          writeOnly: true
+      required:
+      - access
+      - refresh
+    TokenVerify:
+      type: object
+      properties:
+        token:
+          type: string
+          writeOnly: true
+      required:
+      - token
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        random_name:
+          type: string
+          nullable: true
+          maxLength: 150
+      required:
+      - id
+      - username
+  securitySchemes:
+    jwtCookieAuth:
+      type: apiKey
+      in: cookie
+      name: kkanbu-access-token
+    jwtHeaderAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

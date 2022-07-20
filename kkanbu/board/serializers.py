@@ -23,7 +23,7 @@ class UserSerializer(ModelSerializer):
         model = User
         fields = [
             "id",
-            "nickname",
+            "username",
             "random_name",
         ]
 
@@ -180,7 +180,7 @@ class CommentSerializer(ModelSerializer):
         ]
 
     def get_username(self, obj):
-        return str(obj.writer.nickname)
+        return str(obj.writer.username)
 
     def get_commentlike_n(self, obj):
         return obj.commentlike_set.count()

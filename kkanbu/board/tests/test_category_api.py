@@ -17,8 +17,8 @@ class CategoryViewSetAPITest(APITestCase):
     def setUpTestData(cls):
         user = get_user_model().objects.create(
             email="ridi@teameet.com",
-            nickname="ridi",
             username="ridi",
+            random_name="random name",
             password="ridipass12",
         )
         cat = Category.objects.create(app="Topic", name="테스트1", slug="test1")
@@ -34,8 +34,8 @@ class CategoryViewSetAPITest(APITestCase):
         self.client = APIClient()
         self.user = get_user_model().objects.create(
             email="test@test.com",
-            nickname="test12",
             username="test12",
+            random_name="random name",
             password="testpass12",
         )
         self.client.force_authenticate(user=self.user)

@@ -26,9 +26,9 @@ class TestUserAdmin:
             url,
             data={
                 "username": "test",
+                "email": "test@test.com",
                 "password1": "My_R@ndom-P@ssw0rd",
                 "password2": "My_R@ndom-P@ssw0rd",
-                "nickname": "Hello",
             },
         )
         assert response.status_code == 302

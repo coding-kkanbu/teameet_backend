@@ -35,6 +35,7 @@
   - TaggableManager / TaggitSerializer로 tag 생성 및 삭제 가능
 
 ### Board
+
 - models : Post, Category, Comment, SogaetingOption
 - serializer:
   - SogaetingOptionSerializer
@@ -75,3 +76,11 @@
   - notifiy
 - pagination
   - NotiPageNumberPagination
+
+### User
+
+- models: User
+- views
+  - UserViewset
+- pagination
+  - PageNumberPagination(default)

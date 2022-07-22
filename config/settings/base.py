@@ -293,6 +293,7 @@ ACCOUNT_ALLOW_REGISTRATION = env.bool("DJANGO_ACCOUNT_ALLOW_REGISTRATION", True)
 ACCOUNT_AUTHENTICATION_METHOD = "email"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = True
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_EMAIL_VERIFICATION = "none"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
@@ -300,7 +301,6 @@ ACCOUNT_ADAPTER = "kkanbu.users.adapters.AccountAdapter"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 SOCIALACCOUNT_ADAPTER = "kkanbu.users.adapters.SocialAccountAdapter"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
-ACCOUNT_USERNAME_REQUIRED = True
 SOCIALACCOUNT_STORE_TOKENS = True
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
@@ -337,9 +337,6 @@ REST_AUTH_TOKEN_MODEL = None
 REST_USE_JWT = True
 JWT_AUTH_COOKIE = "kkanbu-access-token"
 JWT_AUTH_REFRESH_COOKIE = "kkanbu-refresh-token"
-REST_AUTH_REGISTER_SERIALIZERS = {
-    "REGISTER_SERIALIZER": "kkanbu.accounts.serializers.CustomRegisterSerializer",
-}
 REST_AUTH_SERIALIZERS = {
     "LOGIN_SERIALIZER": "kkanbu.accounts.serializers.CustomLoginSerializer",
     "USER_DETAILS_SERIALIZER": "kkanbu.accounts.serializers.CustomUserDetailsSerializer",

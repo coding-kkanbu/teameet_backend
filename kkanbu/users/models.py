@@ -4,6 +4,8 @@ from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
+from kkanbu.users.utils import generate_random_name
+
 
 class User(AbstractUser):
     email_validator = EmailValidator()
@@ -38,3 +40,8 @@ class User(AbstractUser):
 
         """
         return reverse("users:detail", kwargs={"username": self.username})
+
+    def save(self, *args, **kwargs):
+        if not self.random_name:
+            self.random_name = generate_random_name()
+        return super().save(*args, **kwargs)

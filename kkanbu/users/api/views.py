@@ -57,5 +57,5 @@ class UserViewSet(
         random_name = generate_random_name()
         user.random_name = random_name
         user.save()
-        serializer = UserSerializer(user)
+        serializer = self.get_serializer(user)
         return Response(status=status.HTTP_200_OK, data=serializer.data)

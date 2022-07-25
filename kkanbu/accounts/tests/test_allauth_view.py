@@ -15,7 +15,6 @@ class TestAllAuthViews(APITestCase):
         self.logout_url = reverse("account_logout")
         self.client = APIClient()
 
-    # TODO signup, signin setpassword api endpoint test
     def test_registration(self):
         REGISTRATION_DATA = {
             "email": self.EMAIL,

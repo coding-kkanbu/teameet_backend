@@ -16,8 +16,7 @@ class TestAllAuthViews(APITestCase):
         self.client = APIClient()
 
     # TODO signup, signin setpassword api endpoint test
-    # @override_settings(REST_USE_JWT=True)
-    def test_registration_with_jwt(self):
+    def test_registration(self):
         REGISTRATION_DATA = {
             "email": self.EMAIL,
             "username": self.USERNAME,
@@ -29,23 +28,21 @@ class TestAllAuthViews(APITestCase):
         result = self.client.post(
             self.register_url, data=REGISTRATION_DATA, status_code=201
         )
+
         self.assertIn("access_token", result.data)
         self.assertEqual(get_user_model().objects.all().count(), user_count + 1)
 
-    # @override_settings(REST_USE_JWT=True)
-    def test_login_jwt(self):
+    def test_login(self):
         LOGIN_DATA = {
             "email": self.EMAIL,
             "password": self.PASS,
         }
-        get_user_model().objects.create(
+        get_user_model().objects.create_user(
             email=self.EMAIL,
             username=self.USERNAME,
             password=self.PASS,
         )
-        print(get_user_model().objects.all())
 
         result = self.client.post(self.login_url, data=LOGIN_DATA, status_code=200)
-        print(result.data)
+
         self.assertIn("access_token", result.data)
-        self.token = self.response.json["access_token"]

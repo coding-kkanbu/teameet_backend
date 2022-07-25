@@ -1,4 +1,3 @@
-import random
 from typing import Any, Sequence
 
 import factory
@@ -10,7 +9,6 @@ from kkanbu.board.models import Category, Post
 
 
 class UserFactory(DjangoModelFactory):
-    random.seed(0)
     username = Faker("user_name")
     email = Faker("email")
 

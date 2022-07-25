@@ -131,5 +131,6 @@ class TestUserViewSet:
         res = api_client.post(url)
         new_random_name = res.data["random_name"]
 
+        assert User.objects.get(pk=user.id).random_name == new_random_name
         assert res.status_code == 200
         assert old_random_name != new_random_name

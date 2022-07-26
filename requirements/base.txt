@@ -25,7 +25,7 @@ django-cors-headers==3.13.0 # https://github.com/adamchainz/django-cors-headers
 # Django REST Auth API
 dj-rest-auth==2.2.5 # https://github.com/iMerica/dj-rest-auth
 # DRF spectacular for swagger supporting OpenAPI3
-drf-spectacular==0.22.1  # https://github.com/tfranzel/drf-spectacular
+drf-spectacular==0.23.0  # https://github.com/tfranzel/drf-spectacular
 # Django-REST-framework-simpleJWT
 djangorestframework-simplejwt==5.2.0 # https://github.com/jazzband/djangorestframework-simplejwt
 # Django Taggit

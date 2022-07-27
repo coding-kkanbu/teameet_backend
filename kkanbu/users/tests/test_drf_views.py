@@ -44,7 +44,7 @@ class TestUserViewSet:
     def test_put_user_detail(self, user: User, api_client):
         api_client.force_authenticate(user)
         url = reverse("api:user-detail", kwargs={"username": user.username})
-        payload = {"username": "testuser", "random_name": "random_user"}
+        payload = {"username": "testuser"}
         res = api_client.put(url, payload)
         assert res.status_code == 200
         assert User.objects.filter(username="testuser").exists() is True

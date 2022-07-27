@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.urls import reverse
+from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
 
@@ -24,12 +25,15 @@ class TestAllAuthViews(APITestCase):
         }
         user_count = get_user_model().objects.all().count()
 
-        result = self.client.post(
-            self.register_url, data=REGISTRATION_DATA, status_code=201
+        res = self.client.post(
+            self.register_url,
+            data=REGISTRATION_DATA,
+            status_code=status.HTTP_201_CREATED,
         )
 
-        self.assertIn("access_token", result.data)
+        self.assertIn("access_token", res.data)
         self.assertEqual(get_user_model().objects.all().count(), user_count + 1)
+        self.assertTrue(get_user_model().objects.filter(email=self.EMAIL).exists())
 
     def test_login(self):
         LOGIN_DATA = {
@@ -42,6 +46,8 @@ class TestAllAuthViews(APITestCase):
             password=self.PASS,
         )
 
-        result = self.client.post(self.login_url, data=LOGIN_DATA, status_code=200)
+        res = self.client.post(
+            self.login_url, data=LOGIN_DATA, status_code=status.HTTP_200_OK
+        )
 
-        self.assertIn("access_token", result.data)
+        self.assertIn("access_token", res.data)

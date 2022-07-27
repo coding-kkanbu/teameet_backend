@@ -33,6 +33,7 @@ class TestUserViewSet:
             "email": user.email,
             "date_joined": DateTimeField().to_representation(user.date_joined),
             "random_name": user.random_name,
+            "introduce": "좋은 만남을 기대하고있습니다",
             "profile_image": user.profile_image,
             "neis_email": user.neis_email,
             "is_verify": user.is_verify,
@@ -44,11 +45,14 @@ class TestUserViewSet:
     def test_put_user_detail(self, user: User, api_client):
         api_client.force_authenticate(user)
         url = reverse("api:user-detail", kwargs={"username": user.username})
-        payload = {"username": "testuser", "random_name": "random_user"}
+        payload = {"username": "testuser", "introduce": "서울에서 근무하는 초등교사입니다. 만나서 반갑습니다."}
         res = api_client.put(url, payload)
         assert res.status_code == 200
         assert User.objects.filter(username="testuser").exists() is True
-        assert User.objects.filter(random_name="random_user").exists() is True
+        assert (
+            User.objects.filter(introduce="서울에서 근무하는 초등교사입니다. 만나서 반갑습니다.").exists()
+            is True
+        )
 
     def test_patch_user_detail(self, user: User, api_client):
         api_client.force_authenticate(user)

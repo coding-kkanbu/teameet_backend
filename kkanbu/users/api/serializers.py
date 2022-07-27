@@ -17,6 +17,7 @@ class UserSerializer(serializers.ModelSerializer):
             "date_joined",
             "random_name",
             "profile_image",
+            "introduce",
             "neis_email",
             "is_verify",
             "post_n",

@@ -1,6 +1,6 @@
 -r base.txt
 
-Werkzeug==2.1.2 # https://github.com/pallets/werkzeug
+Werkzeug==2.2.0 # https://github.com/pallets/werkzeug
 ipdb==0.13.9  # https://github.com/gotcha/ipdb
 psycopg2==2.9.3  # https://github.com/psycopg/psycopg2
 watchgod==0.8.2  # https://github.com/samuelcolvin/watchgod
@@ -15,13 +15,13 @@ djangorestframework-stubs==1.6.0  # https://github.com/typeddjango/djangorestfra
 
 # Documentation
 # ------------------------------------------------------------------------------
-sphinx==5.0.2  # https://github.com/sphinx-doc/sphinx
+sphinx==5.1.0  # https://github.com/sphinx-doc/sphinx
 sphinx-autobuild==2021.3.14 # https://github.com/GaretJax/sphinx-autobuild
 
 # Code quality
 # ------------------------------------------------------------------------------
 flake8==4.0.1  # https://github.com/PyCQA/flake8
-flake8-isort==4.1.1  # https://github.com/gforcada/flake8-isort
+flake8-isort==4.1.2.post0  # https://github.com/gforcada/flake8-isort
 coverage==6.4.2  # https://github.com/nedbat/coveragepy
 black==22.6.0  # https://github.com/psf/black
 pylint-django==2.5.3  # https://github.com/PyCQA/pylint-django

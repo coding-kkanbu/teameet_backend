@@ -49,7 +49,7 @@ class TestUserViewSet:
         res = api_client.put(url, payload)
         assert res.status_code == 200
         assert User.objects.filter(username="testuser").exists() is True
-        assert User.objects.filter(pk=user).introduce == payload["introduce"]
+        assert User.objects.filter(pk=user.id).get().introduce == payload["introduce"]
 
     def test_patch_user_detail(self, user: User, api_client):
         api_client.force_authenticate(user)

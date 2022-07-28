@@ -2,6 +2,7 @@ import pytest
 from django.test import RequestFactory
 from django.urls import reverse
 from faker import Faker
+from rest_framework import status
 from rest_framework.serializers import DateTimeField
 
 from kkanbu.users.api.views import UserViewSet
@@ -26,7 +27,7 @@ class TestUserViewSet:
         url = reverse("api:user-detail", kwargs={"username": user.username})
         res = api_client.get(url)
 
-        assert res.status_code == 200
+        assert res.status_code == status.HTTP_200_OK
         assert res.data == {
             "id": user.pk,
             "username": user.username,
@@ -47,7 +48,7 @@ class TestUserViewSet:
         url = reverse("api:user-detail", kwargs={"username": user.username})
         payload = {"username": "testuser", "introduce": "서울에서 근무하는 초등교사입니다. 만나서 반갑습니다."}
         res = api_client.put(url, payload)
-        assert res.status_code == 200
+        assert res.status_code == status.HTTP_200_OK
         assert User.objects.filter(username="testuser").exists() is True
         assert User.objects.filter(pk=user.id).get().introduce == payload["introduce"]
 
@@ -58,12 +59,12 @@ class TestUserViewSet:
         new_username = fake.simple_profile()["username"]
         payload = {"username": new_username}
         res = api_client.patch(url, payload)
-        assert res.status_code == 200
+        assert res.status_code == status.HTTP_200_OK
         assert User.objects.filter(username=new_username).exists() is True
 
         url = reverse("api:user-detail", kwargs={"username": new_username})
         res = api_client.get(url)
-        assert res.status_code == 200
+        assert res.status_code == status.HTTP_200_OK
 
     # TODO force_authenticate 대신 JWT access tokeon을 Hearder에 넣어서 인증하는 방식으로
     #      로그인 된 user에 대해 테스트 진행 / delete 이후 detail view 안되는 것 테스트 추가
@@ -87,7 +88,7 @@ class TestUserViewSet:
         url = reverse("api:user-detail", kwargs={"username": user.username})
         api_client.force_authenticate(user)
         res = api_client.delete(url)
-        assert res.status_code == 204
+        assert res.status_code == status.HTTP_204_NO_CONTENT
         assert (
             api_client.login(email=payload["email"], password=payload["password"])
             is False
@@ -101,7 +102,7 @@ class TestUserViewSet:
         PostFactory.create_batch(8, writer=user)
 
         res = api_client.get(url)
-        assert res.status_code == 200
+        assert res.status_code == status.HTTP_200_OK
         assert len(res.data["results"]) == 8
 
     def test_my_posts_filter_is_show(self, user: User, api_client):

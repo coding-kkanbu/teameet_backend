@@ -44,11 +44,10 @@ class TestUserViewSet:
     def test_put_user_detail(self, user: User, api_client):
         api_client.force_authenticate(user)
         url = reverse("api:user-detail", kwargs={"username": user.username})
-        payload = {"username": "testuser", "random_name": "random_user"}
+        payload = {"username": "testuser"}
         res = api_client.put(url, payload)
         assert res.status_code == 200
         assert User.objects.filter(username="testuser").exists() is True
-        assert User.objects.filter(random_name="random_user").exists() is True
 
     def test_patch_user_detail(self, user: User, api_client):
         api_client.force_authenticate(user)
@@ -122,3 +121,15 @@ class TestUserViewSet:
         res = api_client.get(url, **{"QUERY_STRING": "page=3"})
         res.status_code == 200
         assert len(res.data["results"]) == 5
+
+    def test_set_random_name(self, user: User, api_client):
+        api_client.force_authenticate(user)
+        old_random_name = user.random_name
+
+        url = reverse("api:user-set-random-name", kwargs={"username": user.username})
+        res = api_client.post(url)
+        new_random_name = res.data["random_name"]
+
+        assert User.objects.get(pk=user.id).random_name == new_random_name
+        assert res.status_code == 200
+        assert old_random_name != new_random_name

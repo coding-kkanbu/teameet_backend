@@ -9,7 +9,6 @@ from kkanbu.board.models import Category, Post
 
 
 class UserFactory(DjangoModelFactory):
-
     username = Faker("user_name")
     email = Faker("email")
 

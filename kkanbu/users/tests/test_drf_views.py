@@ -51,7 +51,6 @@ class TestUserViewSet:
         assert res.status_code == status.HTTP_200_OK
         assert User.objects.filter(pk=user.id).get().introduce == payload["introduce"]
 
-
     def test_patch_user_detail(self, user: User, api_client):
         api_client.force_authenticate(user)
         url = reverse("api:user-detail", kwargs={"username": user.username})

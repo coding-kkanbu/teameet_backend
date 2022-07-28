@@ -11,6 +11,7 @@ from kkanbu.board.models import Category, Post
 class UserFactory(DjangoModelFactory):
     username = Faker("user_name")
     email = Faker("email")
+    introduce = "좋은 만남을 기대하고있습니다"
 
     @post_generation
     def password(self, create: bool, extracted: Sequence[Any], **kwargs):

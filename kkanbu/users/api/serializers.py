@@ -27,6 +27,7 @@ class UserSerializer(serializers.ModelSerializer):
         read_only_fields = [
             "email",
             "date_joined",
+            "random_name",
             "neis_email",
             "is_verify",
         ]

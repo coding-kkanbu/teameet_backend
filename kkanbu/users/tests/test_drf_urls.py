@@ -28,3 +28,14 @@ def test_user_my_posts(user: User):
         resolve(f"/api/v1/users/{user.username}/my_posts/").view_name
         == "api:user-my-posts"
     )
+
+
+def test_user_set_random_name(user: User):
+    assert (
+        reverse("api:user-set-random-name", kwargs={"username": user.username})
+        == f"/api/v1/users/{user.username}/set_random_name/"
+    )
+    assert (
+        resolve(f"/api/v1/users/{user.username}/set_random_name/").view_name
+        == "api:user-set-random-name"
+    )

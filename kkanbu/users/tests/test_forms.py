@@ -30,7 +30,7 @@ class TestUserCreationForm:
                 "username": user.username,
                 "password1": user.password,
                 "password2": user.password,
-                "nickname": user.email,
+                "email": user.email,
             }
         )
 

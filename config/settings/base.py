@@ -337,9 +337,7 @@ REST_AUTH_TOKEN_MODEL = None
 REST_USE_JWT = True
 JWT_AUTH_COOKIE = "kkanbu-access-token"
 JWT_AUTH_REFRESH_COOKIE = "kkanbu-refresh-token"
-REST_AUTH_REGISTER_SERIALIZERS = {
-    "REGISTER_SERIALIZER": "kkanbu.accounts.serializers.CustomRegisterSerializer",
-}
+
 REST_AUTH_SERIALIZERS = {
     "LOGIN_SERIALIZER": "kkanbu.accounts.serializers.CustomLoginSerializer",
     "USER_DETAILS_SERIALIZER": "kkanbu.accounts.serializers.CustomUserDetailsSerializer",

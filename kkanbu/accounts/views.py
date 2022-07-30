@@ -11,15 +11,6 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 
-# for backend test > should be implemented on frontend
-@extend_schema(tags=["accounts"])
-@api_view(["GET"])
-@permission_classes([AllowAny])
-def get_callback(request):
-    code = request.GET.get("code")
-    return Response({"code": code})
-
-
 @extend_schema(tags=["accounts"])
 def get_redirect_url(adapter, provider_name, callback_url, scope):
     app = SocialApp.objects.get(provider=provider_name)
@@ -60,6 +51,15 @@ def get_kakao_redirect_url(request):
         kakao_views.KakaoOAuth2Adapter, "kakao", settings.KAKAO_CALLBACK_URI, scope
     )
     return Response({"url": url})
+
+
+# for backend test > should be implemented on frontend
+@extend_schema(tags=["accounts"])
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def get_callback(request):
+    code = request.GET.get("code")
+    return Response({"code": code})
 
 
 @extend_schema(tags=["accounts"])

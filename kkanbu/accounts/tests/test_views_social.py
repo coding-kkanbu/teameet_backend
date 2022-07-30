@@ -1,5 +1,3 @@
-# from unittest.mock import MagicMock
-
 from allauth.socialaccount.models import SocialApp
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.kakao.views import KakaoOAuth2Adapter
@@ -45,13 +43,6 @@ class GoogleSocialLoginTests(TestCase):
             GoogleOAuth2Adapter, "google", settings.GOOGLE_CALLBACK_URI, scope
         )
         self.assertEqual(res.data["url"], url)
-
-    # def test_google_callback(self):
-    #     if social_url is correct:
-    #         return code
-    #     MagicMock().return_value()
-    #     url = reverse("google_callback")
-    #     res = self.client.get(url)
 
 
 class KakaoSocialLoginTests(TestCase):

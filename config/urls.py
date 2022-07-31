@@ -17,6 +17,7 @@ urlpatterns = [
     # User management
     path("users/", include("kkanbu.users.urls", namespace="users")),
     # Your stuff: custom urls includes go here
+    path("allauth/socialaccount/", include("allauth.socialaccount.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 if settings.DEBUG:
     # Static file serving when using Gunicorn + Uvicorn for local web socket development

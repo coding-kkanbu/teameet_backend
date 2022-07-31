@@ -23,10 +23,10 @@ urlpatterns = [
     path("login/", LoginView.as_view(), name="account_login"),
     path("logout/", LogoutView.as_view(), name="account_logout"),
     # 로그인된 유저가 password 바꿀때
-    path("password-change/", PasswordChangeView.as_view()),
+    path("password-change/", PasswordChangeView.as_view(), name="password_change"),
     # TODO Edit SMTP settings EmailBackend when Deployment
     # password 분실로 로그인이 안될때
-    path("password-reset/", PasswordResetView.as_view()),
+    path("password-reset/", PasswordResetView.as_view(), name="password_reset"),
     path(
         "password-reset/confirm/<uidb64>/<token>/",
         PasswordResetConfirmView.as_view(),

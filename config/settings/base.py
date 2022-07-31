@@ -351,6 +351,7 @@ SPECTACULAR_SETTINGS = {
     "TITLE": "Teameet API",
     "DESCRIPTION": "Meet Teachers Here",
     "VERSION": "0.1.0",
+    "COMPONENT_SPLIT_REQUEST": True,
 }
 
 # (local_app) operation

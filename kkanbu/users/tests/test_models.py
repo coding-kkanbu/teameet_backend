@@ -1,5 +1,6 @@
 import pytest
 
+from kkanbu.users import models
 from kkanbu.users.models import User
 
 pytestmark = pytest.mark.django_db
@@ -11,3 +12,9 @@ def test_user_get_absolute_url(user: User):
 
 def test_user_random_name(user: User):
     assert user.random_name is not None
+
+
+def test_profile_file_path():
+    """Test generating image path."""
+    file_path = models.profile_image_file_path(None, "example.jpg")
+    assert file_path == "uploads/profile/example.jpg"

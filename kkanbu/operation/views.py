@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema
 from rest_framework.mixins import CreateModelMixin, ListModelMixin
 from rest_framework.viewsets import GenericViewSet
 
@@ -10,6 +11,7 @@ from .serializers import (
 )
 
 
+@extend_schema(tags=["operation"])
 class PostLikeViewSet(
     GenericViewSet,
     CreateModelMixin,
@@ -19,6 +21,7 @@ class PostLikeViewSet(
     queryset = PostLike.objects.all()
 
 
+@extend_schema(tags=["operation"])
 class CommentLikeViewSet(
     GenericViewSet,
     CreateModelMixin,
@@ -28,6 +31,7 @@ class CommentLikeViewSet(
     queryset = CommentLike.objects.all()
 
 
+@extend_schema(tags=["operation"])
 class PostBlameViewSet(
     GenericViewSet,
     CreateModelMixin,
@@ -37,6 +41,7 @@ class PostBlameViewSet(
     queryset = PostBlame.objects.all()
 
 
+@extend_schema(tags=["operation"])
 class CommentBlameViewSet(
     GenericViewSet,
     CreateModelMixin,

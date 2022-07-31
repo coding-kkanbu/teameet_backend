@@ -1,4 +1,5 @@
 from django.http import HttpResponseRedirect
+from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin
 from rest_framework.permissions import IsAuthenticated
@@ -10,6 +11,9 @@ from .pagination import NotiPageNumberPagination
 from .serializers import NotificationSerializer
 
 
+@extend_schema(
+    tags=["notification"],
+)
 class NotificationViewSet(GenericViewSet, ListModelMixin):
     serializer_class = NotificationSerializer
     permission_classes = [IsAuthenticated]

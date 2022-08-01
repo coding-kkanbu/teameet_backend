@@ -1,7 +1,11 @@
+import os
+import tempfile
+
 import pytest
 from django.test import RequestFactory
 from django.urls import reverse
 from faker import Faker
+from PIL import Image
 from rest_framework import status
 from rest_framework.serializers import DateTimeField
 
@@ -135,3 +139,26 @@ class TestUserViewSet:
         assert User.objects.get(pk=user.id).random_name == new_random_name
         assert res.status_code == 200
         assert old_random_name != new_random_name
+
+    def test_upload_image(self, user: User, api_client):
+        api_client.force_authenticate(user)
+        url = reverse("api:user-upload-image", kwargs={"username": user.username})
+        with tempfile.NamedTemporaryFile(suffix=".jpg") as image_file:
+            img = Image.new("RGB", (10, 10))
+            img.save(image_file, format="JPEG")
+            image_file.seek(0)
+            payload = {"profile_image": image_file}
+            res = api_client.post(url, payload, format="multipart")
+
+        user.refresh_from_db()
+        assert res.status_code == 200
+        assert "profile_image" in res.data
+        assert os.path.exists(user.profile_image.path) is True
+
+    def test_upload_image_bad_request(self, user: User, api_client):
+        api_client.force_authenticate(user)
+        url = reverse("api:user-upload-image", kwargs={"username": user.username})
+        payload = {"profile_image": "NotAnImage"}
+        res = api_client.post(url, payload, format="multipart")
+
+        assert res.status_code == 400

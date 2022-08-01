@@ -14,7 +14,7 @@ from rest_framework.viewsets import GenericViewSet
 from kkanbu.board.serializers import PostListSerializer
 from kkanbu.users.utils import generate_random_name
 
-from .serializers import UserSerializer
+from .serializers import UserProfileSerializer, UserSerializer
 
 User = get_user_model()
 
@@ -38,6 +38,12 @@ class UserViewSet(
         assert isinstance(self.request.user.id, int)
         return self.queryset.filter(id=self.request.user.id)
 
+    def get_serializer_class(self):
+        if self.action == "upload_image":
+            return UserProfileSerializer
+        else:
+            return self.serializer_class
+
     def perform_destroy(self, instance):
         instance.is_active = False
         instance.save()
@@ -55,7 +61,7 @@ class UserViewSet(
         serializer = PostListSerializer(user_posts, many=True)
         return Response(status=status.HTTP_200_OK, data=serializer.data)
 
-    @action(detail=True, methods=["post"])
+    @action(detail=True, methods=["POST"])
     def set_random_name(self, request, username=None):
         user = self.get_object()
         random_name = generate_random_name()
@@ -63,3 +69,14 @@ class UserViewSet(
         user.save()
         serializer = self.get_serializer(user)
         return Response(status=status.HTTP_200_OK, data=serializer.data)
+
+    @action(detail=True, methods=["GET", "POST"], url_path="upload_image")
+    def upload_image(self, request, username=None):
+        user = self.get_object()
+        serializer = self.get_serializer(user, data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

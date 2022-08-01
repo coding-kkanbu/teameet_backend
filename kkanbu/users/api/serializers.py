@@ -28,6 +28,7 @@ class UserSerializer(serializers.ModelSerializer):
             "email",
             "date_joined",
             "random_name",
+            "profile_image",
             "neis_email",
             "is_verify",
         ]
@@ -38,3 +39,12 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_post_n(self, obj):
         return obj.post_set.count()
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    """한가지 타입의 데이터(사진 파일) upload를 위한 별도 serializer 추가"""
+
+    class Meta:
+        model = User
+        fields = ["id", "profile_image"]
+        extra_kwargs = {"profile_image": {"required": True}}

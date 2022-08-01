@@ -1,3 +1,5 @@
+import os
+
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import EmailValidator
 from django.db import models
@@ -5,6 +7,11 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 from kkanbu.users.utils import generate_random_name
+
+
+def profile_image_file_path(instance, filename):
+    """Generate file path for new profile image."""
+    return os.path.join("uploads", "profile", filename)
 
 
 class User(AbstractUser):
@@ -25,7 +32,9 @@ class User(AbstractUser):
         _("random name"), max_length=150, blank=True, null=True
     )
     introduce = models.TextField(_("introduce"), blank=True, null=True)
-    profile_image = models.ImageField(_("profile"), blank=True, null=True)
+    profile_image = models.ImageField(
+        _("profile"), blank=True, null=True, upload_to=profile_image_file_path
+    )
     ip = models.GenericIPAddressField(_("user IP"), blank=True, null=True)
     neis_email = models.EmailField(_("NEIS email address"), blank=True, null=True)
     is_verify = models.BooleanField(_("NEIS email verified"), default=False)

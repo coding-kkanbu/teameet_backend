@@ -30,6 +30,7 @@ class UserSerializer(ModelSerializer):
 
 class PostListSerializer(ModelSerializer):
     sogaetingoption = SogaetingOptionSerializer(read_only=True)
+    tags = TagListSerializerField()
     postlike_n = SerializerMethodField()
     comment_n = SerializerMethodField()
 
@@ -40,6 +41,7 @@ class PostListSerializer(ModelSerializer):
             "sogaetingoption",
             "title",
             "content",
+            "tags",
             "created",
             "hit",
             "postlike_n",

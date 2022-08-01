@@ -84,3 +84,14 @@
   - UserViewset
 - pagination
   - PageNumberPagination(default)
+
+### Search
+
+- models: Post(in Board App)
+- views
+  - SearchViewset
+- pagination
+  - PageNumberPagination(default)
+- filter_backend
+  - SearchFilter -> DRF Built-in
+  - TagFilter -> custom filter

@@ -40,3 +40,22 @@ def test_password_reset_confirm():
         resolve(f"/api/v1/accounts/password-reset/confirm/{uidb64}/{token}/").view_name
         == "password_reset_confirm"
     )
+
+
+def test_verify_neis_email():
+    assert reverse("verify_neis_email") == "/api/v1/accounts/verify-neis-email/"
+    assert (
+        resolve("/api/v1/accounts/verify-neis-email/").view_name == "verify_neis_email"
+    )
+
+
+def test_verify_neis_email_confirm():
+    token = "b8wwzg-db022197f240e88dde8bfc3b3ade3756"
+    assert (
+        reverse("verify_neis_email_confirm", kwargs={"token": token})
+        == f"/api/v1/accounts/verify-neis-email/confirm?token={token}/"
+    )
+    assert (
+        resolve(f"/api/v1/accounts/verify-neis-email/confirm?token={token}/").view_name
+        == "verify_neis_email_confirm"
+    )

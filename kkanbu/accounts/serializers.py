@@ -35,7 +35,6 @@ class VerifyNeisEmailSerializer(serializers.Serializer):
     email_local = serializers.CharField(allow_blank=False, allow_null=False)
     email_domain = serializers.ChoiceField(
         choices=[
-            "gmail.com",
             "sen.go.kr",
             "pen.go.kr",
             "dge.go.kr",

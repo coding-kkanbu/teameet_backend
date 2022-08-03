@@ -13,6 +13,8 @@ from rest_framework_simplejwt.views import TokenVerifyView
 from .views import (
     GoogleLogin,
     KakaoLogin,
+    VerifyNeisEmail,
+    VerifyNeisEmailConfirm,
     get_callback,
     get_google_redirect_url,
     get_kakao_redirect_url,
@@ -43,4 +45,10 @@ urlpatterns = [
     path("kakao/login/finish/", KakaoLogin.as_view(), name="kakao_login_todjango"),
     path("token/verify/", TokenVerifyView.as_view(), name="token_verify"),
     path("token/refresh/", get_refresh_view().as_view(), name="token_refresh"),
+    path("verify-neis-email/", VerifyNeisEmail.as_view(), name="verify_neis_email"),
+    path(
+        "verify-neis-email/confirm",
+        VerifyNeisEmailConfirm.as_view(),
+        name="verify_neis_email_confirm",
+    ),
 ]

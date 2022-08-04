@@ -15,7 +15,6 @@ from kkanbu.operation.views import (
     PostBlameViewSet,
     PostLikeViewSet,
 )
-from kkanbu.search.views import SearchViewSet
 from kkanbu.users.api.views import UserViewSet
 
 if settings.DEBUG:
@@ -33,7 +32,6 @@ router.register("commentlike", CommentLikeViewSet, basename="CommentLike")
 router.register("postblame", PostBlameViewSet, basename="PostBlame")
 router.register("commentblame", CommentBlameViewSet, basename="CommentBlame")
 router.register("notification", NotificationViewSet, basename="Notification")
-router.register("search", SearchViewSet, basename="Search")
 
 app_name = "api"
 

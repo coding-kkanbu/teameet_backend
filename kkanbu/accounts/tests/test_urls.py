@@ -50,12 +50,11 @@ def test_verify_neis_email():
 
 
 def test_verify_neis_email_confirm():
-    token = "b8wwzg-db022197f240e88dde8bfc3b3ade3756"
     assert (
-        reverse("verify_neis_email_confirm", kwargs={"token": token})
-        == f"/api/v1/accounts/verify-neis-email/confirm?token={token}/"
+        reverse("verify_neis_email_confirm")
+        == "/api/v1/accounts/verify-neis-email/confirm"
     )
     assert (
-        resolve(f"/api/v1/accounts/verify-neis-email/confirm?token={token}/").view_name
+        resolve("/api/v1/accounts/verify-neis-email/confirm").view_name
         == "verify_neis_email_confirm"
     )

@@ -1,7 +1,8 @@
 from dj_rest_auth.serializers import LoginSerializer
 from django.contrib.auth import get_user_model
-from jsonschema import ValidationError
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
+from rest_framework.validators import UniqueValidator
 
 User = get_user_model()
 
@@ -32,9 +33,15 @@ class VerifyNeisEmailConfirmSerializer(serializers.Serializer):
 
 
 class VerifyNeisEmailSerializer(serializers.Serializer):
-    email_local = serializers.CharField(allow_blank=False, allow_null=False)
-    email_domain = serializers.ChoiceField(
-        choices=[
+    neis_email = serializers.EmailField(
+        allow_blank=False,
+        allow_null=False,
+        validators=[UniqueValidator(queryset=User.objects.filter(is_verify=True))],
+    )
+    redirect_url = serializers.CharField(max_length=500, required=False)
+
+    def validate_neis_email(self, value):
+        domains = [
             "sen.go.kr",
             "pen.go.kr",
             "dge.go.kr",
@@ -53,10 +60,15 @@ class VerifyNeisEmailSerializer(serializers.Serializer):
             "gne.go.kr",
             "jje.go.kr",
         ]
-    )
+        domain_index = value.find("@") + 1
+        domain = value[domain_index:]
+        if domain not in domains:
+            raise ValidationError(
+                f"Not valid neis domain. Must be one of {', ' .join(domains)}."
+            )
 
     def validate(self, data):
         user = self.context["request"].user
         if user.is_verify:
-            raise ValidationError("Neis email already verified.")
+            raise ValidationError("User already verified.")
         return data

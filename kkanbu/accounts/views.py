@@ -7,6 +7,7 @@ from dj_rest_auth.registration.views import SocialLoginView
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.sites.shortcuts import get_current_site
+from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.http import urlencode
 from drf_spectacular.utils import extend_schema
@@ -107,13 +108,23 @@ class VerifyNeisEmail(GenericAPIView):
 
         neis_email = local + "@" + domain
 
-        token = AccessToken.for_user(request.user)
-        token["neis_email"] = neis_email
-
         current_site = get_current_site(request).domain
         relative_link = reverse("verify_neis_email_confirm")
 
-        link = "http://" + current_site + relative_link + "?token=" + str(token)
+        token = AccessToken.for_user(request.user)
+        token["neis_email"] = neis_email
+
+        redirect_url = serializer.data.get("redirect_url", "")
+
+        link = (
+            "http://"
+            + current_site
+            + relative_link
+            + "?token="
+            + str(token)
+            + "&redirect_url="
+            + redirect_url
+        )
 
         data = {
             "from_email": "Team teameet",
@@ -130,11 +141,9 @@ class VerifyNeisEmail(GenericAPIView):
 class VerifyNeisEmailConfirm(GenericAPIView):
     serializer_class = VerifyNeisEmailConfirmSerializer
 
-    def post(self, request):
-        serializer = self.get_serializer(data=request.data)
-
-        serializer.is_valid(raise_exception=True)
-        token = serializer.data["token"]
+    def get(self, request):
+        token = request.query_params.get("token")
+        redirect_url = request.query_params.get("redirect_url") or settings.FRONTEND_URL
         try:
             payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
             user = User.objects.get(id=payload["user_id"])
@@ -142,8 +151,9 @@ class VerifyNeisEmailConfirm(GenericAPIView):
             user.is_verify = True
             user.neis_email = neis_email
             user.save()
-            return Response("Successfully verified", status=status.HTTP_200_OK)
+            return redirect(redirect_url + "?token_valid=true")
+
         except jwt.ExpiredSignatureError:
-            return Response("Token Expired", status=status.HTTP_400_BAD_REQUEST)
+            return redirect(redirect_url + "?token_valid=false")
         except jwt.exceptions.DecodeError:
-            return Response("Token not valid", status=status.HTTP_400_BAD_REQUEST)
+            return redirect(redirect_url + "?token_valid=false")

@@ -66,6 +66,7 @@ class VerifyNeisEmailSerializer(serializers.Serializer):
             raise ValidationError(
                 f"Not valid neis domain. Must be one of {', ' .join(domains)}."
             )
+        return value
 
     def validate(self, data):
         user = self.context["request"].user

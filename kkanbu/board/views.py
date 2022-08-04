@@ -11,7 +11,7 @@ from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from kkanbu.notification.signals import notify
 
-from .helpers.filters import TagFilter
+from .helpers.filters import CustomOrderingFilter, TagFilter
 from .helpers.pagination import CategoryPageNumberPagination, PostPageNumberPagination
 from .helpers.permissions import IsOwnerOrReadOnly
 from .helpers.utils import UniqueBlameError, get_client_ip
@@ -174,27 +174,35 @@ class PitAPatViewSet(AbstractPostViewSet):
 )
 class CategoryViewSet(ReadOnlyModelViewSet):
     queryset = Category.objects.all()
-    serializer_class = CategorySerializer
     pagination_class = CategoryPageNumberPagination
     lookup_field = "slug"
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return CategorySerializer
+        else:
+            return PostListSerializer
 
     @action(detail=True)
     def recent_posts(self, request, slug=None):
         category = self.get_object()
         queryset = category.post_set.filter(is_show=True).order_by("-created")[:5]
-        serializer = PostListSerializer(queryset, many=True)
+        serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         queryset = instance.post_set.filter(is_show=True)
+        filtered_queryset = CustomOrderingFilter().filter_queryset(
+            request, queryset, self
+        )
 
-        page = self.paginate_queryset(queryset)
+        page = self.paginate_queryset(filtered_queryset)
         if page is not None:
-            serializer = PostListSerializer(page, many=True)
+            serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
 
-        serializer = PostListSerializer(queryset, many=True)
+        serializer = self.get_serializer(filtered_queryset, many=True)
         return Response(serializer.data)
 
 

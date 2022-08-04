@@ -57,3 +57,18 @@ class TagFilter(filters.BaseFilterBackend):
                 },
             },
         ]
+
+
+class CustomOrderingFilter(filters.OrderingFilter):
+    # The URL query parameter used for the ordering.
+    ordering_param = "ordering"
+    ordering_fields = ["hit", "created"]
+
+    def filter_queryset(self, request, queryset, view):
+        ordering = self.get_ordering(request, queryset, view)
+
+        if ordering:
+            return queryset.order_by(*ordering)
+        # Default 최신순 정렬
+        else:
+            return queryset.order_by("-created")

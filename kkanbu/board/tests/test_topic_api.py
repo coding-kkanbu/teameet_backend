@@ -4,9 +4,9 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient, APIRequestFactory
 
+from kkanbu.board.helpers.utils import get_client_ip
 from kkanbu.board.models import Category, Post
 from kkanbu.board.serializers import PostSerializer
-from kkanbu.board.utils import get_client_ip
 
 Topic_URL = reverse("api:Topic-list")
 
@@ -54,7 +54,7 @@ class PostAPIHTTPMethodsTests(TestCase):
             writer=self.user, category=self.category, title="Sample Post 3"
         )
 
-        res1 = self.client.get(Topic_URL, {"ordering": "recent"})
+        res1 = self.client.get(Topic_URL, {"ordering": "-created"})
         serializer1 = PostSerializer(post1)
         serializer3 = PostSerializer(post3)
         self.assertEqual(res1.data["results"][0], serializer3.data)
@@ -65,7 +65,7 @@ class PostAPIHTTPMethodsTests(TestCase):
         post1.hit = 10
         post1.save()
 
-        res2 = self.client.get(Topic_URL, {"ordering": "likes"})
+        res2 = self.client.get(Topic_URL, {"ordering": "-hit"})
         serializer2 = PostSerializer(post2)
         serializer1 = PostSerializer(post1)
         self.assertEqual(res2.data["results"][0], serializer2.data)

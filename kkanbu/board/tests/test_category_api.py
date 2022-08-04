@@ -3,8 +3,8 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
+from kkanbu.board.helpers.utils import url_with_query
 from kkanbu.board.models import Category, Post
-from kkanbu.board.utils import url_with_query
 
 CATEGORY_LIST_URL = reverse("api:Category-list")
 CATEGORY_DETAIL_URL = reverse("api:Category-detail", args=["test1"])

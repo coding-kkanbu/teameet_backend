@@ -63,9 +63,7 @@ class VerifyNeisEmailSerializer(serializers.Serializer):
         domain_index = value.find("@") + 1
         domain = value[domain_index:]
         if domain not in domains:
-            raise ValidationError(
-                f"Not valid neis domain. Must be one of {', ' .join(domains)}."
-            )
+            raise ValidationError("Not valid neis domain.")
         return value
 
     def validate(self, data):

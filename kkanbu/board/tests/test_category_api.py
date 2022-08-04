@@ -45,9 +45,9 @@ class CategoryViewSetAPITest(APITestCase):
         res = self.client.get(CATEGORY_DETAIL_URL)
         res_page2 = self.client.get(url_with_query(CATEGORY_DETAIL_URL, page=2))
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(res.data["results"][0]["title"], "Post_0")
-        self.assertEqual(res.data["results"][9]["content"], "Post_9_content")
-        self.assertEqual(res_page2.data["results"][-1]["title"], "Post_14")
+        self.assertEqual(res.data["results"][0]["title"], "Post_14")
+        self.assertEqual(res.data["results"][9]["content"], "Post_5_content")
+        self.assertEqual(res_page2.data["results"][-1]["title"], "Post_0")
 
     def test_create_category_not_allowed(self):
         """Test user not allowed POST method"""
@@ -102,3 +102,18 @@ class CategoryViewSetAPITest(APITestCase):
         res = self.client.get(url_with_query(CATEGORY_DETAIL_URL, page=2))
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(len(res.data["results"]), 5)
+
+    def test_multi_filter_query_success(self):
+        res_1 = self.client.get(
+            url_with_query(CATEGORY_DETAIL_URL, ordering="created", page=1)
+        )
+        self.assertEqual(res_1.status_code, status.HTTP_200_OK)
+        self.assertEqual(res_1.data["results"][0]["title"], "Post_0")
+        self.assertEqual(res_1.data["results"][9]["content"], "Post_9_content")
+
+        res_2 = self.client.get(
+            url_with_query(CATEGORY_DETAIL_URL, ordering="created", page=2)
+        )
+        self.assertEqual(res_2.status_code, status.HTTP_200_OK)
+        self.assertEqual(res_2.data["results"][0]["title"], "Post_10")
+        self.assertEqual(res_2.data["results"][-1]["content"], "Post_14_content")

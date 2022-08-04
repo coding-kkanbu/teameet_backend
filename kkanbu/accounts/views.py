@@ -103,16 +103,16 @@ class VerifyNeisEmail(GenericAPIView):
 
         serializer.is_valid(raise_exception=True)
 
-        local = serializer.data["email_local"]
-        domain = serializer.data["email_domain"]
+        neis_email = serializer.data["neis_email"]
 
-        neis_email = local + "@" + domain
+        user = request.user
+        user.neis_email = neis_email
+        user.save()
 
         current_site = get_current_site(request).domain
         relative_link = reverse("verify_neis_email_confirm")
 
         token = AccessToken.for_user(request.user)
-        token["neis_email"] = neis_email
 
         redirect_url = serializer.data.get("redirect_url", "")
 
@@ -147,9 +147,7 @@ class VerifyNeisEmailConfirm(GenericAPIView):
         try:
             payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
             user = User.objects.get(id=payload["user_id"])
-            neis_email = payload["neis_email"]
             user.is_verify = True
-            user.neis_email = neis_email
             user.save()
             return redirect(redirect_url + "?token_valid=true")
 

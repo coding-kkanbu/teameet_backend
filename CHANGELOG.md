@@ -84,3 +84,9 @@
   - UserViewset
 - pagination
   - PageNumberPagination(default)
+
+### Accounts
+
+- views
+  - VerifyNeisEmail
+  - VerifyNeisEmailConfirm

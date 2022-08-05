@@ -3,7 +3,7 @@ import logging
 from django.conf import settings
 from django.utils import timezone
 from drf_spectacular.utils import extend_schema
-from rest_framework import status
+from rest_framework import filters, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -11,9 +11,11 @@ from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from kkanbu.notification.signals import notify
 
+from .helpers.filters import PostOrderingFilter, TagFilter
+from .helpers.pagination import CategoryPageNumberPagination, PostPageNumberPagination
+from .helpers.permissions import IsOwnerOrReadOnly
+from .helpers.utils import UniqueBlameError, get_client_ip
 from .models import Category, Comment, Post
-from .pagination import CategoryPageNumberPagination, PostPageNumberPagination
-from .permissions import IsOwnerOrReadOnly
 from .serializers import (
     CategorySerializer,
     CommentSerializer,
@@ -21,7 +23,6 @@ from .serializers import (
     PostListSerializer,
     PostSerializer,
 )
-from .utils import UniqueBlameError, get_client_ip
 
 logger = logging.getLogger(__name__)
 
@@ -30,17 +31,9 @@ class AbstractPostViewSet(ModelViewSet):
     """Post Model을 기반으로 한 객체를 다루는 필요한 공통 속성만 뽑아낸 ViewSet"""
 
     permission_classes = [IsOwnerOrReadOnly]
+    filter_backends = [filters.SearchFilter, PostOrderingFilter, TagFilter]
     pagination_class = PostPageNumberPagination
-
-    def get_queryset(self):
-        ordering = self.request.query_params.get("ordering", "recent")
-        # 최신순 정렬
-        if ordering == "recent":
-            queryset = self.queryset.order_by("-created")
-        # 추천순 정렬
-        elif ordering == "likes":
-            queryset = self.queryset.order_by("-hit")
-        return queryset
+    search_fields = ["title", "content"]
 
     def perform_create(self, serializer):
         client_ip = get_client_ip(self.request)
@@ -175,27 +168,36 @@ class PitAPatViewSet(AbstractPostViewSet):
 )
 class CategoryViewSet(ReadOnlyModelViewSet):
     queryset = Category.objects.all()
-    serializer_class = CategorySerializer
     pagination_class = CategoryPageNumberPagination
     lookup_field = "slug"
+    ordering = PostOrderingFilter.ordering
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return CategorySerializer
+        else:
+            return PostListSerializer
 
     @action(detail=True)
     def recent_posts(self, request, slug=None):
         category = self.get_object()
         queryset = category.post_set.filter(is_show=True).order_by("-created")[:5]
-        serializer = PostListSerializer(queryset, many=True)
+        serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         queryset = instance.post_set.filter(is_show=True)
+        filtered_queryset = PostOrderingFilter().filter_queryset(
+            request, queryset, self
+        )
 
-        page = self.paginate_queryset(queryset)
+        page = self.paginate_queryset(filtered_queryset)
         if page is not None:
-            serializer = PostListSerializer(page, many=True)
+            serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
 
-        serializer = PostListSerializer(queryset, many=True)
+        serializer = self.get_serializer(filtered_queryset, many=True)
         return Response(serializer.data)
 
 

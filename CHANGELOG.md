@@ -57,6 +57,9 @@
   - PostLimitOffsetPagination
   - PostPageNumberPagination
   - CategoryPageNumberPagination
+- filter_backends
+  - SearchFilter, OrderingFilter (DRF built-in)
+  - TagFilter (Customize)
 
 ### Operation
 

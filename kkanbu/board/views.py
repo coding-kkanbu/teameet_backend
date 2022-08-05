@@ -170,7 +170,7 @@ class CategoryViewSet(ReadOnlyModelViewSet):
     queryset = Category.objects.all()
     pagination_class = CategoryPageNumberPagination
     lookup_field = "slug"
-    ordering = PostOrderingFilter().ordering
+    ordering = PostOrderingFilter.ordering
 
     def get_serializer_class(self):
         if self.action == "list":

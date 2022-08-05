@@ -59,16 +59,10 @@ class TagFilter(filters.BaseFilterBackend):
         ]
 
 
-class CustomOrderingFilter(filters.OrderingFilter):
+class PostOrderingFilter(filters.OrderingFilter):
     # The URL query parameter used for the ordering.
     ordering_param = "ordering"
-    ordering_fields = ["hit", "created"]
-
-    def filter_queryset(self, request, queryset, view):
-        ordering = self.get_ordering(request, queryset, view)
-
-        if ordering:
-            return queryset.order_by(*ordering)
-        # Default 최신순 정렬
-        else:
-            return queryset.order_by("-created")
+    # TODO 두가지 필드 외에 FK로 연결된 postlike_n과 comment_n등도 필터링에 활용해보기
+    ordering_fields = ["created", "hit"]
+    # Default ordering attribute
+    ordering = ["-created"]

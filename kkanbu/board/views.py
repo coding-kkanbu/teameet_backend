@@ -11,7 +11,7 @@ from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from kkanbu.notification.signals import notify
 
-from .helpers.filters import CustomOrderingFilter, TagFilter
+from .helpers.filters import PostOrderingFilter, TagFilter
 from .helpers.pagination import CategoryPageNumberPagination, PostPageNumberPagination
 from .helpers.permissions import IsOwnerOrReadOnly
 from .helpers.utils import UniqueBlameError, get_client_ip
@@ -31,15 +31,9 @@ class AbstractPostViewSet(ModelViewSet):
     """Post Model을 기반으로 한 객체를 다루는 필요한 공통 속성만 뽑아낸 ViewSet"""
 
     permission_classes = [IsOwnerOrReadOnly]
-    filter_backends = [filters.SearchFilter, filters.OrderingFilter, TagFilter]
+    filter_backends = [filters.SearchFilter, PostOrderingFilter, TagFilter]
     pagination_class = PostPageNumberPagination
     search_fields = ["title", "content"]
-    ordering_fields = ["created", "hit"]
-
-    def get_queryset(self):
-        # Default 최신순 정렬
-        queryset = self.queryset.order_by("-created")
-        return queryset
 
     def perform_create(self, serializer):
         client_ip = get_client_ip(self.request)
@@ -176,6 +170,7 @@ class CategoryViewSet(ReadOnlyModelViewSet):
     queryset = Category.objects.all()
     pagination_class = CategoryPageNumberPagination
     lookup_field = "slug"
+    ordering = PostOrderingFilter().ordering
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -193,7 +188,7 @@ class CategoryViewSet(ReadOnlyModelViewSet):
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         queryset = instance.post_set.filter(is_show=True)
-        filtered_queryset = CustomOrderingFilter().filter_queryset(
+        filtered_queryset = PostOrderingFilter().filter_queryset(
             request, queryset, self
         )
 

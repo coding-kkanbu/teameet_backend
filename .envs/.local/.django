@@ -16,3 +16,8 @@ CELERY_FLOWER_PASSWORD=lFtKXtnTTeWtPgh7pOwMRPa55VXa1Nk46Kdldn7WN5OO0jhEXqoDBsZ4w
 
 # DB
 DATABASE_URL=postgres://postgres:postgres@127.0.0.1:5432/kkannbu
+
+# SMTP
+EMAIL_HOST_USER = "your@account.here"
+EMAIL_HOST_PASSWORD = "yourpasswordhere"
+DEFAULT_FROM_EMAIL = "default@email.here"

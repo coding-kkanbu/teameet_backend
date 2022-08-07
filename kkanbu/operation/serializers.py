@@ -1,13 +1,29 @@
 from rest_framework.serializers import ModelSerializer
 from rest_framework.validators import UniqueTogetherValidator
 
+from kkanbu.board.models import Comment, Post
+
 from .models import CommentBlame, CommentLike, PostBlame, PostLike
 
 
+class PostIndexSerializer(ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ["id", "title", "content"]
+
+
+class CommentIndexSerializer(ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ["id", "comment"]
+
+
 class PostLikeSerializer(ModelSerializer):
+    post = PostIndexSerializer()
+
     class Meta:
         model = PostLike
-        fields = ["id", "post", "user"]
+        fields = ["id", "post", "user", "created"]
 
         validators = [
             UniqueTogetherValidator(
@@ -17,6 +33,8 @@ class PostLikeSerializer(ModelSerializer):
 
 
 class PostBlameSerializer(ModelSerializer):
+    post = PostIndexSerializer()
+
     class Meta:
         model = PostBlame
         fields = "__all__"
@@ -31,9 +49,11 @@ class PostBlameSerializer(ModelSerializer):
 
 
 class CommentLikeSerializer(ModelSerializer):
+    comment = CommentIndexSerializer()
+
     class Meta:
         model = CommentLike
-        fields = ["id", "comment", "user"]
+        fields = ["id", "comment", "user", "created"]
 
         validators = [
             UniqueTogetherValidator(
@@ -43,6 +63,8 @@ class CommentLikeSerializer(ModelSerializer):
 
 
 class CommentBlameSerializer(ModelSerializer):
+    comment = CommentIndexSerializer()
+
     class Meta:
         model = CommentBlame
         fields = "__all__"

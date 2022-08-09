@@ -133,13 +133,11 @@ class VerifyNeisEmail(GenericAPIView):
 
 @api_view(["GET"])
 def verify_neis_email_confirm(request, uidb64, token):
-    print("-" * 100)
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
         user = User.objects.get(pk=uid)
     except (TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
-    print(neis_verify_token.check_token(user, token))
 
     if user is not None and neis_verify_token.check_token(user, token):
         user.is_verify = True

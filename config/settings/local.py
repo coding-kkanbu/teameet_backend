@@ -12,7 +12,6 @@ SECRET_KEY = env(
 )
 # https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1"]
-FRONTEND_URL = "http://127.0.0.1:8080"
 
 # CACHES
 # ------------------------------------------------------------------------------
@@ -78,6 +77,7 @@ CELERY_TASK_EAGER_PROPAGATES = True
 
 # TODO Production 단계에서 CALLBACK URI 수정
 BASE_URL = "http://127.0.0.1:8000/"
+FRONTEND_URL = "http://127.0.0.1:8080"
 
 GOOGLE_CALLBACK_URI = BASE_URL + "api/v1/accounts/google/login/callback/"
 KAKAO_CALLBACK_URI = BASE_URL + "api/v1/accounts/kakao/login/callback/"

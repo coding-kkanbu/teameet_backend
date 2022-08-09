@@ -5,7 +5,6 @@ from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from dj_rest_auth.registration.views import SocialLoginView
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.urls import reverse
@@ -105,13 +104,13 @@ class VerifyNeisEmail(GenericAPIView):
         user.neis_email = neis_email
         user.save()
         # TODO get protocol / password
-        current_site = get_current_site(request).domain
+        # current_site = get_current_site(request).domain
 
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         token = neis_verify_token.make_token(user)
         relative_link = reverse("verify_neis_email_confirm", args=[uid, token])
 
-        url = "http://" + current_site + relative_link
+        url = settings.FRONTEND_URL + relative_link
 
         message = render_to_string(
             "account/email/template_neis_verify.html",

@@ -3,6 +3,8 @@ import os
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import EmailValidator
 from django.db import models
+from django.db.models import Q
+from django.db.models.constraints import UniqueConstraint
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
@@ -55,3 +57,12 @@ class User(AbstractUser):
         if not self.random_name:
             self.random_name = generate_random_name()
         return super().save(*args, **kwargs)
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                fields=["neis_email"],
+                condition=Q(is_verify=True),
+                name="unique_neis_email",
+            )
+        ]

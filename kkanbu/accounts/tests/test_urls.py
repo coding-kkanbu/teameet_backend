@@ -51,10 +51,15 @@ def test_verify_neis_email():
 
 def test_verify_neis_email_confirm():
     assert (
-        reverse("verify_neis_email_confirm")
-        == "/api/v1/accounts/verify-neis-email/confirm"
+        reverse(
+            "verify_neis_email_confirm",
+            args=["NTH", "b9w4ki-6b947abcwe6c9ac3e4da127960321"],
+        )
+        == "/api/v1/accounts/verify-neis-email/confirm/NTH/b9w4ki-6b947abcwe6c9ac3e4da127960321/"
     )
     assert (
-        resolve("/api/v1/accounts/verify-neis-email/confirm").view_name
+        resolve(
+            "/api/v1/accounts/verify-neis-email/confirm/NTH/b9w4ki-6b947abcwe6c9ac3e4da127960321/"
+        ).view_name
         == "verify_neis_email_confirm"
     )

@@ -120,7 +120,7 @@ class VerifyNeisEmail(GenericAPIView):
         url = "http://" + current_site + relative_link + "?redirect_url=" + redirect_url
 
         message = render_to_string(
-            "accounts/template_neis_verify.html",
+            "account/email/template_neis_verify.html",
             {"random_name": user.random_name, "url": url},
         )
 

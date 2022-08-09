@@ -38,7 +38,6 @@ class VerifyNeisEmailSerializer(serializers.Serializer):
         allow_null=False,
         validators=[UniqueValidator(queryset=User.objects.filter(is_verify=True))],
     )
-    redirect_url = serializers.CharField(max_length=500, required=False)
 
     def validate_neis_email(self, value):
         domains = [

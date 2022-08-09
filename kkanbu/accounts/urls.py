@@ -14,10 +14,10 @@ from .views import (
     GoogleLogin,
     KakaoLogin,
     VerifyNeisEmail,
-    VerifyNeisEmailConfirm,
     get_callback,
     get_google_redirect_url,
     get_kakao_redirect_url,
+    verify_neis_email_confirm,
 )
 
 urlpatterns = [
@@ -48,7 +48,7 @@ urlpatterns = [
     path("verify-neis-email/", VerifyNeisEmail.as_view(), name="verify_neis_email"),
     path(
         "verify-neis-email/confirm/<uidb64>/<token>/",
-        VerifyNeisEmailConfirm.as_view(),
+        verify_neis_email_confirm,
         name="verify_neis_email_confirm",
     ),
 ]

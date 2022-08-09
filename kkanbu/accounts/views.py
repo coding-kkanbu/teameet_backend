@@ -7,7 +7,6 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
-from django.shortcuts import redirect
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.encoding import force_bytes, force_str
@@ -19,10 +18,7 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
-from kkanbu.accounts.serializers import (
-    VerifyNeisEmailConfirmSerializer,
-    VerifyNeisEmailSerializer,
-)
+from kkanbu.accounts.serializers import VerifyNeisEmailSerializer
 from kkanbu.accounts.tokens import neis_verify_token
 
 User = get_user_model()
@@ -115,9 +111,7 @@ class VerifyNeisEmail(GenericAPIView):
         token = neis_verify_token.make_token(user)
         relative_link = reverse("verify_neis_email_confirm", args=[uid, token])
 
-        redirect_url = serializer.data.get("redirect_url", "")
-
-        url = "http://" + current_site + relative_link + "?redirect_url=" + redirect_url
+        url = "http://" + current_site + relative_link
 
         message = render_to_string(
             "account/email/template_neis_verify.html",
@@ -137,20 +131,28 @@ class VerifyNeisEmail(GenericAPIView):
         )
 
 
-class VerifyNeisEmailConfirm(GenericAPIView):
-    serializer_class = VerifyNeisEmailConfirmSerializer
+@api_view(["GET"])
+def verify_neis_email_confirm(request, uidb64, token):
+    print("-" * 100)
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+    print(neis_verify_token.check_token(user, token))
 
-    def get(self, request, uidb64, token):
-        redirect_url = request.query_params.get("redirect_url") or settings.FRONTEND_URL
-        try:
-            uid = force_str(urlsafe_base64_decode(uidb64))
-            user = User.objects.get(pk=uid)
-        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
-            user = None
-
-        if user is not None and neis_verify_token.check_token(user, token):
-            user.is_verify = True
-            user.save()
-            return redirect(redirect_url + "?token_valid=true")
-        else:
-            redirect(redirect_url + "?token_valid=false")
+    if user is not None and neis_verify_token.check_token(user, token):
+        user.is_verify = True
+        user.save()
+        return Response(
+            {"message": "Neis Email was successfully verified"},
+            status=status.HTTP_200_OK,
+        )
+    elif user is None:
+        return Response(
+            {"message": "Not valid user"}, status=status.HTTP_400_BAD_REQUEST
+        )
+    else:
+        return Response(
+            {"message": "Not valid token"}, status=status.HTTP_400_BAD_REQUEST
+        )

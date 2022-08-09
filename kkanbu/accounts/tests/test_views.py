@@ -1,10 +1,8 @@
 import pytest
-from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.test import override_settings
 from django.urls import reverse
 from django.utils.encoding import force_bytes
-from django.utils.http import urlencode, urlsafe_base64_encode
+from django.utils.http import urlsafe_base64_encode
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.test import APIClient, APITestCase
@@ -12,21 +10,6 @@ from rest_framework.test import APIClient, APITestCase
 from kkanbu.accounts.tokens import neis_verify_token
 
 pytestmark = pytest.mark.django_db
-
-
-def reverse_querystring(
-    view, urlconf=None, args=None, kwargs=None, current_app=None, query_kwargs=None
-):
-    """Custom reverse to handle query strings.
-    Usage:
-        reverse('app.views.my_view', kwargs={'pk': 123}, query_kwargs={'search': 'Bob'})
-    """
-    base_url = reverse(
-        view, urlconf=urlconf, args=args, kwargs=kwargs, current_app=current_app
-    )
-    if query_kwargs:
-        return "{}?{}".format(base_url, urlencode(query_kwargs))
-    return base_url
 
 
 class TestVerifyNeisEmail(APITestCase):
@@ -128,39 +111,32 @@ class TestVerifyNeisEmailConfirm(APITestCase):
         self.client = APIClient()
         self.client.force_authenticate(self.user)
 
-    @override_settings(FRONTEND_URL="http://frontend.com")
-    def test_verify_neis_email_confirm_no_redirect_url(self):
+    def test_verify_neis_email_confirm(self):
         uid = urlsafe_base64_encode(force_bytes(self.user.pk))
         token = neis_verify_token.make_token(self.user)
-        url = reverse_querystring("verify_neis_email_confirm", args=[uid, token])
+        url = reverse("verify_neis_email_confirm", args=[uid, token])
         res = self.client.get(url)
 
         self.assertTrue(get_user_model().objects.get(pk=self.user.id).is_verify)
-        self.assertRedirects(
-            res,
-            settings.FRONTEND_URL + "?token_valid=true",
-            status_code=302,
-            target_status_code=200,
-            fetch_redirect_response=False,
-        )
+        assert res.data == {"message": "Neis Email was successfully verified"}
+        assert res.status_code == status.HTTP_200_OK
 
-    @override_settings(FRONTEND_URL="http://frontend.com")
-    def test_verify_neis_email_confirm_redirect_url(self):
+    def test_verify_neis_email_not_valid_token(self):
         uid = urlsafe_base64_encode(force_bytes(self.user.pk))
         token = neis_verify_token.make_token(self.user)
-        redirect_url = "http://google.com"
-        url = reverse_querystring(
-            "verify_neis_email_confirm",
-            args=[uid, token],
-            query_kwargs={"redirect_url": redirect_url},
-        )
+        url = reverse("verify_neis_email_confirm", args=[uid, token[:-5]])
         res = self.client.get(url)
 
-        self.assertTrue(get_user_model().objects.get(pk=self.user.id).is_verify)
-        self.assertRedirects(
-            res,
-            redirect_url + "?token_valid=true",
-            status_code=302,
-            target_status_code=200,
-            fetch_redirect_response=False,
-        )
+        self.assertFalse(get_user_model().objects.get(pk=self.user.id).is_verify)
+        assert res.data == {"message": "Not valid token"}
+        assert res.status_code == status.HTTP_400_BAD_REQUEST
+
+    def test_verify_neis_email_not_valid_user(self):
+        uid = urlsafe_base64_encode(force_bytes(self.user.pk))
+        token = neis_verify_token.make_token(self.user)
+        url = reverse("verify_neis_email_confirm", args=[uid + "E", token])
+        res = self.client.get(url)
+
+        self.assertFalse(get_user_model().objects.get(pk=self.user.id).is_verify)
+        assert res.data == {"message": "Not valid user"}
+        assert res.status_code == status.HTTP_400_BAD_REQUEST

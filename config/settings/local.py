@@ -81,3 +81,4 @@ BASE_URL = "http://127.0.0.1:8000/"
 
 GOOGLE_CALLBACK_URI = BASE_URL + "api/v1/accounts/google/login/callback/"
 KAKAO_CALLBACK_URI = BASE_URL + "api/v1/accounts/kakao/login/callback/"
+PASSWORD_RESET_TIMEOUT = 600

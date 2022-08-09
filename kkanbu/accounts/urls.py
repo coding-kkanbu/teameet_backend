@@ -47,7 +47,7 @@ urlpatterns = [
     path("token/refresh/", get_refresh_view().as_view(), name="token_refresh"),
     path("verify-neis-email/", VerifyNeisEmail.as_view(), name="verify_neis_email"),
     path(
-        "verify-neis-email/confirm",
+        "verify-neis-email/confirm/<uidb64>/<token>/",
         VerifyNeisEmailConfirm.as_view(),
         name="verify_neis_email_confirm",
     ),

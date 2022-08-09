@@ -1,4 +1,3 @@
-import jwt
 from allauth.socialaccount.models import SocialApp
 from allauth.socialaccount.providers.google import views as google_views
 from allauth.socialaccount.providers.kakao import views as kakao_views
@@ -7,22 +6,24 @@ from dj_rest_auth.registration.views import SocialLoginView
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail import send_mail
 from django.shortcuts import redirect
+from django.template.loader import render_to_string
 from django.urls import reverse
-from django.utils.http import urlencode
+from django.utils.encoding import force_bytes, force_str
+from django.utils.http import urlencode, urlsafe_base64_decode, urlsafe_base64_encode
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework_simplejwt.tokens import AccessToken
 
 from kkanbu.accounts.serializers import (
     VerifyNeisEmailConfirmSerializer,
     VerifyNeisEmailSerializer,
 )
-from kkanbu.accounts.utils import send_email
+from kkanbu.accounts.tokens import neis_verify_token
 
 User = get_user_model()
 
@@ -108,31 +109,30 @@ class VerifyNeisEmail(GenericAPIView):
         user = request.user
         user.neis_email = neis_email
         user.save()
-
+        # TODO get protocol / password
         current_site = get_current_site(request).domain
-        relative_link = reverse("verify_neis_email_confirm")
 
-        token = AccessToken.for_user(request.user)
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
+        token = neis_verify_token.make_token(user)
+        relative_link = reverse("verify_neis_email_confirm", args=[uid, token])
 
         redirect_url = serializer.data.get("redirect_url", "")
 
-        link = (
-            "http://"
-            + current_site
-            + relative_link
-            + "?token="
-            + str(token)
-            + "&redirect_url="
-            + redirect_url
+        url = "http://" + current_site + relative_link + "?redirect_url=" + redirect_url
+
+        message = render_to_string(
+            "accounts/template_neis_verify.html",
+            {"random_name": user.random_name, "url": url},
         )
 
         data = {
             "from_email": "Team teameet",
-            "to_email": neis_email,
-            "email_subject": "티밋 교직원 인증 메일",
-            "email_body": f"안녕하세요, 티밋입니다. 교직원 인증을 통해 더 많은 서비스를 이용하시겠습니까?\n아래 링크를 눌러주세요.\n{link} ",
+            "recipient_list": [neis_email],
+            "subject": "티밋 교직원 인증 메일",
+            "message": message,
+            "html_message": message,
         }
-        send_email(data)
+        send_mail(**data)
         return Response(
             {"message": "Email was successfully sent"}, status=status.HTTP_200_OK
         )
@@ -141,17 +141,17 @@ class VerifyNeisEmail(GenericAPIView):
 class VerifyNeisEmailConfirm(GenericAPIView):
     serializer_class = VerifyNeisEmailConfirmSerializer
 
-    def get(self, request):
-        token = request.query_params.get("token")
+    def get(self, request, uidb64, token):
         redirect_url = request.query_params.get("redirect_url") or settings.FRONTEND_URL
         try:
-            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
-            user = User.objects.get(id=payload["user_id"])
+            uid = force_str(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            user = None
+
+        if user is not None and neis_verify_token.check_token(user, token):
             user.is_verify = True
             user.save()
             return redirect(redirect_url + "?token_valid=true")
-
-        except jwt.ExpiredSignatureError:
-            return redirect(redirect_url + "?token_valid=false")
-        except jwt.exceptions.DecodeError:
-            return redirect(redirect_url + "?token_valid=false")
+        else:
+            redirect(redirect_url + "?token_valid=false")

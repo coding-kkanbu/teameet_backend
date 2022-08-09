@@ -2,6 +2,7 @@ from allauth.socialaccount.models import SocialApp
 from allauth.socialaccount.providers.google import views as google_views
 from allauth.socialaccount.providers.kakao import views as kakao_views
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
+from allauth.utils import build_absolute_uri
 from dj_rest_auth.registration.views import SocialLoginView
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -103,14 +104,15 @@ class VerifyNeisEmail(GenericAPIView):
         user = request.user
         user.neis_email = neis_email
         user.save()
-        # TODO get protocol / password
-        # current_site = get_current_site(request).domain
 
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         token = neis_verify_token.make_token(user)
-        relative_link = reverse("verify_neis_email_confirm", args=[uid, token])
+        path = reverse("verify_neis_email_confirm", args=[uid, token])
 
-        url = settings.FRONTEND_URL + relative_link
+        if getattr(settings, "REST_AUTH_PW_RESET_USE_SITES_DOMAIN", False) is True:
+            url = build_absolute_uri(None, path)
+        else:
+            url = build_absolute_uri(request, path)
 
         message = render_to_string(
             "account/email/template_neis_verify.html",

@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 from django.db.models.constraints import UniqueConstraint
 from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
 from django_extensions.db.models import TimeStampedModel
 
 from kkanbu.board.models import Comment, Post
@@ -53,27 +54,58 @@ class CommentLike(TimeStampedModel):
         return reverse("api:Comment-detail", kwargs={"pk": self.comment.pk})
 
 
+# Blame Reason Category
+class ReasonType(models.TextChoices):
+    ABUSE = "abuse", _("욕설")
+    DEFAME = "defame", _("비방")
+    SPAM = "spam", _("도배")
+    FALSEFACT = "falsefact", _("허위사실")
+    ADVERTISE = "advertise", _("광고")
+    INCORRECT = "incorrect", _("게시판미부합")
+    ETC = "etc", _("기타사항")
+
+
 class PostBlame(TimeStampedModel):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f"{self.post} blamed by {self.user}"
+    reason = models.CharField(
+        max_length=30, choices=ReasonType.choices, default=ReasonType.ETC
+    )
+    description = models.TextField(null=True, blank=True)
 
     class Meta:
         constraints = [
             UniqueConstraint(fields=["post", "user"], name="unique_postblame"),
         ]
 
+    def __str__(self):
+        return f"{self.post} blamed by {self.user} for reason {self.reason}"
+
+    def get_absolute_url(self):
+        app = self.post.category.app
+        if app == "Topic":
+            return reverse("api:Topic-detail", kwargs={"pk": self.post.pk})
+        elif app == "PitAPat":
+            return reverse("api:PitAPat-detail", kwargs={"pk": self.post.pk})
+        else:
+            return None
+
 
 class CommentBlame(TimeStampedModel):
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f"{self.comment} blamed by {self.user}"
+    reason = models.CharField(
+        max_length=30, choices=ReasonType.choices, default=ReasonType.ETC
+    )
+    description = models.TextField(null=True, blank=True)
 
     class Meta:
         constraints = [
             UniqueConstraint(fields=["comment", "user"], name="unique_commentblame"),
         ]
+
+    def __str__(self):
+        return f"{self.comment} blamed by {self.user} for reason {self.reason}"
+
+    def get_absolute_url(self):
+        return reverse("api:Comment-detail", kwargs={"pk": self.comment.pk})

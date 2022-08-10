@@ -1,7 +1,7 @@
 from django.db import IntegrityError
 from django.test import TestCase
 
-from kkanbu.operation.models import CommentLike, PostLike
+from kkanbu.operation.models import CommentBlame, CommentLike, PostBlame, PostLike
 from kkanbu.users.tests.factories import (
     CategoryFactory,
     CommentFactory,
@@ -61,6 +61,66 @@ class Like_ModelTest(TestCase):
         with self.assertRaises(IntegrityError):
             commentlike_invalid = CommentLike(comment=self.comment, user=self.user)
             commentlike_invalid.save()
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.user.delete()
+        cls.post_topic.delete()
+        cls.post_pitapat.delete()
+        cls.comment.delete()
+
+
+class Blame_ModelTest(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.cat_topic = CategoryFactory(app="Topic")
+        cls.cat_pitapat = CategoryFactory(app="PitAPat")
+        cls.user = UserFactory.create()
+        cls.post_topic = PostFactory.create(category=cls.cat_topic)
+        cls.post_pitapat = PostFactory.create(category=cls.cat_pitapat)
+        cls.comment = CommentFactory.create()
+
+    def setUp(self):
+        self.topic_blame = PostBlame.objects.create(
+            post=self.post_topic,
+            user=self.user,
+        )
+        self.pitapat_blame = PostBlame.objects.create(
+            post=self.post_pitapat,
+            user=self.user,
+        )
+        self.comment_blame = CommentBlame.objects.create(
+            comment=self.comment,
+            user=self.user,
+        )
+
+    # PostBlame Model TEST
+    def test_postblame_get_absolute_url(self):
+        self.assertEqual(
+            self.topic_blame.get_absolute_url(),
+            f"/api/v1/topic/{self.post_topic.pk}/",
+        )
+        self.assertEqual(
+            self.pitapat_blame.get_absolute_url(),
+            f"/api/v1/pitapat/{self.post_pitapat.pk}/",
+        )
+
+    def test_postblame_unique_constraint(self):
+        with self.assertRaises(IntegrityError):
+            postblame_invalid = PostBlame(post=self.post_topic, user=self.user)
+            postblame_invalid.save()
+
+    # CommentBlame Model TEST
+    def test_commentblame_get_absolute_url(self):
+        self.assertEqual(
+            self.comment_blame.get_absolute_url(),
+            f"/api/v1/comment/{self.comment.pk}/",
+        )
+
+    def test_commentblame_unique_constraint(self):
+        with self.assertRaises(IntegrityError):
+            commentblame_invalid = CommentBlame(comment=self.comment, user=self.user)
+            commentblame_invalid.save()
 
     @classmethod
     def tearDownClass(cls):

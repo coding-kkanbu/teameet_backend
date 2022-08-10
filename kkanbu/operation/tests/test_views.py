@@ -49,15 +49,6 @@ class Like_ModelViewSetTest(APITestCase):
         for u2_pl in user2_postlikes:
             self.assertNotIn(u2_pl.pk, res_user1.data["results"])
 
-    def test_postlike_retrieve_redirect(self):
-        post = PostFactory.create()
-        postlike = PostLikeFactory.create(post=post, user=self.user1)
-        url = reverse("api:PostLike-detail", kwargs={"pk": postlike.pk})
-        url_post = reverse("api:Topic-detail", kwargs={"pk": post.pk})
-        res = self.client_user1.get(url)
-        self.assertEqual(res.status_code, status.HTTP_302_FOUND)
-        self.assertRedirects(res, url_post)
-
     # CommentLikeViewSet unittest
     def test_commentlike_get_queryset(self):
         user1_commentlikes = CommentLikeFactory.create_batch(10, user=self.user1)
@@ -76,15 +67,6 @@ class Like_ModelViewSetTest(APITestCase):
             self.assertNotIn(u1_cl.pk, res_user2.data["results"])
         for u2_cl in user2_commentlikes:
             self.assertNotIn(u2_cl.pk, res_user1.data["results"])
-
-    def test_commentlike_retrieve_redirect(self):
-        comment = CommentFactory.create()
-        commentlike = CommentLikeFactory.create(comment=comment, user=self.user1)
-        url = reverse("api:CommentLike-detail", kwargs={"pk": commentlike.pk})
-        url_comment = reverse("api:Comment-detail", kwargs={"pk": comment.pk})
-        res = self.client_user1.get(url)
-        self.assertEqual(res.status_code, status.HTTP_302_FOUND)
-        self.assertRedirects(res, url_comment)
 
     @classmethod
     def tearDownClass(cls):

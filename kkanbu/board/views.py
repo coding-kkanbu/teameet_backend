@@ -10,7 +10,12 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from kkanbu.notification.signals import notify
-from kkanbu.operation.serializers import CommentBlameSerializer, PostBlameSerializer
+from kkanbu.operation.serializers import (
+    CommentBlameSerializer,
+    CommentLikeSerializer,
+    PostBlameSerializer,
+    PostLikeSerializer,
+)
 
 from .helpers.filters import PostOrderingFilter, TagFilter
 from .helpers.pagination import CategoryPageNumberPagination, PostPageNumberPagination
@@ -37,15 +42,11 @@ class AbstractPostViewSet(ModelViewSet):
     search_fields = ["title", "content"]
 
     def get_serializer_class(self):
+        if self.action == "toggle_postlike":
+            return PostLikeSerializer
         if self.action == "report_postblame":
             return PostBlameSerializer
         return self.serializer_class
-
-    def get_serializer_context(self):
-        context = super(AbstractPostViewSet, self).get_serializer_context()
-        if self.action == "report_postblame":
-            context.update({"post_id": self.get_object().pk})
-        return context
 
     def perform_create(self, serializer):
         client_ip = get_client_ip(self.request)
@@ -89,47 +90,42 @@ class AbstractPostViewSet(ModelViewSet):
     @action(detail=True, methods=["POST"], permission_classes=[IsAuthenticated])
     def toggle_postlike(self, request, pk=None):
         post = self.get_object()
-        post_likes = post.postlike_set
-        user = request.user
-
-        post_like = post_likes.filter(user=user)
-        # check if post has postlike from the user
-        if post_like:
-            # delete post like if already liked by the user
-            post_like.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        else:
-            # create post like if not liked by the user
-            instance = post_likes.create(user=user)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        postlike = serializer.save(post=post, user=request.user)
+        if postlike:
             notify.send(
                 notification_type="postlike",
-                sender=instance,
+                sender=postlike,
                 recipient=post.writer,
                 message="회원님의 게시글을 좋아합니다.",
             )
             return Response(status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True, methods=["POST"], permission_classes=[IsAuthenticated])
     def report_postblame(self, request, pk=None):
         post = self.get_object()
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        instance = serializer.save()
+        postblame = serializer.save(post=post, user=request.user)
         # TODO 게시글신고 상수 규칙 변경
         # 신고 5회 이상이면 게시글 블라인드 처리
-        if post.postblame_set.count() >= settings.POSTBLAME_AUTO_BLIND_COUNT:
-            post.is_show = False
-            post.save()
-            # 알림 signal 발송
-            notify.send(
-                notification_type="postblame",
-                sender=instance,
-                recipient=post.writer,
-                message="회원님의 게시물이 신고 횟수 초과로 블라인드 처리되었습니다.",
+        if postblame:
+            if post.postblame_set.count() >= settings.POSTBLAME_AUTO_BLIND_COUNT:
+                post.is_show = False
+                post.save()
+                # 알림 signal 발송
+                notify.send(
+                    notification_type="postblame",
+                    sender=postblame,
+                    recipient=post.writer,
+                    message="회원님의 게시물이 신고 횟수 초과로 블라인드 처리되었습니다.",
+                )
+            return Response(
+                {"message": "회원님의 신고가 접수되었습니다."},
+                status=status.HTTP_201_CREATED,
             )
-        return Response(
-            {"message": "회원님의 신고가 접수되었습니다."}, status=status.HTTP_201_CREATED
-        )
 
 
 @extend_schema(
@@ -220,6 +216,8 @@ class CommentViewSet(ModelViewSet):
     def get_serializer_class(self):
         if self.action == "report_commentblame":
             return CommentBlameSerializer
+        elif self.action == "toggle_commentlike":
+            return CommentLikeSerializer
         return self.serializer_class
 
     def get_serializer_context(self):
@@ -254,44 +252,41 @@ class CommentViewSet(ModelViewSet):
     @action(detail=True, methods=["POST"], permission_classes=[IsAuthenticated])
     def toggle_commentlike(self, request, pk=None):
         comment = self.get_object()
-        comment_likes = comment.commentlike_set
-        user = request.user
-
-        comment_like = comment_likes.filter(user=user)
-        # check if comment has commentlike from the user
-        if comment_like:
-            # delete comment like if already liked by the user
-            comment_like.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        else:
-            # create comment like if not liked by the user
-            instance = comment_likes.create(user=user)
+        seriaizer = self.get_serializer(data=request.data)
+        seriaizer.is_valid(raise_exception=True)
+        commentlike = seriaizer.save(comment=comment, user=request.user)
+        if commentlike:
             notify.send(
                 notification_type="commentlike",
-                sender=instance,
+                sender=commentlike,
                 recipient=comment.writer,
                 message="회원님의 댓글을 좋아합니다.",
             )
             return Response(status=status.HTTP_201_CREATED)
+        else:
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True, methods=["POST"], permission_classes=[IsAuthenticated])
     def report_commentblame(self, request, pk=None):
         comment = self.get_object()
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        instance = serializer.save()
+        commentblame = serializer.save(comment=comment, user=request.user)
         # TODO 댓글신고 상수 규칙 변경
         # 신고 3회 이상이면 댓글 블라인드 처리
-        if comment.commentblame_set.count() >= settings.COMMENTBLAME_AUTO_BLIND_COUNT:
-            comment.is_show = False
-            comment.save()
-
-            notify.send(
-                notification_type="commentblame",
-                sender=instance,
-                recipient=comment.writer,
-                message="회원님의 댓글이 신고 횟수 초과로 블라인드 처리되었습니다.",
+        if commentblame:
+            if (
+                comment.commentblame_set.count()
+                >= settings.COMMENTBLAME_AUTO_BLIND_COUNT
+            ):
+                comment.is_show = False
+                comment.save()
+                notify.send(
+                    notification_type="commentblame",
+                    sender=commentblame,
+                    recipient=comment.writer,
+                    message="회원님의 댓글이 신고 횟수 초과로 블라인드 처리되었습니다.",
+                )
+            return Response(
+                {"message": "회원님의 신고가 접수되었습니다."}, status=status.HTTP_201_CREATED
             )
-        return Response(
-            {"message": "회원님의 신고가 접수되었습니다."}, status=status.HTTP_201_CREATED
-        )

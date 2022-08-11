@@ -1,11 +1,11 @@
 from django.contrib.auth import get_user_model
+from django.db.models import Q
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import (
     ModelSerializer,
     SerializerMethodField,
     StringRelatedField,
 )
-from rest_framework.validators import UniqueTogetherValidator
 
 from kkanbu.users.api.serializers import UserInfoSerializer
 
@@ -15,45 +15,58 @@ User = get_user_model()
 
 
 class PostLikeSerializer(ModelSerializer):
-    post = StringRelatedField()
+    user = UserInfoSerializer(read_only=True)
     url = SerializerMethodField()
 
     class Meta:
         model = PostLike
-        fields = ["id", "post", "created", "url"]
-        validators = [
-            UniqueTogetherValidator(
-                queryset=PostLike.objects.all(), fields=["post", "user"]
-            )
-        ]
+        fields = ["id", "post", "user", "created", "url"]
+        read_only_fields = ["post"]
 
     def get_url(self, obj):
         request = self.context.get("request")
         return request.build_absolute_uri(obj.get_absolute_url())
 
+    def save(self, **kwargs):
+        validated_data = {**self.validated_data, **kwargs}
+        post_id = validated_data["post"].id
+        user_id = validated_data["user"].id
+        post_like = PostLike.objects.filter(Q(post__id=post_id) & Q(user__id=user_id))
+        if post_like:
+            post_like.delete()
+            return None
+        return super().save(**validated_data)
+
 
 class CommentLikeSerializer(ModelSerializer):
-    comment = StringRelatedField()
+    user = UserInfoSerializer(read_only=True)
     url = SerializerMethodField()
 
     class Meta:
         model = CommentLike
-        fields = ["id", "comment", "created", "url"]
-
-        validators = [
-            UniqueTogetherValidator(
-                queryset=CommentLike.objects.all(), fields=["comment", "user"]
-            )
-        ]
+        fields = ["id", "comment", "user", "created", "url"]
+        read_only_fields = ["comment"]
 
     def get_url(self, obj):
         request = self.context.get("request")
         return request.build_absolute_uri(obj.get_absolute_url())
 
+    def save(self, **kwargs):
+        validated_data = {**self.validated_data, **kwargs}
+        comment_id = validated_data["comment"].id
+        user_id = validated_data["user"].id
+        comment_like = CommentLike.objects.filter(
+            Q(comment__id=comment_id) & Q(user__id=user_id)
+        )
+        if comment_like:
+            comment_like.delete()
+            return None
+        return super().save(**validated_data)
+
 
 class PostBlameSerializer(ModelSerializer):
-    post_title = SerializerMethodField()
-    user_info = SerializerMethodField()
+    post = StringRelatedField()
+    user = UserInfoSerializer(read_only=True)
     url = SerializerMethodField()
 
     class Meta:
@@ -61,47 +74,29 @@ class PostBlameSerializer(ModelSerializer):
         fields = [
             "id",
             "post",
-            "post_title",
             "user",
-            "user_info",
             "reason",
             "description",
             "created",
             "url",
         ]
 
-        validators = [
-            UniqueTogetherValidator(
-                queryset=PostBlame.objects.all(),
-                fields=["post", "user"],
-                message="이미 해당 댓글을 신고했습니다.",
-            )
-        ]
-
     def get_url(self, obj):
         request = self.context.get("request")
         return request.build_absolute_uri(obj.get_absolute_url())
 
-    def get_post_title(self, obj):
-        return obj.post.title
-
-    def get_user_info(self, obj):
-        user = User.objects.get(id=obj.user.id)
-        return UserInfoSerializer(user).data
-
-    def save(self):
-        post_id = self.validated_data["post"].id
-        user_id = self.validated_data["user"].id
-        if post_id != self.context.get("post_id"):
-            raise ValidationError("신고된 게시물 id가 일치하지 않습니다.")
-        if user_id != self.context.get("request").user.id:
-            raise ValidationError("신고한 유저의 id와 일치하지 않습니다.")
-        return super().save()
+    def save(self, **kwargs):
+        validated_data = {**self.validated_data, **kwargs}
+        post_id = validated_data["post"].id
+        user_id = validated_data["user"].id
+        if PostBlame.objects.filter(Q(post__id=post_id) & Q(user__id=user_id)).exists():
+            raise ValidationError("이미 해당 게시물을 신고했습니다.")
+        return super().save(**validated_data)
 
 
 class CommentBlameSerializer(ModelSerializer):
-    content = SerializerMethodField()
-    user_info = SerializerMethodField()
+    comment = StringRelatedField()
+    user = UserInfoSerializer(read_only=True)
     url = SerializerMethodField()
 
     class Meta:
@@ -109,39 +104,24 @@ class CommentBlameSerializer(ModelSerializer):
         fields = [
             "id",
             "comment",
-            "content",
             "user",
-            "user_info",
             "reason",
             "description",
             "created",
             "url",
         ]
 
-        validators = [
-            UniqueTogetherValidator(
-                queryset=CommentBlame.objects.all(),
-                fields=["comment", "user"],
-                message="이미 해당 댓글을 신고했습니다.",
-            )
-        ]
-
-    def get_content(self, obj):
-        return obj.comment.comment
-
-    def get_user_info(self, obj):
-        user = User.objects.get(id=obj.user.id)
-        return UserInfoSerializer(user).data
-
     def get_url(self, obj):
         request = self.context.get("request")
         return request.build_absolute_uri(obj.get_absolute_url())
 
-    def save(self):
-        comment_id = self.validated_data["comment"].id
-        user_id = self.validated_data["user"].id
-        if comment_id != self.context.get("comment_id"):
-            raise ValidationError("신고된 댓글 id가 일치하지 않습니다.")
-        if user_id != self.context.get("request").user.id:
-            raise ValidationError("신고한 유저의 id와 일치하지 않습니다.")
-        return super().save()
+    def save(self, **kwargs):
+        validated_data = {**self.validated_data, **kwargs}
+        comment_id = validated_data["comment"].id
+        user_id = validated_data["user"].id
+        # TODO UniqueTogtherValidtor 커스터마이징 해보기
+        if CommentBlame.objects.filter(
+            Q(comment__id=comment_id) & Q(user__id=user_id)
+        ).exists():
+            raise ValidationError("이미 해당 댓글을 신고했습니다.")
+        return super().save(**validated_data)

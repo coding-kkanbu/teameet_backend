@@ -186,3 +186,17 @@ class CommentSerializer(ModelSerializer):
 
     def get_commentlike_n(self, obj):
         return obj.commentlike_set.count()
+
+    def to_representation(self, instance: Comment):
+        user = self.context["request"].user
+        post = getattr(self.context, "post", None)
+        if instance.secret:
+            if (
+                user == instance.writer
+                or user == getattr(instance.parent_comment, "writer", None)
+                or user == getattr(post, "writer", None)
+            ):
+                pass
+            else:
+                instance.comment = "[글 작성자와 댓글 작성자만 볼 수 있는 댓글입니다]"
+        return super().to_representation(instance)

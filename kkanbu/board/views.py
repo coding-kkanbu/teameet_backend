@@ -35,16 +35,16 @@ class AbstractPostViewSet(ModelViewSet):
     pagination_class = PostPageNumberPagination
     search_fields = ["title", "content"]
 
-    def perform_create(self, serializer):
-        client_ip = get_client_ip(self.request)
-        serializer.save(writer=self.request.user, ip=client_ip)
-
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         instance.hit += 1
         instance.save()
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
+
+    def perform_create(self, serializer):
+        client_ip = get_client_ip(self.request)
+        serializer.save(writer=self.request.user, ip=client_ip)
 
     def perform_update(self, serializer):
         client_ip = get_client_ip(self.request)
@@ -59,19 +59,9 @@ class AbstractPostViewSet(ModelViewSet):
     def get_comments(self, request, pk=None):
         post = self.get_object()
         comment_set = post.comment_set.order_by("created")
-        for comment in comment_set:
-            if comment.secret:
-                if comment.parent_comment:
-                    if (
-                        request.user != comment.writer
-                        and request.user != comment.parent_comment.writer
-                        and request.user != post.writer
-                    ):
-                        comment.comment = "[글 작성자와 댓글 작성자만 볼 수 있는 댓글입니다]"
-                else:
-                    if request.user != comment.writer and request.user != post.writer:
-                        comment.comment = "[글 작성자와 댓글 작성자만 볼 수 있는 댓글입니다]"
-        serializer = CommentSerializer(comment_set, many=True)
+        serializer = CommentSerializer(
+            comment_set, context={"request": request, "post": post}, many=True
+        )
         return Response(serializer.data)
 
     @action(detail=True, methods=["POST"], permission_classes=[IsAuthenticated])

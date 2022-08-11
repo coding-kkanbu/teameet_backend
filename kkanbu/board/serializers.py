@@ -1,3 +1,4 @@
+from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from taggit.serializers import TaggitSerializer, TagListSerializerField
 
@@ -200,3 +201,13 @@ class CommentSerializer(ModelSerializer):
             else:
                 instance.comment = "[글 작성자와 댓글 작성자만 볼 수 있는 댓글입니다]"
         return super().to_representation(instance)
+
+    def validate(self, data):
+        """
+        Check that comment post pk is the same as parent comment pk
+        """
+        if data["parent_comment"] and data["parent_comment"].post.id != data["post"].id:
+            raise ValidationError(
+                "post pk should be the same as parent comment post pk"
+            )
+        return data

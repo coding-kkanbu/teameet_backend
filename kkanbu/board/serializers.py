@@ -190,7 +190,7 @@ class CommentSerializer(ModelSerializer):
 
     def to_representation(self, instance: Comment):
         user = self.context["request"].user
-        post = getattr(self.context, "post", None)
+        post = self.context.get("post", None)
         if instance.secret:
             if (
                 user == instance.writer

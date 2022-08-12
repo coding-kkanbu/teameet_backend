@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.db.models import Q
 from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
@@ -7,6 +8,8 @@ from rest_framework.test import APIClient, APIRequestFactory
 from kkanbu.board.helpers.utils import get_client_ip
 from kkanbu.board.models import Category, Post
 from kkanbu.board.serializers import PostSerializer
+from kkanbu.operation.models import PostBlame, PostLike
+from kkanbu.users.tests.factories import CategoryFactory, PostFactory, UserFactory
 
 Topic_URL = reverse("api:Topic-list")
 
@@ -188,3 +191,72 @@ class PostAPIPermissionTests(TestCase):
         self.assertEqual(post.title, payload["title"])
         self.assertEqual(tag_set.filter(name="small talk").count(), 0)
         self.assertEqual(tag_set.filter(name="Love affair").count(), 1)
+
+
+class TopicAPICustomActionTests(TestCase):
+    def setUp(self):
+        self.category = CategoryFactory.create(app="Topic")
+        self.post = PostFactory.create(category=self.category)
+        self.user = UserFactory.create()
+        self.client = APIClient()
+        self.client.force_authenticate(self.user)
+
+    def test_toggle_postlike(self):
+        url = reverse("api:Topic-toggle-postlike", args=[self.post.id])
+        # attempt 1st when create
+        res = self.client.post(url)
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        self.assertTrue(PostLike.objects.filter(post=self.post).exists())
+        # post.id가 정확히 들어가는지
+        self.assertTrue(PostLike.objects.get(post__id=self.post.id))
+        # request user.id가 정확히 들어가는지
+        self.assertTrue(PostLike.objects.get(user__id=self.user.id))
+
+        # attempt 2nd when delete
+        res = self.client.post(url)
+        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(PostLike.objects.filter(post=self.post).exists())
+
+    def test_report_postblame_once_success(self):
+        url = reverse("api:Topic-report-postblame", args=[self.post.id])
+        payload = {"reason": "abuse", "description": "blaah blaah"}
+        # attempt 1st when create
+        res = self.client.post(url, payload)
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        self.assertTrue(PostBlame.objects.filter(post=self.post).exists())
+        self.assertTrue(
+            PostBlame.objects.filter(
+                Q(reason=payload["reason"]) & Q(description=payload["description"])
+            ).exists()
+        )
+        # post.id가 정확히 들어가는지
+        self.assertTrue(PostBlame.objects.get(post__id=self.post.id))
+        # request user.id가 정확히 들어가는지
+        self.assertTrue(PostBlame.objects.get(user__id=self.user.id))
+
+    def test_report_postblame_twice_fail(self):
+        url = reverse("api:Topic-report-postblame", args=[self.post.id])
+        payload = {"reason": "abuse", "description": "blaah blaah"}
+        self.client.post(url, payload)
+        res = self.client.post(url, payload)
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(res.data[0].title(), "이미 해당 게시물을 신고했습니다.")
+
+    def test_report_postblame_more_than_blind_count(self):
+        users = UserFactory.create_batch(4)
+        for user in users:
+            PostBlame.objects.create(
+                post=self.post,
+                user=user,
+                reason="abuse",
+            )
+        self.post.refresh_from_db()
+        # 4번째까지는 변화없음
+        self.assertTrue(self.post.is_show)
+        url = reverse("api:Topic-report-postblame", args=[self.post.id])
+        payload = {"reason": "abuse", "description": "blaah blaah"}
+        # 5번째 is_show False 확인
+        res = self.client.post(url, payload)
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        self.post.refresh_from_db()
+        self.assertFalse(self.post.is_show)

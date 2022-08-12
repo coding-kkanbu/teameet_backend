@@ -49,6 +49,8 @@ class PostFactory(DjangoModelFactory):
     class Meta:
         model = Post
 
+    title = "Post Title"
+    content = "This is post content"
     category = factory.SubFactory(CategoryFactory)
     writer = factory.SubFactory(UserFactory)
 

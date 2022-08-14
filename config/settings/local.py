@@ -27,16 +27,8 @@ CACHES = {
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-backend
 EMAIL_BACKEND = env(
-    "DJANGO_EMAIL_BACKEND", default="django.core.mail.backends.smtp.EmailBackend"
+    "DJANGO_EMAIL_BACKEND", default="django.core.mail.backends.console.EmailBackend"
 )
-
-
-EMAIL_USE_TLS = True
-EMAIL_HOST = "smtp.gmail.com"
-EMAIL_PORT = 587
-EMAIL_HOST_USER = env("EMAIL_HOST_USER", default="sample_email_host_user")
-EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default="sample_email_host_password")
-DEFAULT_FROM_EMAIL = "teameet"
 
 # WhiteNoise
 # ------------------------------------------------------------------------------
@@ -77,8 +69,6 @@ CELERY_TASK_EAGER_PROPAGATES = True
 
 # TODO Production 단계에서 CALLBACK URI 수정
 BASE_URL = "http://127.0.0.1:8000/"
-ACCOUNT_DEFAULT_HTTP_PROTOCOL = "http"
 
 GOOGLE_CALLBACK_URI = BASE_URL + "api/v1/accounts/google/login/callback/"
 KAKAO_CALLBACK_URI = BASE_URL + "api/v1/accounts/kakao/login/callback/"
-PASSWORD_RESET_TIMEOUT = 600

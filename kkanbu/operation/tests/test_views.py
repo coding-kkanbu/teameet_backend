@@ -15,20 +15,17 @@ from kkanbu.users.tests.factories import (
 
 class Like_ModelViewSetTest(APITestCase):
     @classmethod
-    def setUpClass(cls):
+    def setUpTestData(cls):
         cls.cat_topic = CategoryFactory(app="Topic")
         cls.post_topic = PostFactory.create(category=cls.cat_topic)
         cls.comment = CommentFactory.create()
+        cls.user1 = UserFactory.create()
+        cls.user2 = UserFactory.create()
 
-    def setUp(self):
-        self.user1 = UserFactory.create()
-        self.user2 = UserFactory.create()
-
-        self.client_user1 = APIClient()
-        self.client_user1.force_authenticate(user=self.user1)
-
-        self.client_user2 = APIClient()
-        self.client_user2.force_authenticate(user=self.user2)
+        cls.client_user1 = APIClient()
+        cls.client_user1.force_authenticate(user=cls.user1)
+        cls.client_user2 = APIClient()
+        cls.client_user2.force_authenticate(user=cls.user2)
 
     # PostLikeViewSet unittest
     def test_postlike_get_queryset(self):
@@ -67,9 +64,3 @@ class Like_ModelViewSetTest(APITestCase):
             self.assertNotIn(u1_cl.pk, res_user2.data["results"])
         for u2_cl in user2_commentlikes:
             self.assertNotIn(u2_cl.pk, res_user1.data["results"])
-
-    @classmethod
-    def tearDownClass(cls):
-        cls.cat_topic.delete()
-        cls.post_topic.delete()
-        cls.comment.delete()

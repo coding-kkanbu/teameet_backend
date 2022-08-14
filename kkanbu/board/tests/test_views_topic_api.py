@@ -47,6 +47,8 @@ class PostAPIHTTPMethodsTests(TestCase):
 
     def test_retrieve_post_ordering_by_query(self):
         """Test ordering queryset by query params"""
+        # DB 초기화
+        Post.objects.all().delete()
         post1 = sample_post(
             writer=self.user, category=self.category, title="Sample Post 1"
         )
@@ -56,7 +58,6 @@ class PostAPIHTTPMethodsTests(TestCase):
         post3 = sample_post(
             writer=self.user, category=self.category, title="Sample Post 3"
         )
-
         res1 = self.client.get(Topic_URL, {"ordering": "-created"})
         serializer1 = PostSerializer(post1)
         serializer3 = PostSerializer(post3)

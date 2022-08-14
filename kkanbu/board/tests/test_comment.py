@@ -96,7 +96,13 @@ class TestComment(APITestCase):
     def test_secret_comment(self):
         """Test if secret comment is hidden to another person"""
         # post1 writer is user1
-        CommentFactory.create_batch(20, post=self.post1, secret=True, writer=self.user2)
+        comment = CommentFactory.create(
+            post=self.post1,
+            writer=self.user2,
+            secret=True,
+            is_show=True,
+            parent_comment=None,
+        )
         # complete stranger
         user3 = UserFactory.create()
         api_client3 = APIClient()
@@ -107,9 +113,12 @@ class TestComment(APITestCase):
         res2 = self.client2.get(url)
         res3 = api_client3.get(url)
 
-        self.assertEqual(res1.data[0]["comment"], "이것은 댓글입니다.")
-        self.assertEqual(res2.data[0]["comment"], "이것은 댓글입니다.")
-        self.assertEqual(res3.data[0]["comment"], "[글 작성자와 댓글 작성자만 볼 수 있는 댓글입니다]")
+        comment_res1 = [item for item in res1.data if item["id"] == comment.id][0]
+        comment_res2 = [item for item in res2.data if item["id"] == comment.id][0]
+        comment_res3 = [item for item in res3.data if item["id"] == comment.id][0]
+        self.assertEqual(comment_res1["comment"], "이것은 댓글입니다.")
+        self.assertEqual(comment_res2["comment"], "이것은 댓글입니다.")
+        self.assertEqual(comment_res3["comment"], "[글 작성자와 댓글 작성자만 볼 수 있는 댓글입니다]")
 
     def test_secret_parent_comment(self):
         """Test getting secret comment is shown to the writer of parent comment"""
@@ -119,17 +128,35 @@ class TestComment(APITestCase):
         api_client3.force_authenticate(user3)
 
         # post1 writer is user1
-        parent_comment = CommentFactory.create(post=self.post1, writer=self.user2)
+        parent_comment = CommentFactory.create(
+            post=self.post1, writer=self.user2, parent_comment=None, is_show=True
+        )
         # secret child comment by another stranger
         comment = CommentFactory.create(
-            post=self.post1, secret=True, parent_comment=parent_comment
+            post=self.post1, secret=True, is_show=True, parent_comment=parent_comment
         )
 
         url = reverse("api:Topic-get-comments", args=[self.post1.id])
         res2 = self.client2.get(url)
         res3 = api_client3.get(url)
 
-        comment_from_res2 = [item for item in res2.data if item["id"] == comment.id][0]
-        comment_from_res3 = [item for item in res3.data if item["id"] == comment.id][0]
+        # 부모댓글 -> 자식댓글 조회
+        parent_comment_res2 = [
+            item for item in res2.data if item["id"] == parent_comment.id
+        ][0]
+        comment_from_res2 = [
+            item
+            for item in parent_comment_res2["child_comments"]
+            if item["id"] == comment.id
+        ][0]
+        # 부모댓글 -> 자식댓글 조회
+        parent_comment_res3 = [
+            item for item in res3.data if item["id"] == parent_comment.id
+        ][0]
+        comment_from_res3 = [
+            item
+            for item in parent_comment_res3["child_comments"]
+            if item["id"] == comment.id
+        ][0]
         self.assertEqual(comment_from_res2["comment"], "이것은 댓글입니다.")
         self.assertEqual(comment_from_res3["comment"], "[글 작성자와 댓글 작성자만 볼 수 있는 댓글입니다]")

@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect
+from django.shortcuts import redirect
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin
@@ -29,9 +29,7 @@ class NotificationViewSet(GenericViewSet, ListModelMixin):
         instance.is_read = True
         instance.save()
         # TODO: replace it with service host
-        return HttpResponseRedirect(
-            "http://127.0.0.1:8000" + instance.get_absolute_url()
-        )
+        return redirect(instance.get_absolute_url())
 
     # 네비게이션바 최근 5개 알림사항
     @action(detail=False)

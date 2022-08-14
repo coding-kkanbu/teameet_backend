@@ -341,6 +341,7 @@ REST_AUTH_SERIALIZERS = {
     "LOGIN_SERIALIZER": "kkanbu.accounts.serializers.CustomLoginSerializer",
     "USER_DETAILS_SERIALIZER": "kkanbu.accounts.serializers.CustomUserDetailsSerializer",
 }
+REST_AUTH_PW_RESET_USE_SITES_DOMAIN = True
 
 # django-cors-headers - https://github.com/adamchainz/django-cors-headers#setup
 # CORS_URLS_REGEX = r"^/api/.*$"

@@ -2,7 +2,7 @@ from django.urls import reverse
 from rest_framework import status
 
 from kkanbu.notification.models import Notification
-from kkanbu.notification.tests.test_api_helper import NotificationViewSetTestData
+from kkanbu.notification.tests.test_helper import NotificationViewSetTestData
 
 
 class NotificationViewSetTest(NotificationViewSetTestData):
@@ -12,13 +12,13 @@ class NotificationViewSetTest(NotificationViewSetTestData):
 
         Notification.objects.create(
             notification_type="comment",
-            sender=cls.comment1,
+            content_object=cls.comment1,
             recipient=cls.user1,
             message="Got an Comment1",
         )
         Notification.objects.create(
             notification_type="comment",
-            sender=cls.comment2,
+            content_object=cls.comment2,
             recipient=cls.user2,
             message="Got an Comment2",
         )
@@ -43,7 +43,7 @@ class NotificationViewSetTest(NotificationViewSetTestData):
         for i in range(6):
             Notification.objects.create(
                 notification_type="comment",
-                sender=self.comment1,
+                content_object=self.comment1,
                 recipient=self.user1,
                 message=f"Got an Comment_{i}",
             )

@@ -175,7 +175,6 @@ class CommentSerializer(ModelSerializer):
             "parent_comment",
             "comment",
             "secret",
-            "is_show",
             "username",
             "created",
             "commentlike_n",

@@ -58,7 +58,7 @@ class AbstractPostViewSet(ModelViewSet):
     @action(detail=True, permission_classes=[IsAuthenticated])
     def get_comments(self, request, pk=None):
         post = self.get_object()
-        comment_set = post.comment_set.order_by("created")
+        comment_set = post.comment_set.filter(is_show=True).order_by("created")
         serializer = CommentSerializer(
             comment_set, context={"request": request, "post": post}, many=True
         )

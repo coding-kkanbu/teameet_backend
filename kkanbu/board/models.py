@@ -79,7 +79,11 @@ class Comment(TimeStampedModel):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     writer = models.ForeignKey(User, on_delete=models.CASCADE)
     parent_comment = models.ForeignKey(
-        "self", on_delete=models.SET_NULL, related_name="parent_comment_set", null=True
+        "self",
+        on_delete=models.SET_NULL,
+        related_name="child_comments",
+        null=True,
+        blank=True,
     )
     is_show = models.BooleanField(default=True)
     secret = models.BooleanField(default=False)

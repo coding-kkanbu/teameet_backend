@@ -175,11 +175,19 @@ class CommentSerializer(ModelSerializer):
             "parent_comment",
             "comment",
             "secret",
+            "is_show",
             "username",
             "created",
             "commentlike_n",
             "commentlike_set",
+            "child_comments",
         ]
+        read_only_fields = ["is_show"]
+
+    def get_fields(self):
+        fields = super(CommentSerializer, self).get_fields()
+        fields["child_comments"] = CommentSerializer(many=True, read_only=True)
+        return fields
 
     def get_username(self, obj):
         return str(obj.writer.username)

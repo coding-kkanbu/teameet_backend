@@ -48,3 +48,15 @@ class UserProfileSerializer(serializers.ModelSerializer):
         model = User
         fields = ["id", "profile_image"]
         extra_kwargs = {"profile_image": {"required": True}}
+
+
+class UserInfoSerializer(serializers.ModelSerializer):
+    """User에 대한 간단한 정보 조회용으로 nested serializer를 위한 객체 추가"""
+
+    class Meta:
+        model = User
+        fields = [
+            "id",
+            "username",
+            "random_name",
+        ]

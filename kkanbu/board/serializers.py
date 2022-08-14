@@ -4,7 +4,7 @@ from taggit.serializers import TaggitSerializer, TagListSerializerField
 
 from kkanbu.board.models import Category, Comment, Post, SogaetingOption
 from kkanbu.operation.serializers import CommentLikeSerializer, PostLikeSerializer
-from kkanbu.users.models import User
+from kkanbu.users.api.serializers import UserInfoSerializer
 
 
 class SogaetingOptionSerializer(ModelSerializer):
@@ -17,16 +17,6 @@ class SogaetingOptionSerializer(ModelSerializer):
             "connected",
         ]
         read_only_fields = ["connected"]
-
-
-class UserSerializer(ModelSerializer):
-    class Meta:
-        model = User
-        fields = [
-            "id",
-            "username",
-            "random_name",
-        ]
 
 
 class PostListSerializer(ModelSerializer):
@@ -59,7 +49,7 @@ class PostListSerializer(ModelSerializer):
 class PostSerializer(TaggitSerializer, ModelSerializer):
     category_set = SerializerMethodField()
     tags = TagListSerializerField()
-    writer = UserSerializer(read_only=True)
+    writer = UserInfoSerializer(read_only=True)
     postlike_n = SerializerMethodField()
     postlike_set = PostLikeSerializer(many=True, read_only=True)
     comment_n = SerializerMethodField()
@@ -98,7 +88,7 @@ class PitAPatSerializer(TaggitSerializer, ModelSerializer):
     category_set = SerializerMethodField()
     tags = TagListSerializerField()
     sogaetingoption = SogaetingOptionSerializer()
-    writer = UserSerializer(read_only=True)
+    writer = UserInfoSerializer(read_only=True)
     postlike_n = SerializerMethodField()
     postlike_set = PostLikeSerializer(many=True, read_only=True)
     comment_n = SerializerMethodField()

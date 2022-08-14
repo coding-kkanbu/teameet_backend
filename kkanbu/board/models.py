@@ -1,8 +1,13 @@
 from django.conf import settings
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from django_extensions.db.models import TimeStampedModel
 from taggit.managers import TaggableManager
+
+from kkanbu.notification.models import Notification
 
 User = settings.AUTH_USER_MODEL
 
@@ -32,9 +37,18 @@ class Post(TimeStampedModel):
     deleted_at = models.DateTimeField(null=True, blank=True)
     ip = models.GenericIPAddressField(null=True, blank=True)
     hit = models.PositiveIntegerField(default=0)
+    notifications = GenericRelation(Notification)
 
     def __str__(self):
         return f"[{self.id}]{self.title} | {self.writer}"
+
+
+@receiver(post_save, sender=Post, dispatch_uid="delete_noti_by_post")
+def delete_noti_by_post(sender, instance, created, **kwargs):
+    if created:
+        pass
+    elif instance.is_show is False:
+        instance.notifications.all().delete()
 
 
 class SogaetingOption(models.Model):
@@ -89,9 +103,18 @@ class Comment(TimeStampedModel):
     secret = models.BooleanField(default=False)
     deleted_at = models.DateTimeField(null=True, blank=True)
     ip = models.GenericIPAddressField(null=True, blank=True)
+    notifications = GenericRelation(Notification)
 
     class Meta:
         ordering = ("created",)
 
     def __str__(self):
         return f"[{self.id}]{self.comment[:10]} | {self.writer}"
+
+
+@receiver(post_save, sender=Comment, dispatch_uid="delete_noti_by_comment")
+def delete_noti_by_comment(sender, instance, created, **kwargs):
+    if created:
+        pass
+    elif instance.is_show is False:
+        instance.notifications.all().delete()

@@ -81,7 +81,7 @@ class Comment(TimeStampedModel):
     parent_comment = models.ForeignKey(
         "self",
         on_delete=models.SET_NULL,
-        related_name="parent_comment_set",
+        related_name="child_comments",
         null=True,
         blank=True,
     )

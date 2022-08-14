@@ -13,7 +13,12 @@ from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlencode, urlsafe_base64_decode, urlsafe_base64_encode
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.authentication import BasicAuthentication
+from rest_framework.decorators import (
+    api_view,
+    authentication_classes,
+    permission_classes,
+)
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -25,6 +30,7 @@ User = get_user_model()
 
 
 @extend_schema(tags=["accounts"])
+@authentication_classes([BasicAuthentication])
 def get_redirect_url(adapter, provider_name, callback_url, scope):
     app = SocialApp.objects.get(provider=provider_name)
     params = {
@@ -40,6 +46,7 @@ def get_redirect_url(adapter, provider_name, callback_url, scope):
 @extend_schema(tags=["accounts"])
 @api_view(["GET"])
 @permission_classes([AllowAny])
+@authentication_classes([BasicAuthentication])
 def get_google_redirect_url(request):
     try:
         scope = settings.SOCIALACCOUNT_PROVIDERS["google"]["SCOPE"]
@@ -55,6 +62,7 @@ def get_google_redirect_url(request):
 @extend_schema(tags=["accounts"])
 @api_view(["GET"])
 @permission_classes([AllowAny])
+@authentication_classes([BasicAuthentication])
 def get_kakao_redirect_url(request):
     try:
         scope = settings.SOCIALACCOUNT_PROVIDERS["kakao"]["SCOPE"]
@@ -70,12 +78,14 @@ def get_kakao_redirect_url(request):
 @extend_schema(tags=["accounts"])
 @api_view(["GET"])
 @permission_classes([AllowAny])
+@authentication_classes([BasicAuthentication])
 def get_callback(request):
     code = request.GET.get("code")
     return Response({"code": code})
 
 
 @extend_schema(tags=["accounts"])
+@authentication_classes([BasicAuthentication])
 class GoogleLogin(SocialLoginView):
     adapter_class = google_views.GoogleOAuth2Adapter
     client_class = OAuth2Client
@@ -84,6 +94,7 @@ class GoogleLogin(SocialLoginView):
 
 
 @extend_schema(tags=["accounts"])
+@authentication_classes([BasicAuthentication])
 class KakaoLogin(SocialLoginView):
     adapter_class = kakao_views.KakaoOAuth2Adapter
     client_class = OAuth2Client

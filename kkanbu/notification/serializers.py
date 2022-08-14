@@ -25,7 +25,7 @@ class NotificationSerializer(ModelSerializer):
 
     def get_sender_info(self, obj):
         if obj.notification_type == "comment":
-            sender_info = obj.sender.writer.username
+            sender_info = obj.content_object.writer.username
         else:
-            sender_info = obj.sender.user.username
+            sender_info = obj.content_object.user.username
         return sender_info

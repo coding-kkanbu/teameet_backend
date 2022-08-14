@@ -21,11 +21,12 @@ class Notification(TimeStampedModel):
 
     notification_type = models.CharField(max_length=20, choices=NotiType.choices)
     # notification(을 만드는)과 연결된 객체
-    sender_content_type = models.ForeignKey(
+    content_type = models.ForeignKey(
         ContentType, related_name="notify_sender", on_delete=models.CASCADE
     )
-    sender_object_id = models.PositiveIntegerField()
-    sender = GenericForeignKey("sender_content_type", "sender_object_id")
+    object_id = models.PositiveIntegerField()
+    # sender를 content_object로 이름 변경
+    content_object = GenericForeignKey("content_type", "object_id")
     recipient = models.ForeignKey(
         User, related_name="notifications", on_delete=models.CASCADE
     )
@@ -45,18 +46,34 @@ class Notification(TimeStampedModel):
         return timesince(self.created, now)
 
     def __str__(self):
-        return f"[From. {self.sender} || To. {self.recipient}] {self.message} {self.timesince()} ago"
+        return f"[{self.id}] {self.message} {self.timesince()} ago"
 
     def get_absolute_url(self):
-        if self.notification_type in ["commentlike", "commentblame"]:
-            return reverse("api:Comment-detail", args=[self.sender.comment.pk])
-        else:
-            return reverse("api:Post-detail", args=[self.sender.post.pk])
+        try:
+            if self.notification_type == "comment":
+                return reverse("api:Comment-detail", args=[self.content_object.pk])
+            elif self.notification_type in ["commentlike", "commentblame"]:
+                return reverse(
+                    "api:Comment-detail", args=[self.content_object.comment.pk]
+                )
+            else:
+                app = self.content_object.post.category.app
+                if app == "Topic":
+                    return reverse(
+                        "api:Topic-detail", args=[self.content_object.post.pk]
+                    )
+                if app == "PitAPat":
+                    return reverse(
+                        "api:PitAPat-detail", args=[self.content_object.post.pk]
+                    )
+        except Exception as e:
+            return e
 
 
 def notify_handler(message, **kwargs):
     kwargs.pop("signal", None)
-    notify = Notification(message=str(message), **kwargs)
+    content_obj = kwargs.pop("sender", None)
+    notify = Notification(message=str(message), content_object=content_obj, **kwargs)
     notify.save()
 
     return notify

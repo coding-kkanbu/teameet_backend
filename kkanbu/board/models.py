@@ -1,13 +1,8 @@
 from django.conf import settings
-from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from django.db.models.signals import pre_delete
-from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from django_extensions.db.models import TimeStampedModel
 from taggit.managers import TaggableManager
-
-from kkanbu.notification.models import Notification
 
 User = settings.AUTH_USER_MODEL
 
@@ -100,12 +95,3 @@ class Comment(TimeStampedModel):
 
     def __str__(self):
         return f"[{self.id}]{self.comment[:10]} | {self.writer}"
-
-
-@receiver(pre_delete, sender=Comment)
-def delete_notification(sender, instance, **kwargs):
-    ctype = ContentType.objects.get_for_model(instance)
-    Notification.objects.filter(
-        sender_content_type=ctype, sender_object_id=instance.pk
-    ).delete()
-    print("Notification is about to be deleted by comment")

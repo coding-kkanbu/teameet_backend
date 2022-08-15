@@ -37,7 +37,6 @@ class Post(TimeStampedModel):
     deleted_at = models.DateTimeField(null=True, blank=True)
     ip = models.GenericIPAddressField(null=True, blank=True)
     hit = models.PositiveIntegerField(default=0)
-    notifications = GenericRelation(Notification)
 
     def __str__(self):
         return f"[{self.id}]{self.title} | {self.writer}"
@@ -48,7 +47,10 @@ def delete_noti_by_post(sender, instance, created, **kwargs):
     if created:
         pass
     elif instance.is_show is False:
-        instance.notifications.all().delete()
+        for postlike in instance.postlike_set.all():
+            postlike.notifications.all().delete()
+        for postblame in instance.postblame_set.all():
+            postblame.notifications.all().delete()
 
 
 class SogaetingOption(models.Model):
@@ -118,3 +120,7 @@ def delete_noti_by_comment(sender, instance, created, **kwargs):
         pass
     elif instance.is_show is False:
         instance.notifications.all().delete()
+        for commentlike in instance.commentlike_set.all():
+            commentlike.notifications.all().delete()
+        for commentblame in instance.commentblame_set.all():
+            commentblame.notifications.all().delete()

@@ -1,6 +1,7 @@
 from django.shortcuts import redirect
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
+from rest_framework.filters import OrderingFilter
 from rest_framework.mixins import ListModelMixin
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -18,11 +19,11 @@ class NotificationViewSet(GenericViewSet, ListModelMixin):
     serializer_class = NotificationSerializer
     permission_classes = [IsAuthenticated]
     pagination_class = NotiPageNumberPagination
+    filter_backends = [OrderingFilter]
+    ordering = ["is_read", "-created"]
 
     def get_queryset(self):
-        return Notification.objects.filter(recipient=self.request.user).order_by(
-            "is_read"
-        )
+        return Notification.objects.filter(recipient=self.request.user)
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -33,6 +34,7 @@ class NotificationViewSet(GenericViewSet, ListModelMixin):
     # 네비게이션바 최근 5개 알림사항
     @action(detail=False)
     def recent_noti(self, request):
-        recent_noti = self.get_queryset()[:5]
+        queryset = self.get_queryset()
+        recent_noti = queryset.order_by("-created")[:5]
         serializer = self.get_serializer(recent_noti, many=True)
         return Response(serializer.data)

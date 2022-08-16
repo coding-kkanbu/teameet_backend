@@ -1,10 +1,7 @@
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
-from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models.constraints import UniqueConstraint
-from django.db.models.signals import pre_delete
-from django.dispatch import receiver
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django_extensions.db.models import TimeStampedModel
@@ -41,12 +38,6 @@ class PostLike(TimeStampedModel):
             return None
 
 
-@receiver(pre_delete, sender=PostLike)
-def delete_noti_by_postlike(sender, instance, **kwargs):
-    ctype = ContentType.objects.get_for_model(instance)
-    Notification.objects.filter(content_type=ctype, object_id=instance.pk).delete()
-
-
 class CommentLike(TimeStampedModel):
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -65,12 +56,6 @@ class CommentLike(TimeStampedModel):
 
     def get_absolute_url(self):
         return reverse("api:Comment-detail", kwargs={"pk": self.comment.pk})
-
-
-@receiver(pre_delete, sender=CommentLike)
-def delete_noti_by_commentLike(sender, instance, **kwargs):
-    ctype = ContentType.objects.get_for_model(instance)
-    Notification.objects.filter(content_type=ctype, object_id=instance.pk).delete()
 
 
 # Blame Reason Category

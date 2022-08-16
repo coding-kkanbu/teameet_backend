@@ -1,8 +1,6 @@
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from django_extensions.db.models import TimeStampedModel
 from taggit.managers import TaggableManager
@@ -40,17 +38,6 @@ class Post(TimeStampedModel):
 
     def __str__(self):
         return f"[{self.id}]{self.title} | {self.writer}"
-
-
-@receiver(post_save, sender=Post, dispatch_uid="delete_noti_by_post")
-def delete_noti_by_post(sender, instance, created, **kwargs):
-    if created:
-        pass
-    elif instance.is_show is False:
-        for postlike in instance.postlike_set.all():
-            postlike.notifications.all().delete()
-        for postblame in instance.postblame_set.all():
-            postblame.notifications.all().delete()
 
 
 class SogaetingOption(models.Model):
@@ -112,15 +99,3 @@ class Comment(TimeStampedModel):
 
     def __str__(self):
         return f"[{self.id}]{self.comment[:10]} | {self.writer}"
-
-
-@receiver(post_save, sender=Comment, dispatch_uid="delete_noti_by_comment")
-def delete_noti_by_comment(sender, instance, created, **kwargs):
-    if created:
-        pass
-    elif instance.is_show is False:
-        instance.notifications.all().delete()
-        for commentlike in instance.commentlike_set.all():
-            commentlike.notifications.all().delete()
-        for commentblame in instance.commentblame_set.all():
-            commentblame.notifications.all().delete()

@@ -48,6 +48,11 @@ class UserViewSet(
         instance.is_active = False
         instance.save()
 
+    @action(detail=False)
+    def me(self, request):
+        serializer = self.get_serializer(request.user, context={"request": request})
+        return Response(status=status.HTTP_200_OK, data=serializer.data)
+
     @action(detail=True)
     def my_posts(self, request, username=None):
         user = self.get_object()

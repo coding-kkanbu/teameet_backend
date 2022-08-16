@@ -1,8 +1,11 @@
 from django.conf import settings
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django_extensions.db.models import TimeStampedModel
 from taggit.managers import TaggableManager
+
+from kkanbu.notification.models import Notification
 
 User = settings.AUTH_USER_MODEL
 
@@ -89,6 +92,7 @@ class Comment(TimeStampedModel):
     secret = models.BooleanField(default=False)
     deleted_at = models.DateTimeField(null=True, blank=True)
     ip = models.GenericIPAddressField(null=True, blank=True)
+    notifications = GenericRelation(Notification)
 
     class Meta:
         ordering = ("created",)

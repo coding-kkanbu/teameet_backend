@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.db.models.constraints import UniqueConstraint
 from django.urls import reverse
@@ -6,6 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from django_extensions.db.models import TimeStampedModel
 
 from kkanbu.board.models import Comment, Post
+from kkanbu.notification.models import Notification
 
 User = settings.AUTH_USER_MODEL
 
@@ -13,6 +15,7 @@ User = settings.AUTH_USER_MODEL
 class PostLike(TimeStampedModel):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    notifications = GenericRelation(Notification)
 
     class Meta:
         constraints = [
@@ -38,6 +41,7 @@ class PostLike(TimeStampedModel):
 class CommentLike(TimeStampedModel):
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    notifications = GenericRelation(Notification)
 
     class Meta:
         constraints = [
@@ -72,6 +76,7 @@ class PostBlame(TimeStampedModel):
         max_length=30, choices=ReasonType.choices, default=ReasonType.ETC
     )
     description = models.TextField(null=True, blank=True)
+    notifications = GenericRelation(Notification)
 
     class Meta:
         constraints = [
@@ -98,6 +103,7 @@ class CommentBlame(TimeStampedModel):
         max_length=30, choices=ReasonType.choices, default=ReasonType.ETC
     )
     description = models.TextField(null=True, blank=True)
+    notifications = GenericRelation(Notification)
 
     class Meta:
         constraints = [

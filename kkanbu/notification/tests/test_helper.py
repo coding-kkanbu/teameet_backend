@@ -19,27 +19,32 @@ class NotificationViewSetTestData(APITestCase):
             random_name="random name 2",
             password="user2pass00",
         )
-        cat = Category.objects.create(name="테스트1")
-        post1 = Post.objects.create(
-            category=cat,
+        cat_topic = Category.objects.create(
+            app="Topic", name="토픽 테스트", slug="topic_test"
+        )
+        cat_pitapat = Category.objects.create(
+            app="PitAPat", name="핏어펫 테스트", slug="pitapat_test"
+        )
+        cls.post_topic = Post.objects.create(
+            category=cat_topic,
             writer=cls.user1,
             title="Post1",
             content="Post1_content",
         )
-        post2 = Post.objects.create(
-            category=cat,
+        cls.post_pitapat = Post.objects.create(
+            category=cat_pitapat,
             writer=cls.user2,
             title="Post2",
             content="Post2_content",
         )
         cls.comment1 = Comment.objects.create(
             comment="Comment1",
-            post=post1,
+            post=cls.post_topic,
             writer=cls.user2,
         )
         cls.comment2 = Comment.objects.create(
             comment="Comment2",
-            post=post2,
+            post=cls.post_pitapat,
             writer=cls.user1,
         )
 

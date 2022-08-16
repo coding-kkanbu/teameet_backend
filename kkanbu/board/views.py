@@ -24,6 +24,7 @@ from .helpers.utils import get_client_ip
 from .models import Category, Comment, Post
 from .serializers import (
     CategorySerializer,
+    CommentListSerializer,
     CommentSerializer,
     PitAPatSerializer,
     PostListSerializer,
@@ -203,20 +204,16 @@ class CommentViewSet(ModelViewSet):
     permission_classes = [IsOwnerOrReadOnly]
 
     def get_queryset(self):
-        return Comment.objects.filter(parent_comment=None)
+        return Comment.objects.filter(is_show=True)
 
     def get_serializer_class(self):
-        if self.action == "report_commentblame":
+        if self.action in ["list", "create"]:
+            return CommentListSerializer
+        elif self.action == "report_commentblame":
             return CommentBlameSerializer
         elif self.action == "toggle_commentlike":
             return CommentLikeSerializer
         return self.serializer_class
-
-    def get_serializer_context(self):
-        context = super(CommentViewSet, self).get_serializer_context()
-        if self.action == "report_commentblame":
-            context.update({"comment_id": self.get_object().id})
-        return context
 
     def perform_create(self, serializer):
         client_ip = get_client_ip(self.request)

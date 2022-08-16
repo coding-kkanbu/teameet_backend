@@ -153,7 +153,7 @@ class CategorySerializer(ModelSerializer):
 
 
 class CommentSerializer(ModelSerializer):
-    username = SerializerMethodField()
+    writer = UserInfoSerializer(read_only=True)
     commentlike_n = SerializerMethodField()
     commentlike_set = CommentLikeSerializer(many=True, read_only=True)
 
@@ -166,26 +166,27 @@ class CommentSerializer(ModelSerializer):
             "comment",
             "secret",
             "is_show",
-            "username",
+            "writer",
             "created",
             "commentlike_n",
             "commentlike_set",
             "child_comments",
         ]
-        read_only_fields = ["is_show"]
+        read_only_fields = ["post", "parent_comment", "is_show"]
 
     def get_fields(self):
         fields = super(CommentSerializer, self).get_fields()
         fields["child_comments"] = CommentSerializer(many=True, read_only=True)
         return fields
 
-    def get_username(self, obj):
-        return str(obj.writer.username)
-
     def get_commentlike_n(self, obj):
         return obj.commentlike_set.count()
 
     def to_representation(self, instance: Comment):
+        ret = super().to_representation(instance)
+        # is_show False인 instance 필터링
+        if not instance.is_show:
+            return None
         user = self.context["request"].user
         post = self.context.get("post", None)
         if instance.secret:
@@ -196,8 +197,26 @@ class CommentSerializer(ModelSerializer):
             ):
                 pass
             else:
-                instance.comment = "[글 작성자와 댓글 작성자만 볼 수 있는 댓글입니다]"
-        return super().to_representation(instance)
+                ret["comment"] = "[글 작성자와 댓글 작성자만 볼 수 있는 댓글입니다]"
+        return ret
+
+
+class CommentListSerializer(ModelSerializer):
+    writer = UserInfoSerializer(read_only=True)
+
+    class Meta:
+        model = Comment
+        fields = [
+            "id",
+            "post",
+            "parent_comment",
+            "comment",
+            "writer",
+            "secret",
+            "is_show",
+            "created",
+        ]
+        read_only_fields = ["is_show"]
 
     def validate(self, data):
         """

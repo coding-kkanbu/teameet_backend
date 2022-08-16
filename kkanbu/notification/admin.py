@@ -7,7 +7,7 @@ class NotificationAdmin(admin.ModelAdmin):
     list_display = (
         "notification_type",
         "recipient",
-        "sender",
+        "content_object",
         "is_read",
     )
     list_filter = (

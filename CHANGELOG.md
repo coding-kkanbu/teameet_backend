@@ -34,6 +34,14 @@
   - Tag 기능을 위한 app 추가
   - TaggableManager / TaggitSerializer로 tag 생성 및 삭제 가능
 
+### Default Security Settings
+
+- Authentication
+  - jwtCookieAuthentication
+  - api/v1/accounts 앱에 한해서만 BasicAuthentication(모두허용)
+- Permission
+  - IsAuthenticated
+
 ### Board
 
 - models : Post, Category, Comment, SogaetingOption
@@ -45,6 +53,7 @@
   - PitAPatSerializer
   - CategorySerializer
   - CommentSerializer
+  - CommentListSerializer
 - views
   - AbstractPostViewSet
   - TopicViewSet
@@ -79,6 +88,8 @@
   - notifiy
 - pagination
   - NotiPageNumberPagination
+- filter_backends
+  - OrderingFilter (DRF built-in)
 
 ### User
 

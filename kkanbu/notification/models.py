@@ -6,8 +6,6 @@ from django.urls import reverse
 from django.utils.timesince import timesince
 from django_extensions.db.models import TimeStampedModel
 
-from .signals import notify as notify_signal
-
 User = settings.AUTH_USER_MODEL
 
 
@@ -68,15 +66,3 @@ class Notification(TimeStampedModel):
                     )
         except Exception as e:
             return e
-
-
-def notify_handler(message, **kwargs):
-    kwargs.pop("signal", None)
-    content_obj = kwargs.pop("sender", None)
-    notify = Notification(message=str(message), content_object=content_obj, **kwargs)
-    notify.save()
-
-    return notify
-
-
-notify_signal.connect(notify_handler, dispatch_uid="notification.models.Notification")

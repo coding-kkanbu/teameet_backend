@@ -37,7 +37,8 @@
 ### Default Security Settings
 
 - Authentication
-  - jwtCookieAuthentication
+  - CustomjwtCookieAuthentication
+    - accounts/authentication.py 참고
   - api/v1/accounts 앱에 한해서만 BasicAuthentication(모두허용)
 - Permission
   - IsAuthenticated

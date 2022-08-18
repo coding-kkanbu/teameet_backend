@@ -37,9 +37,7 @@ class CustomJWTCookieAuthenticationTests(TestCase):
 
         url_auth = reverse("api:Topic-list")
         res = self.api_client.get(url_auth)
-        self.assertEqual(
-            res.status_code, status.HTTP_511_NETWORK_AUTHENTICATION_REQUIRED
-        )
+        self.assertEqual(res.status_code, status.HTTP_406_NOT_ACCEPTABLE)
 
     def test_valid_token_cookie_authentication_success(self):
         # acquire  token
@@ -68,6 +66,4 @@ class CustomJWTCookieAuthenticationTests(TestCase):
 
         url_auth = reverse("api:Topic-list")
         res = self.api_client.get(url_auth)
-        self.assertEqual(
-            res.status_code, status.HTTP_511_NETWORK_AUTHENTICATION_REQUIRED
-        )
+        self.assertEqual(res.status_code, status.HTTP_406_NOT_ACCEPTABLE)

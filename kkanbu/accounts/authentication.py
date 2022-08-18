@@ -55,4 +55,4 @@ class CustomJWTCookieAuthentication(JWTCookieAuthentication):
 
 
 class TokenUnavailable(InvalidToken):
-    status_code = status.HTTP_511_NETWORK_AUTHENTICATION_REQUIRED
+    status_code = status.HTTP_406_NOT_ACCEPTABLE

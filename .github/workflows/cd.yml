@@ -31,6 +31,7 @@ jobs:
         run: docker-compose -f local.yml down
 
   kkanbu-deploy:
+    needs: pytest
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

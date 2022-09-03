@@ -1,7 +1,13 @@
 from rest_framework.exceptions import ValidationError
-from rest_framework.serializers import ModelSerializer, SerializerMethodField
+from rest_framework.serializers import (
+    CharField,
+    ModelSerializer,
+    SerializerMethodField,
+    SlugRelatedField,
+)
 from taggit.serializers import TaggitSerializer, TagListSerializerField
 
+from kkanbu.board.helpers.utils import AppTypeValidator, TextLengthValidator
 from kkanbu.board.models import Category, Comment, Post, SogaetingOption
 from kkanbu.operation.serializers import CommentLikeSerializer, PostLikeSerializer
 from kkanbu.users.api.serializers import UserInfoSerializer
@@ -17,6 +23,15 @@ class SogaetingOptionSerializer(ModelSerializer):
             "connected",
         ]
         read_only_fields = ["connected"]
+        extra_kwargs = {
+            "region": {"error_messages": {"invalid_choice": "올바른 지역을 입력해주세요."}},
+            "gender": {"error_messages": {"invalid_choice": "올바른 성별을 입력해주세요."}},
+        }
+
+    def validate_age(self, value):
+        if value < 20:
+            raise ValidationError("올바른 나이를 입력해주세요.")
+        return value
 
 
 class PostListSerializer(ModelSerializer):
@@ -48,6 +63,16 @@ class PostListSerializer(ModelSerializer):
 
 class PostSerializer(TaggitSerializer, ModelSerializer):
     category_set = SerializerMethodField()
+    category = SlugRelatedField(
+        slug_field="slug",
+        queryset=Category.objects.all(),
+        validators=[AppTypeValidator(app_type="Topic")],
+    )
+    title = CharField(max_length=128, validators=[TextLengthValidator(min_length=4)])
+    content = CharField(
+        style={"base_template": "textarea.html"},
+        validators=[TextLengthValidator(min_length=4)],
+    )
     tags = TagListSerializerField()
     writer = UserInfoSerializer(read_only=True)
     postlike_n = SerializerMethodField()
@@ -88,6 +113,16 @@ class PitAPatSerializer(TaggitSerializer, ModelSerializer):
     category_set = SerializerMethodField()
     tags = TagListSerializerField()
     sogaetingoption = SogaetingOptionSerializer()
+    category = SlugRelatedField(
+        slug_field="slug",
+        queryset=Category.objects.all(),
+        validators=[AppTypeValidator(app_type="PitAPat")],
+    )
+    title = CharField(max_length=128, validators=[TextLengthValidator(min_length=4)])
+    content = CharField(
+        style={"base_template": "textarea.html"},
+        validators=[TextLengthValidator(min_length=4)],
+    )
     writer = UserInfoSerializer(read_only=True)
     postlike_n = SerializerMethodField()
     postlike_set = PostLikeSerializer(many=True, read_only=True)
@@ -203,6 +238,10 @@ class CommentSerializer(ModelSerializer):
 
 class CommentListSerializer(ModelSerializer):
     writer = UserInfoSerializer(read_only=True)
+    comment = CharField(
+        style={"base_template": "textarea.html"},
+        validators=[TextLengthValidator(min_length=4, message="댓글은 4글자 이상 입력해 주세요.")],
+    )
 
     class Meta:
         model = Comment

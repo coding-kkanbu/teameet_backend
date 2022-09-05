@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.db.models.functions import Length
+from django.utils import timesince
 from django.utils.translation import gettext_lazy as _
 from django_extensions.db.models import TimeStampedModel
 from taggit.managers import TaggableManager
@@ -51,6 +52,10 @@ class Post(TimeStampedModel):
 
     def __str__(self):
         return f"[{self.id}]{self.title} | {self.writer}"
+
+    @property
+    def timesince(self, now=None):
+        return timesince.timesince(self.created, depth=1)
 
     class Meta:
         constraints = [
@@ -135,6 +140,10 @@ class Comment(TimeStampedModel):
     deleted_at = models.DateTimeField(null=True, blank=True)
     ip = models.GenericIPAddressField(null=True, blank=True)
     notifications = GenericRelation(Notification)
+
+    @property
+    def timesince(self, now=None):
+        return timesince.timesince(self.created, depth=1)
 
     class Meta:
         ordering = ("created",)

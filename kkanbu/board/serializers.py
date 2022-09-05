@@ -1,6 +1,7 @@
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import (
     CharField,
+    DateTimeField,
     ModelSerializer,
     SerializerMethodField,
     SlugRelatedField,
@@ -39,6 +40,7 @@ class PostListSerializer(ModelSerializer):
     tags = TagListSerializerField()
     postlike_n = SerializerMethodField()
     comment_n = SerializerMethodField()
+    timesince = DateTimeField(read_only=True)
 
     class Meta:
         model = Post
@@ -49,6 +51,7 @@ class PostListSerializer(ModelSerializer):
             "content",
             "tags",
             "created",
+            "timesince",
             "hit",
             "postlike_n",
             "comment_n",
@@ -73,6 +76,7 @@ class PostSerializer(TaggitSerializer, ModelSerializer):
         style={"base_template": "textarea.html"},
         validators=[TextLengthValidator(min_length=4)],
     )
+    timesince = DateTimeField(read_only=True)
     tags = TagListSerializerField()
     writer = UserInfoSerializer(read_only=True)
     postlike_n = SerializerMethodField()
@@ -88,6 +92,7 @@ class PostSerializer(TaggitSerializer, ModelSerializer):
             "title",
             "content",
             "created",
+            "timesince",
             "tags",
             "writer",
             "hit",
@@ -111,7 +116,6 @@ class PostSerializer(TaggitSerializer, ModelSerializer):
 
 class PitAPatSerializer(TaggitSerializer, ModelSerializer):
     category_set = SerializerMethodField()
-    tags = TagListSerializerField()
     sogaetingoption = SogaetingOptionSerializer()
     category = SlugRelatedField(
         slug_field="slug",
@@ -123,6 +127,8 @@ class PitAPatSerializer(TaggitSerializer, ModelSerializer):
         style={"base_template": "textarea.html"},
         validators=[TextLengthValidator(min_length=4)],
     )
+    timesince = DateTimeField(read_only=True)
+    tags = TagListSerializerField()
     writer = UserInfoSerializer(read_only=True)
     postlike_n = SerializerMethodField()
     postlike_set = PostLikeSerializer(many=True, read_only=True)
@@ -138,6 +144,7 @@ class PitAPatSerializer(TaggitSerializer, ModelSerializer):
             "title",
             "content",
             "created",
+            "timesince",
             "tags",
             "writer",
             "hit",
@@ -189,6 +196,7 @@ class CategorySerializer(ModelSerializer):
 
 class CommentSerializer(ModelSerializer):
     writer = UserInfoSerializer(read_only=True)
+    timesince = DateTimeField(read_only=True)
     commentlike_n = SerializerMethodField()
     commentlike_set = CommentLikeSerializer(many=True, read_only=True)
 
@@ -203,6 +211,7 @@ class CommentSerializer(ModelSerializer):
             "is_show",
             "writer",
             "created",
+            "timesince",
             "commentlike_n",
             "commentlike_set",
             "child_comments",
@@ -242,6 +251,7 @@ class CommentListSerializer(ModelSerializer):
         style={"base_template": "textarea.html"},
         validators=[TextLengthValidator(min_length=4, message="댓글은 4글자 이상 입력해 주세요.")],
     )
+    timesince = DateTimeField(read_only=True)
 
     class Meta:
         model = Comment
@@ -254,6 +264,7 @@ class CommentListSerializer(ModelSerializer):
             "secret",
             "is_show",
             "created",
+            "timesince",
         ]
         read_only_fields = ["is_show"]
 

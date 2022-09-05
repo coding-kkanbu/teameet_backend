@@ -8,7 +8,12 @@ from kkanbu.board.serializers import (
     PostSerializer,
     SogaetingOptionSerializer,
 )
-from kkanbu.users.tests.factories import CategoryFactory, PostFactory, UserFactory
+from kkanbu.users.tests.factories import (
+    CategoryFactory,
+    CommentFactory,
+    PostFactory,
+    UserFactory,
+)
 
 
 class SogaetingOptionSerializerTests(TestCase):
@@ -112,6 +117,14 @@ class PostSerializerTests(TestCase):
             serializer.is_valid(raise_exception=True)
         self.assertEqual(set(serializer.errors.keys()), set(["title", "content"]))
 
+    def test_timesince_datetime_field_correct(self):
+        post = PostFactory.create()
+        serializer = PostSerializer()
+        self.assertIn("timesince", serializer.to_representation(post))
+        self.assertEqual(
+            "0\xa0minutes", serializer.to_representation(post)["timesince"]
+        )
+
 
 class PitAPatSerializerTests(TestCase):
     @classmethod
@@ -178,6 +191,14 @@ class PitAPatSerializerTests(TestCase):
             serializer.is_valid(raise_exception=True)
         self.assertEqual(set(serializer.errors.keys()), set(["title", "content"]))
 
+    def test_timesince_datetime_field_correct(self):
+        post = PostFactory.create()
+        serializer = PitAPatSerializer()
+        self.assertIn("timesince", serializer.to_representation(post))
+        self.assertEqual(
+            "0\xa0minutes", serializer.to_representation(post)["timesince"]
+        )
+
 
 class CommentListSerializerTests(TestCase):
     @classmethod
@@ -194,3 +215,11 @@ class CommentListSerializerTests(TestCase):
         with self.assertRaisesMessage(ValidationError, "댓글은 4글자 이상 입력해 주세요."):
             serializer.is_valid(raise_exception=True)
         self.assertEqual(set(serializer.errors.keys()), set(["comment"]))
+
+    def test_timesince_datetime_field_correct(self):
+        comment = CommentFactory.create()
+        serializer = CommentListSerializer()
+        self.assertIn("timesince", serializer.to_representation(comment))
+        self.assertEqual(
+            "0\xa0minutes", serializer.to_representation(comment)["timesince"]
+        )

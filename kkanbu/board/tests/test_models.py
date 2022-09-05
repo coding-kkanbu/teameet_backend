@@ -1,6 +1,7 @@
 from django.db import IntegrityError
 from django.test import TestCase
 from django.urls import reverse
+from django.utils import timesince
 from rest_framework.test import APIClient
 
 from kkanbu.board.models import Category, Comment, Post, SogaetingOption
@@ -59,6 +60,13 @@ class PostModelTests(NotificationViewSetTestData):
         with self.assertRaises(IntegrityError):
             self.post_topic.save()
 
+    """Internal Function Tests"""
+
+    def test_post_timesince_property(self):
+        self.assertTrue(self.post_topic.timesince)
+        ts = timesince.timesince(self.post_topic.created, depth=1)
+        self.assertEqual(self.post_topic.timesince, ts)
+
 
 class CommentModelTests(NotificationViewSetTestData):
     """Signal Tests"""
@@ -110,6 +118,13 @@ class CommentModelTests(NotificationViewSetTestData):
         self.comment1.comment = "3글자"
         with self.assertRaises(IntegrityError):
             self.comment1.save()
+
+    """Internal Function Tests"""
+
+    def test_comment_timesince_property(self):
+        self.assertTrue(self.comment1.timesince)
+        ts = timesince.timesince(self.comment1.created, depth=1)
+        self.assertEqual(self.comment1.timesince, ts)
 
 
 class CategoryModelTests(TestCase):

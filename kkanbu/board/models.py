@@ -155,4 +155,4 @@ class Comment(TimeStampedModel):
         ]
 
     def __str__(self):
-        return f"[{self.id}]{self.comment[:10]} | {self.writer}"
+        return f"({self.post})__[{self.id}]{self.comment[:10]} | {self.writer}"

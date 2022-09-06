@@ -78,8 +78,8 @@ class PostAPIHTTPMethodsTests(TestCase):
     def test_create_post_success(self):
         payload = {
             "title": "My first Posting",
-            # PrimaryKeyRelatedField -> SlugRelatedField 변경
-            "category": self.category.slug,
+            # PrimaryKeyRelatedField -> NameRelatedField 변경
+            "category": self.category.name,
             "content": "This is the first time for my posting.",
             "tags": ["tag1", "tag2"],
         }

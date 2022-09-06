@@ -73,13 +73,13 @@ class SogaetingOptionSerializerTests(TestCase):
 class PostSerializerTests(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.cat_topic = CategoryFactory.create(app="Topic", slug="topic_slug")
-        cls.cat_pitapat = CategoryFactory.create(app="PitAPat", slug="pitapat_slug")
+        cls.cat_topic = CategoryFactory.create(app="Topic", name="Topic 예시")
+        cls.cat_pitapat = CategoryFactory.create(app="PitAPat", name="PitAPat 예시")
         cls.user = UserFactory.create()
 
     def test_validate_wrong_category_fail(self):
         data = {
-            "category": self.cat_pitapat.slug,
+            "category": self.cat_pitapat.name,
             "title": "테스트 제목",
             "content": "테스트 본문",
             "tags": [],
@@ -91,7 +91,7 @@ class PostSerializerTests(TestCase):
 
     def test_validate_correct_category_success(self):
         data = {
-            "category": self.cat_topic.slug,
+            "category": self.cat_topic.name,
             "title": "테스트 제목",
             "content": "테스트 본문",
             "tags": [],
@@ -107,7 +107,7 @@ class PostSerializerTests(TestCase):
 
     def test_validate_title_and_content_length(self):
         data = {
-            "category": "topic_slug",
+            "category": "Topic 예시",
             "title": "헛",
             "content": "핫",
             "tags": [],
@@ -129,8 +129,8 @@ class PostSerializerTests(TestCase):
 class PitAPatSerializerTests(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.cat_topic = CategoryFactory.create(app="Topic", slug="topic_slug")
-        cls.cat_pitapat = CategoryFactory.create(app="PitAPat", slug="pitapat_slug")
+        cls.cat_topic = CategoryFactory.create(app="Topic", name="Topic 예시")
+        cls.cat_pitapat = CategoryFactory.create(app="PitAPat", name="PitAPat 예시")
         cls.user = UserFactory.create()
 
     def test_validate_wrong_category_fail(self):
@@ -140,7 +140,7 @@ class PitAPatSerializerTests(TestCase):
                 "gender": 1,
                 "age": 25,
             },
-            "category": self.cat_topic.slug,
+            "category": self.cat_topic.name,
             "title": "테스트 제목",
             "content": "테스트 본문",
             "tags": [],
@@ -157,7 +157,7 @@ class PitAPatSerializerTests(TestCase):
                 "gender": 1,
                 "age": 25,
             },
-            "category": self.cat_pitapat.slug,
+            "category": self.cat_pitapat.name,
             "title": "테스트 제목",
             "content": "테스트 본문",
             "tags": [],
@@ -181,7 +181,7 @@ class PitAPatSerializerTests(TestCase):
                 "gender": 1,
                 "age": 25,
             },
-            "category": "pitapat_slug",
+            "category": "PitAPat 예시",
             "title": "헛",
             "content": "핫",
             "tags": [],
@@ -203,7 +203,7 @@ class PitAPatSerializerTests(TestCase):
 class CommentListSerializerTests(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.cat_topic = CategoryFactory.create(app="Topic", slug="topic_slug")
+        cls.cat_topic = CategoryFactory.create(app="Topic", name="Topic 예시")
         cls.post = PostFactory(category=cls.cat_topic)
 
     def test_validate_comment_length(self):

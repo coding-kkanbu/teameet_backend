@@ -4,11 +4,11 @@ from rest_framework.serializers import (
     DateTimeField,
     ModelSerializer,
     SerializerMethodField,
-    SlugRelatedField,
 )
 from taggit.serializers import TaggitSerializer, TagListSerializerField
 
-from kkanbu.board.helpers.utils import AppTypeValidator, TextLengthValidator
+from kkanbu.board.helpers.ralations import NameRelatedField
+from kkanbu.board.helpers.validators import AppTypeValidator, TextLengthValidator
 from kkanbu.board.models import Category, Comment, Post, SogaetingOption
 from kkanbu.operation.serializers import CommentLikeSerializer, PostLikeSerializer
 from kkanbu.users.api.serializers import UserInfoSerializer
@@ -66,8 +66,8 @@ class PostListSerializer(ModelSerializer):
 
 class PostSerializer(TaggitSerializer, ModelSerializer):
     category_set = SerializerMethodField()
-    category = SlugRelatedField(
-        slug_field="slug",
+    category = NameRelatedField(
+        name_field="name",
         queryset=Category.objects.all(),
         validators=[AppTypeValidator(app_type="Topic")],
     )
@@ -117,8 +117,8 @@ class PostSerializer(TaggitSerializer, ModelSerializer):
 class PitAPatSerializer(TaggitSerializer, ModelSerializer):
     category_set = SerializerMethodField()
     sogaetingoption = SogaetingOptionSerializer()
-    category = SlugRelatedField(
-        slug_field="slug",
+    category = NameRelatedField(
+        name_field="name",
         queryset=Category.objects.all(),
         validators=[AppTypeValidator(app_type="PitAPat")],
     )

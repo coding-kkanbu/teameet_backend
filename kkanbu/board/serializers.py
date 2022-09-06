@@ -249,7 +249,9 @@ class CommentListSerializer(ModelSerializer):
     writer = UserInfoSerializer(read_only=True)
     comment = CharField(
         style={"base_template": "textarea.html"},
-        validators=[TextLengthValidator(min_length=4, message="댓글은 4글자 이상 입력해 주세요.")],
+        validators=[
+            TextLengthValidator(min_length=4, message="댓글은 4글자 이상 입력해 주세요."),
+        ],
     )
     timesince = DateTimeField(read_only=True)
 
@@ -272,8 +274,14 @@ class CommentListSerializer(ModelSerializer):
         """
         Check that comment post pk is the same as parent comment pk
         """
-        if data["parent_comment"] and data["parent_comment"].post.id != data["post"].id:
-            raise ValidationError(
-                "post pk should be the same as parent comment post pk"
-            )
-        return data
+        msg_post = "대댓글이 달릴 댓글의 게시물 pk값과 일치해야 합니다."
+        msg_comment = "대댓글과 댓글의 게시물 pk값을 확인해주세요."
+        if not data["parent_comment"]:
+            return data
+        else:
+            if data["parent_comment"].post.id != data["post"].id:
+                raise ValidationError(
+                    {"post": [msg_post], "parent_comment": [msg_comment]},
+                    code="invalid",
+                )
+            return data

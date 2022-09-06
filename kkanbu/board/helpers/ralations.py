@@ -11,8 +11,8 @@ class NameRelatedField(RelatedField):
     """
 
     default_error_messages = {
-        "does_not_exist": _("Object with {name}={value} does not exist."),
-        "invalid": _("Invalid value."),
+        "does_not_exist": _("{name}={value}인 category 객체가 존재하지 않습니다."),
+        "invalid": _("유효하지 않은 값입니다."),
     }
 
     def __init__(self, name_field=None, **kwargs):

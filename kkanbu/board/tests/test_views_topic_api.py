@@ -78,12 +78,14 @@ class PostAPIHTTPMethodsTests(TestCase):
     def test_create_post_success(self):
         payload = {
             "title": "My first Posting",
-            "category": self.category.id,
+            # PrimaryKeyRelatedField -> NameRelatedField 변경
+            "category": self.category.name,
             "content": "This is the first time for my posting.",
             "tags": ["tag1", "tag2"],
         }
         request = self.factory.post(Topic_URL, payload)
         res = self.client.post(Topic_URL, payload, format="json")
+        print(res.data)
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
 
         post = Post.objects.get(id=res.data["id"])

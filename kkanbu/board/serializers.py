@@ -36,6 +36,7 @@ class SogaetingOptionSerializer(ModelSerializer):
 
 
 class PostListSerializer(ModelSerializer):
+    category_set = SerializerMethodField()
     sogaetingoption = SogaetingOptionSerializer(read_only=True)
     tags = TagListSerializerField()
     postlike_n = SerializerMethodField()
@@ -46,6 +47,7 @@ class PostListSerializer(ModelSerializer):
         model = Post
         fields = [
             "id",
+            "category_set",
             "sogaetingoption",
             "title",
             "content",
@@ -56,6 +58,11 @@ class PostListSerializer(ModelSerializer):
             "postlike_n",
             "comment_n",
         ]
+
+    def get_category_set(self, obj):
+        cat = Category.objects.get(post=obj)
+        serializer = CategorySerializer(cat)
+        return serializer.data
 
     def get_postlike_n(self, obj):
         return obj.postlike_set.count()
@@ -269,6 +276,12 @@ class CommentListSerializer(ModelSerializer):
             "timesince",
         ]
         read_only_fields = ["is_show"]
+        extra_kwargs = {
+            "parent_comment": {
+                "required": True,
+                "error_messages": {"required": "이 필드는 필수 항목입니다. 빈 값은 'Null'로 설정해주세요."},
+            }
+        }
 
     def validate(self, data):
         """
@@ -276,6 +289,8 @@ class CommentListSerializer(ModelSerializer):
         """
         msg_post = "대댓글이 달릴 댓글의 게시물 pk값과 일치해야 합니다."
         msg_comment = "대댓글과 댓글의 게시물 pk값을 확인해주세요."
+        # KeyError에 의한 500 Internal Server Error 방지
+        data.setdefault(key="parent_comment", default=None)
         if not data["parent_comment"]:
             return data
         else:

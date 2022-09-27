@@ -209,12 +209,25 @@ class CommentListSerializerTests(TestCase):
     def test_validate_comment_length(self):
         data = {
             "post": self.post.id,
+            "parent_comment": None,
             "comment": "부족",
         }
         serializer = CommentListSerializer(data=data)
         with self.assertRaisesMessage(ValidationError, "댓글은 4글자 이상 입력해 주세요."):
             serializer.is_valid(raise_exception=True)
         self.assertEqual(set(serializer.errors.keys()), set(["comment"]))
+
+    def test_validate_parent_commnet_required(self):
+        data = {
+            "post": self.post.id,
+            "comment": "올바른 길이의 댓글",
+        }
+        serializer = CommentListSerializer(data=data)
+        with self.assertRaisesMessage(
+            ValidationError, "이 필드는 필수 항목입니다. 빈 값은 'Null'로 설정해주세요."
+        ):
+            serializer.is_valid(raise_exception=True)
+        self.assertEqual(set(serializer.errors.keys()), set(["parent_comment"]))
 
     def test_timesince_datetime_field_correct(self):
         comment = CommentFactory.create()

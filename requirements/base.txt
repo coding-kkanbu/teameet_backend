@@ -30,3 +30,4 @@ drf-spectacular==0.24.1  # https://github.com/tfranzel/drf-spectacular
 djangorestframework-simplejwt==5.2.0 # https://github.com/jazzband/djangorestframework-simplejwt
 # Django Taggit
 django-taggit==3.0.0 # https://github.com/jazzband/django-taggit
+django-extensions==3.2.0  # https://github.com/django-extensions/django-extensions

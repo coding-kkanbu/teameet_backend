@@ -7,7 +7,7 @@ from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.test import APIClient, APITestCase
 
-from kkanbu.accounts.tokens import neis_verify_token
+from kkanbu.accounts.helper.tokens import neis_verify_token
 
 pytestmark = pytest.mark.django_db
 

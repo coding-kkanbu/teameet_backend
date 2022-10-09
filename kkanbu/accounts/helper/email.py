@@ -9,10 +9,10 @@ EMAIL_HOST_USER = env("EMAIL_HOST_USER", default="sample_email_host_user")
 
 
 class EmailThread(Thread):
-    def __init__(self, from_email, subject, html_message, message, neis_email):
+    def __init__(self, from_email, subject, html_message, message, recipient_list):
         self.from_email = from_email
         self.subject = subject
-        self.recipient_list = neis_email
+        self.recipient_list = recipient_list
         self.html_message = html_message
         self.message = message
         threading.Thread.__init__(self)

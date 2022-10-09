@@ -130,14 +130,15 @@ class VerifyNeisEmail(GenericAPIView):
             {"username": user.username, "url": url},
         )
 
-        email = EmailThread(
-            from_email="kkanbu22@gmail.com",
-            subject="티밋 교직원 인증 메일",
-            html_message=message,
-            message=message,
-            neis_email=neis_email,
-        )
+        data = {
+            "from_email": "Team teameet",
+            "recipient_list": [neis_email],
+            "subject": "티밋 교직원 인증 메일",
+            "message": message,
+            "html_message": message,
+        }
 
+        email = EmailThread(**data)
         email.start()
         return Response(
             {"message": "Email was successfully sent"}, status=status.HTTP_200_OK

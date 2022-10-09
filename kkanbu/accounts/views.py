@@ -6,7 +6,6 @@ from allauth.utils import build_absolute_uri
 from dj_rest_auth.registration.views import SocialLoginView
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.encoding import force_bytes, force_str
@@ -23,6 +22,7 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
+from kkanbu.accounts.email import EmailThread
 from kkanbu.accounts.serializers import VerifyNeisEmailSerializer
 from kkanbu.accounts.tokens import neis_verify_token
 
@@ -130,14 +130,15 @@ class VerifyNeisEmail(GenericAPIView):
             {"random_name": user.random_name, "url": url},
         )
 
-        data = {
-            "from_email": "Team teameet",
-            "recipient_list": [neis_email],
-            "subject": "티밋 교직원 인증 메일",
-            "message": message,
-            "html_message": message,
-        }
-        send_mail(**data)
+        email = EmailThread(
+            from_email="kkanbu22@gmail.com",
+            subject="티밋 교직원 인증 메일",
+            html_message=message,
+            message=message,
+            neis_email=neis_email,
+        )
+
+        email.start()
         return Response(
             {"message": "Email was successfully sent"}, status=status.HTTP_200_OK
         )

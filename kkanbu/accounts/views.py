@@ -8,7 +8,6 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
-from django.urls import reverse
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlencode, urlsafe_base64_decode, urlsafe_base64_encode
 from drf_spectacular.utils import extend_schema
@@ -23,6 +22,7 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
+from kkanbu.accounts.helper.url_helper import url_with_querystring
 from kkanbu.accounts.serializers import VerifyNeisEmailSerializer
 from kkanbu.accounts.tokens import neis_verify_token
 
@@ -118,7 +118,7 @@ class VerifyNeisEmail(GenericAPIView):
 
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         token = neis_verify_token.make_token(user)
-        path = reverse("verify_neis_email_confirm", args=[uid, token])
+        path = url_with_querystring("/verifyneis", uid=uid, token=token)
 
         if getattr(settings, "REST_AUTH_PW_RESET_USE_SITES_DOMAIN", False) is True:
             url = build_absolute_uri(None, path)

@@ -62,11 +62,11 @@ class VerifyNeisEmailSerializer(serializers.Serializer):
         domain_index = value.find("@") + 1
         domain = value[domain_index:]
         if domain not in domains:
-            raise ValidationError("Not valid neis domain.")
+            raise ValidationError("나이스 이메일 주소가 아닙니다.")
         return value
 
     def validate(self, data):
         user = self.context["request"].user
         if user.is_verify:
-            raise ValidationError("User already verified.")
+            raise ValidationError("이미 인증되었습니다.")
         return data

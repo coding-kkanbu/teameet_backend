@@ -6,7 +6,6 @@ from allauth.utils import build_absolute_uri
 from dj_rest_auth.registration.views import SocialLoginView
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlencode, urlsafe_base64_decode, urlsafe_base64_encode
@@ -22,9 +21,10 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
+from kkanbu.accounts.helper.email import EmailThread
+from kkanbu.accounts.helper.tokens import neis_verify_token
 from kkanbu.accounts.helper.url_helper import url_with_querystring
 from kkanbu.accounts.serializers import VerifyNeisEmailSerializer
-from kkanbu.accounts.tokens import neis_verify_token
 
 User = get_user_model()
 
@@ -137,7 +137,9 @@ class VerifyNeisEmail(GenericAPIView):
             "message": message,
             "html_message": message,
         }
-        send_mail(**data)
+
+        email = EmailThread(**data)
+        email.start()
         return Response(
             {"message": "Email was successfully sent"}, status=status.HTTP_200_OK
         )

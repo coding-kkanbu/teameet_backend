@@ -127,7 +127,7 @@ class VerifyNeisEmail(GenericAPIView):
 
         message = render_to_string(
             "account/email/template_neis_verify.html",
-            {"random_name": user.random_name, "url": url},
+            {"username": user.username, "url": url},
         )
 
         data = {

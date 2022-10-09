@@ -1,7 +1,14 @@
 from rest_framework.exceptions import ValidationError
-from rest_framework.serializers import ModelSerializer, SerializerMethodField
+from rest_framework.serializers import (
+    CharField,
+    DateTimeField,
+    ModelSerializer,
+    SerializerMethodField,
+)
 from taggit.serializers import TaggitSerializer, TagListSerializerField
 
+from kkanbu.board.helpers.ralations import NameRelatedField
+from kkanbu.board.helpers.validators import AppTypeValidator, TextLengthValidator
 from kkanbu.board.models import Category, Comment, Post, SogaetingOption
 from kkanbu.operation.serializers import CommentLikeSerializer, PostLikeSerializer
 from kkanbu.users.api.serializers import UserInfoSerializer
@@ -17,27 +24,45 @@ class SogaetingOptionSerializer(ModelSerializer):
             "connected",
         ]
         read_only_fields = ["connected"]
+        extra_kwargs = {
+            "region": {"error_messages": {"invalid_choice": "올바른 지역을 입력해주세요."}},
+            "gender": {"error_messages": {"invalid_choice": "올바른 성별을 입력해주세요."}},
+        }
+
+    def validate_age(self, value):
+        if value < 20:
+            raise ValidationError("올바른 나이를 입력해주세요.")
+        return value
 
 
 class PostListSerializer(ModelSerializer):
+    category_set = SerializerMethodField()
     sogaetingoption = SogaetingOptionSerializer(read_only=True)
     tags = TagListSerializerField()
     postlike_n = SerializerMethodField()
     comment_n = SerializerMethodField()
+    timesince = DateTimeField(read_only=True)
 
     class Meta:
         model = Post
         fields = [
             "id",
+            "category_set",
             "sogaetingoption",
             "title",
             "content",
             "tags",
             "created",
+            "timesince",
             "hit",
             "postlike_n",
             "comment_n",
         ]
+
+    def get_category_set(self, obj):
+        cat = Category.objects.get(post=obj)
+        serializer = CategorySerializer(cat)
+        return serializer.data
 
     def get_postlike_n(self, obj):
         return obj.postlike_set.count()
@@ -48,6 +73,17 @@ class PostListSerializer(ModelSerializer):
 
 class PostSerializer(TaggitSerializer, ModelSerializer):
     category_set = SerializerMethodField()
+    category = NameRelatedField(
+        name_field="name",
+        queryset=Category.objects.all(),
+        validators=[AppTypeValidator(app_type="Topic")],
+    )
+    title = CharField(max_length=128, validators=[TextLengthValidator(min_length=4)])
+    content = CharField(
+        style={"base_template": "textarea.html"},
+        validators=[TextLengthValidator(min_length=4)],
+    )
+    timesince = DateTimeField(read_only=True)
     tags = TagListSerializerField()
     writer = UserInfoSerializer(read_only=True)
     postlike_n = SerializerMethodField()
@@ -63,6 +99,7 @@ class PostSerializer(TaggitSerializer, ModelSerializer):
             "title",
             "content",
             "created",
+            "timesince",
             "tags",
             "writer",
             "hit",
@@ -86,8 +123,19 @@ class PostSerializer(TaggitSerializer, ModelSerializer):
 
 class PitAPatSerializer(TaggitSerializer, ModelSerializer):
     category_set = SerializerMethodField()
-    tags = TagListSerializerField()
     sogaetingoption = SogaetingOptionSerializer()
+    category = NameRelatedField(
+        name_field="name",
+        queryset=Category.objects.all(),
+        validators=[AppTypeValidator(app_type="PitAPat")],
+    )
+    title = CharField(max_length=128, validators=[TextLengthValidator(min_length=4)])
+    content = CharField(
+        style={"base_template": "textarea.html"},
+        validators=[TextLengthValidator(min_length=4)],
+    )
+    timesince = DateTimeField(read_only=True)
+    tags = TagListSerializerField()
     writer = UserInfoSerializer(read_only=True)
     postlike_n = SerializerMethodField()
     postlike_set = PostLikeSerializer(many=True, read_only=True)
@@ -103,6 +151,7 @@ class PitAPatSerializer(TaggitSerializer, ModelSerializer):
             "title",
             "content",
             "created",
+            "timesince",
             "tags",
             "writer",
             "hit",
@@ -154,6 +203,7 @@ class CategorySerializer(ModelSerializer):
 
 class CommentSerializer(ModelSerializer):
     writer = UserInfoSerializer(read_only=True)
+    timesince = DateTimeField(read_only=True)
     commentlike_n = SerializerMethodField()
     commentlike_set = CommentLikeSerializer(many=True, read_only=True)
 
@@ -168,6 +218,7 @@ class CommentSerializer(ModelSerializer):
             "is_show",
             "writer",
             "created",
+            "timesince",
             "commentlike_n",
             "commentlike_set",
             "child_comments",
@@ -203,6 +254,13 @@ class CommentSerializer(ModelSerializer):
 
 class CommentListSerializer(ModelSerializer):
     writer = UserInfoSerializer(read_only=True)
+    comment = CharField(
+        style={"base_template": "textarea.html"},
+        validators=[
+            TextLengthValidator(min_length=4, message="댓글은 4글자 이상 입력해 주세요."),
+        ],
+    )
+    timesince = DateTimeField(read_only=True)
 
     class Meta:
         model = Comment
@@ -215,15 +273,30 @@ class CommentListSerializer(ModelSerializer):
             "secret",
             "is_show",
             "created",
+            "timesince",
         ]
         read_only_fields = ["is_show"]
+        extra_kwargs = {
+            "parent_comment": {
+                "required": True,
+                "error_messages": {"required": "이 필드는 필수 항목입니다. 빈 값은 'Null'로 설정해주세요."},
+            }
+        }
 
     def validate(self, data):
         """
         Check that comment post pk is the same as parent comment pk
         """
-        if data["parent_comment"] and data["parent_comment"].post.id != data["post"].id:
-            raise ValidationError(
-                "post pk should be the same as parent comment post pk"
-            )
-        return data
+        msg_post = "대댓글이 달릴 댓글의 게시물 pk값과 일치해야 합니다."
+        msg_comment = "대댓글과 댓글의 게시물 pk값을 확인해주세요."
+        # KeyError에 의한 500 Internal Server Error 방지
+        data.setdefault(key="parent_comment", default=None)
+        if not data["parent_comment"]:
+            return data
+        else:
+            if data["parent_comment"].post.id != data["post"].id:
+                raise ValidationError(
+                    {"post": [msg_post], "parent_comment": [msg_comment]},
+                    code="invalid",
+                )
+            return data

@@ -6,7 +6,7 @@ from .base import env
 # https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
 SECRET_KEY = env("DJANGO_SECRET_KEY")
 # https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=["example.com"])
+ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=["*"])
 
 # DATABASES
 # ------------------------------------------------------------------------------
@@ -162,3 +162,9 @@ LOGGING = {
 
 # Your stuff...
 # ------------------------------------------------------------------------------
+BASE_URL = env("BASE_URL")
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = "http"
+
+GOOGLE_CALLBACK_URI = BASE_URL + "api/v1/accounts/google/login/callback/"
+KAKAO_CALLBACK_URI = BASE_URL + "api/v1/accounts/kakao/login/callback/"
+PASSWORD_RESET_TIMEOUT = 600

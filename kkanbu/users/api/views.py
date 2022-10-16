@@ -12,7 +12,6 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from kkanbu.board.serializers import PostListSerializer
-from kkanbu.users.utils import generate_random_name
 
 from .serializers import UserProfileSerializer, UserSerializer
 
@@ -64,15 +63,6 @@ class UserViewSet(
             return self.get_paginated_response(serializer.data)
 
         serializer = PostListSerializer(user_posts, many=True)
-        return Response(status=status.HTTP_200_OK, data=serializer.data)
-
-    @action(detail=True, methods=["POST"])
-    def set_random_name(self, request, username=None):
-        user = self.get_object()
-        random_name = generate_random_name()
-        user.random_name = random_name
-        user.save()
-        serializer = self.get_serializer(user)
         return Response(status=status.HTTP_200_OK, data=serializer.data)
 
     @action(detail=True, methods=["GET", "POST"], url_path="upload_image")

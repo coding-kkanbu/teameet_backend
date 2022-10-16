@@ -34,7 +34,6 @@ class PostAPIHTTPMethodsTests(TestCase):
         self.user = get_user_model().objects.create(
             email="testuser@teameet.com",
             username="test",
-            random_name="random name",
             password="testpass1234",
         )
         self.category = Category.objects.create(
@@ -129,13 +128,11 @@ class PostAPIPermissionTests(TestCase):
         self.owner = get_user_model().objects.create(
             email="testuser@teameet.com",
             username="test",
-            random_name="random test1",
             password="testpass1234",
         )
         self.user = get_user_model().objects.create(
             email="testuser2@teameet.com",
             username="test2",
-            random_name="random test2",
             password="test2pass1234",
         )
         self.category = Category.objects.create(

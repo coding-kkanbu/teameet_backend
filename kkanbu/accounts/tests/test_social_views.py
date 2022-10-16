@@ -16,7 +16,6 @@ class GoogleSocialLoginTests(TestCase):
         self.user = get_user_model().objects.create(
             email="testuser@teameet.com",
             username="test",
-            random_name="random name",
             password="testpass1234",
         )
         self.client = APIClient()
@@ -50,7 +49,6 @@ class KakaoSocialLoginTests(TestCase):
         self.user = get_user_model().objects.create(
             email="testuser@teameet.com",
             username="test",
-            random_name="random name",
             password="testpass1234",
         )
         self.client = APIClient()

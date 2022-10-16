@@ -10,10 +10,6 @@ def test_user_get_absolute_url(user: User):
     assert user.get_absolute_url() == f"/users/{user.username}/"
 
 
-def test_user_random_name(user: User):
-    assert user.random_name is not None
-
-
 def test_profile_file_path():
     """Test generating image path."""
     file_path = models.profile_image_file_path(None, "example.jpg")

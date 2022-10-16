@@ -15,7 +15,6 @@ class UserSerializer(serializers.ModelSerializer):
             "username",
             "email",
             "date_joined",
-            "random_name",
             "profile_image",
             "introduce",
             "neis_email",
@@ -27,7 +26,6 @@ class UserSerializer(serializers.ModelSerializer):
         read_only_fields = [
             "email",
             "date_joined",
-            "random_name",
             "profile_image",
             "neis_email",
             "is_verify",
@@ -58,5 +56,4 @@ class UserInfoSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "username",
-            "random_name",
         ]

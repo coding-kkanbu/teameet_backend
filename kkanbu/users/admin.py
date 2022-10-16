@@ -17,7 +17,7 @@ class UserAdmin(auth_admin.UserAdmin):
         (_("Account info"), {"fields": ("email", "username", "password")}),
         (
             _("Personal info"),
-            {"fields": ("profile_image", "random_name", "neis_email", "is_verify")},
+            {"fields": ("profile_image", "neis_email", "is_verify")},
         ),
         (
             _("Permissions"),

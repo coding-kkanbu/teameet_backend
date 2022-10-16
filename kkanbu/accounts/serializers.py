@@ -17,7 +17,6 @@ class CustomUserDetailsSerializer(serializers.ModelSerializer):
         fields = (
             "pk",
             "email",
-            "random_name",
             "profile_image",
             "is_verify",
         )

@@ -37,7 +37,6 @@ class TestUserViewSet:
             "username": user.username,
             "email": user.email,
             "date_joined": DateTimeField().to_representation(user.date_joined),
-            "random_name": user.random_name,
             "introduce": "좋은 만남을 기대하고있습니다",
             "profile_image": user.profile_image,
             "neis_email": user.neis_email,
@@ -127,18 +126,6 @@ class TestUserViewSet:
         res = api_client.get(url, **{"QUERY_STRING": "page=3"})
         res.status_code == 200
         assert len(res.data["results"]) == 5
-
-    def test_set_random_name(self, user: User, api_client):
-        api_client.force_authenticate(user)
-        old_random_name = user.random_name
-
-        url = reverse("api:user-set-random-name", kwargs={"username": user.username})
-        res = api_client.post(url)
-        new_random_name = res.data["random_name"]
-
-        assert User.objects.get(pk=user.id).random_name == new_random_name
-        assert res.status_code == 200
-        assert old_random_name != new_random_name
 
     def test_upload_image(self, user: User, api_client):
         api_client.force_authenticate(user)

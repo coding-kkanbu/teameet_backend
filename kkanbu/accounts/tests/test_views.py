@@ -17,7 +17,6 @@ class TestVerifyNeisEmail(APITestCase):
         self.user = get_user_model().objects.create(
             email="testuser@teameet.com",
             username="test",
-            random_name="random name",
             password="testpass1234",
         )
 
@@ -58,7 +57,6 @@ class TestVerifyNeisEmail(APITestCase):
         get_user_model().objects.create(
             email="testuser2@teameet.com",
             username="test2",
-            random_name="another random name",
             password="testpass1234",
             is_verify=True,
             neis_email="testuser@sen.go.kr",
@@ -80,7 +78,6 @@ class TestVerifyNeisEmail(APITestCase):
         get_user_model().objects.create(
             email="testuser2@teameet.com",
             username="test2",
-            random_name="another random name",
             password="testpass1234",
             is_verify=False,
             neis_email="testuser@sen.go.kr",
@@ -104,7 +101,6 @@ class TestVerifyNeisEmailConfirm(APITestCase):
         self.user = get_user_model().objects.create(
             email="testuser@teameet.com",
             username="test",
-            random_name="random name",
             password="testpass1234",
         )
 

@@ -165,6 +165,6 @@ LOGGING = {
 BASE_URL = env("BASE_URL")
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = "http"
 
-GOOGLE_CALLBACK_URI = BASE_URL + "api/v1/accounts/google/login/callback/"
-KAKAO_CALLBACK_URI = BASE_URL + "api/v1/accounts/kakao/login/callback/"
+GOOGLE_CALLBACK_URI = BASE_URL + "social/google/"
+KAKAO_CALLBACK_URI = BASE_URL + "social/kakao/"
 PASSWORD_RESET_TIMEOUT = 600

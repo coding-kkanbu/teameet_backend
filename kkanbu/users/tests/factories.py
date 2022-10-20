@@ -7,12 +7,16 @@ from factory.django import DjangoModelFactory
 
 from kkanbu.board.models import Category, Comment, Post
 from kkanbu.operation.models import CommentLike, PostLike
+from kkanbu.users.models import AgeType, GenderType, RegionType
 
 
 # User App Factory
 class UserFactory(DjangoModelFactory):
     username = Faker("user_name")
     email = Faker("email")
+    region = Faker("random_choices", elements=RegionType.choices)
+    age = Faker("random_choices", elements=AgeType.choices)
+    gender = Faker("random_choices", elements=GenderType.choices)
     introduce = "좋은 만남을 기대하고있습니다"
 
     @post_generation

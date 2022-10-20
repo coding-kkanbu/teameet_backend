@@ -1,3 +1,4 @@
+from dj_rest_auth.registration.serializers import RegisterSerializer
 from dj_rest_auth.serializers import LoginSerializer
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
@@ -11,6 +12,18 @@ class CustomLoginSerializer(LoginSerializer):
     username = None
 
 
+class CustomRegisterSerializer(RegisterSerializer):
+    region = serializers.CharField(max_length=50)
+    age = serializers.CharField(max_length=50)
+    gender = serializers.CharField(max_length=50)
+
+    def custom_signup(self, request, user):
+        user.region = self.validated_data.get("region", "")
+        user.age = self.validated_data.get("age", "")
+        user.gender = self.validated_data.get("gender", "")
+        user.save()
+
+
 class CustomUserDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -18,6 +31,9 @@ class CustomUserDetailsSerializer(serializers.ModelSerializer):
             "pk",
             "email",
             "profile_image",
+            "region",
+            "age",
+            "gender",
             "is_verify",
         )
         read_only_fields = (

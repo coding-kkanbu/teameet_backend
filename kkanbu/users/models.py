@@ -61,15 +61,9 @@ class User(AbstractUser):
     neis_email = models.EmailField(_("NEIS email address"), blank=True, null=True)
     is_verify = models.BooleanField(_("NEIS email verified"), default=False)
 
-    region = models.CharField(
-        max_length=30, choices=RegionType.choices, default=AgeType.TWENTY
-    )
-    age = models.CharField(
-        max_length=30, choices=AgeType.choices, default=AgeType.TWENTY
-    )
-    gender = models.CharField(
-        max_length=30, choices=GenderType.choices, default=AgeType.TWENTY
-    )
+    region = models.CharField(max_length=30, choices=RegionType.choices)
+    age = models.CharField(max_length=30, choices=AgeType.choices)
+    gender = models.CharField(max_length=30, choices=GenderType.choices)
 
     introduce = models.TextField(_("introduce"), blank=True, null=True)
     profile_image = models.ImageField(
